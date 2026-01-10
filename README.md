@@ -8,7 +8,7 @@
 
 > [!IMPORTANT]
 > Este projeto é um **fork** do MultiMC. </br></br>
-> Este software é fornecido sem qualquer garantia, portanto, por favor, não entre em contato. </br></br>
+> Este software é fornecido sem qualquer garantia, portanto, por favor, não entre em contato.
 
 
 ## Download
