@@ -31,7 +31,3 @@ Downloads diretos para plataformas específicas podem ser encontrados abaixo:
    - **B.** Clique em "Add Ely.by" e adicione sua conta Ely.by inserindo seu e-mail e senha.
 6. Salve as configurações.
 7. Agora aproveite o Launcher!
-
-## Atualização
-
-Para atualizar o launcher, substitua todos os arquivos e pastas pelos mais recentes obtidos em qualquer um dos links listados acima.
