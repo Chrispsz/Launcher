@@ -17,8 +17,8 @@ Downloads diretos para plataformas específicas podem ser encontrados abaixo:
 
 | Plataforma | Link |
 |------------|------|
-| **Windows** (32-bit e 64-bit) | [Download](https://nightly.link/UltimMC/Launcher/workflows/main/develop/mmc-cracked-win32.zip) |
-| **Linux** (64-bit) | [Download](https://nightly.link/UltimMC/Launcher/workflows/main/develop/mmc-cracked-lin64.zip) |
+| **Windows** (32-bit e 64-bit) | [Download](https://nightly.link/Chrispsz/Launcher/actions/runs/20881930042/mmc-cracked-win32.zip) |
+| **Linux** (64-bit) | [Download](https://nightly.link/Chrispsz/Launcher/actions/runs/20881930042/mmc-cracked-lin64.zip) |
 
 ## Instalação e Uso
 
