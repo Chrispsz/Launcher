@@ -57,8 +57,6 @@ public:
         return m_instance->id();
     }
 
-    bool abort() override;
-
 private:
     void login();
     void launchInstance();

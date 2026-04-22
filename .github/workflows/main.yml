@@ -7,7 +7,6 @@ on:
     branches: [ develop ]
   workflow_dispatch:
 
-# Cancel in-progress runs for the same branch
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -15,17 +14,22 @@ concurrency:
 jobs:
   build-linux:
     name: build-linux
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@main
         with:
           submodules: 'recursive'
 
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{ runner.os }}-ccache-launcher
+
       - name: Install Dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-dev qttools5-dev g++
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libgl1-mesa-dev qttools5-dev g++
 
       - name: Build
         run: |
@@ -36,6 +40,8 @@ jobs:
            -DLauncher_LAYOUT=lin-nodeps \
            -DLauncher_BUILD_PLATFORM=lin64 \
            -DLauncher_EMBED_SECRETS=On \
+           -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+           -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
            $GITHUB_WORKSPACE
 
       - name: Compile
@@ -43,15 +49,12 @@ jobs:
           cd build
           make -j$(nproc)
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@main
-        with:
-          name: LauncherMC-linux64
-          path: /home/runner/work/Launcher/build
+      - name: ccache stats
+        run: ccache --show-stats
 
   build-windows:
     name: build-windows
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
       - uses: actions/checkout@main
@@ -62,8 +65,8 @@ jobs:
         uses: actions/cache@main
         id: qt-cached
         with:
-          path: "D:/Qt"
-          key: ${{ runner.os }}-qt56-installed-d
+          path: "C:/Qt"
+          key: ${{ runner.os }}-qt563-mingw492-v2
 
       - name: Cache Qt Installer
         uses: actions/cache@main
@@ -71,31 +74,31 @@ jobs:
         id: installer-cached
         with:
           path: "installer.exe"
-          key: ${{ runner.os }}-qt56-installer
+          key: ${{ runner.os }}-qt56-installer-v2
 
       - name: Create QtAccount File
         if: steps.qt-cached.outputs.cache-hit != 'true'
         run: |
           mkdir C:/Users/runneradmin/AppData/Roaming/Qt/
-          curl https://gist.github.com/Neptune650/1086e0a3126be6a66580b71afcf8bd99/raw/797d8b90edf07ce88f265b38a573cc6b1fb45bfb/qtaccount.txt --output C:/Users/runneradmin/AppData/Roaming/Qt/qtaccount.ini
+          curl -sL https://gist.github.com/Neptune650/1086e0a3126be6a66580b71afcf8bd99/raw/797d8b90edf07ce88f265b38a573cc6b1fb45bfb/qtaccount.txt --output C:/Users/runneradmin/AppData/Roaming/Qt/qtaccount.ini
 
       - name: Download Qt Installer
         if: steps.installer-cached.outputs.cache-hit != 'true' && steps.qt-cached.outputs.cache-hit != 'true'
-        run: curl https://download.qt.io/new_archive/qt/5.6/5.6.3/qt-opensource-windows-x86-mingw492-5.6.3.exe --output installer.exe
+        run: curl -sL https://download.qt.io/new_archive/qt/5.6/5.6.3/qt-opensource-windows-x86-mingw492-5.6.3.exe --output installer.exe
 
       - name: Download Qt non-Interactive Script
         if: steps.qt-cached.outputs.cache-hit != 'true'
-        run: curl https://gist.githubusercontent.com/Neptune650/aa6c051abc17e7d9d609add7f6dfd16a/raw/074dedb7525c0ffc010b39871615b008c2efbcd6/qt-installer-noninteractive.qs --output nonInteractive.qs
+        run: curl -sL https://gist.githubusercontent.com/Neptune650/aa6c051abc17e7d9d609add7f6dfd16a/raw/074dedb7525c0ffc010b39871615b008c2efbcd6/qt-installer-noninteractive.qs --output nonInteractive.qs
 
       - name: Install Qt
         if: steps.qt-cached.outputs.cache-hit != 'true'
         shell: cmd
-        run: installer.exe -v --script nonInteractive.qs --silent
+        run: installer.exe --script nonInteractive.qs --silent
 
       - name: Setup CMake
         run: |
-          curl -L https://github.com/Kitware/CMake/releases/download/v3.30.4/cmake-3.30.4-windows-i386.zip -o cmake.zip
-          unzip cmake.zip
+          curl -sL https://github.com/Kitware/CMake/releases/download/v3.30.4/cmake-3.30.4-windows-i386.zip -o cmake.zip
+          unzip -q cmake.zip
 
       - name: Setup JDK
         uses: actions/setup-java@v4
@@ -108,23 +111,23 @@ jobs:
         run: |
           mkdir zlib
           cd zlib
-          C:\msys64\usr\bin\wget.exe -O zlib.zip https://downloads.sourceforge.net/project/gnuwin32/zlib/1.2.3/zlib-1.2.3-bin.zip
-          C:\msys64\usr\bin\wget.exe -O zliblibs.zip https://downloads.sourceforge.net/project/gnuwin32/zlib/1.2.3/zlib-1.2.3-lib.zip
-          unzip zlib.zip
-          unzip zliblibs.zip
+          curl -sL -o zlib.zip https://downloads.sourceforge.net/project/gnuwin32/zlib/1.2.3/zlib-1.2.3-bin.zip
+          curl -sL -o zliblibs.zip https://downloads.sourceforge.net/project/gnuwin32/zlib/1.2.3/zlib-1.2.3-lib.zip
+          unzip -q zlib.zip
+          unzip -q zliblibs.zip
 
       - name: Setup OpenSSL
         run: |
           mkdir OpenSSL
           cd OpenSSL
-          curl -L https://files.catbox.moe/ctwswu.dll -o libeay32.dll
-          curl -L https://files.catbox.moe/ie9e77.dll -o ssleay32.dll
+          curl -sL https://files.catbox.moe/ctwswu.dll -o libeay32.dll
+          curl -sL https://files.catbox.moe/ie9e77.dll -o ssleay32.dll
 
       - name: Build
         shell: cmd
         run: |
           for /f "tokens=*" %%n in ('powershell -NoLogo -Command "$(ls $pwd\cmake-*-windows-i386\bin).Fullname"') do @(set PATHCM=%%n)
-          set PATH=D:\Qt\5.6.3\mingw49_32\bin;D:\Qt\Tools\mingw492_32\bin;
+          set PATH=C:\Qt\5.6.3\mingw49_32\bin;C:\Qt\Tools\mingw492_32\bin;
           set PATH=%CD%\zlib;%CD%\zlib\bin;%CD%\zlib\lib;%CD%\zlib\include;%PATH%
           set PATH=%CD%\OpenSSL;%PATH%
           set PATH=%PATHCM%;%PATH%
@@ -134,9 +137,9 @@ jobs:
            -DCMAKE_C_COMPILER=gcc ^
            -DCMAKE_CXX_COMPILER=g++ ^
            -DCMAKE_BUILD_TYPE=Release ^
-           -DCMAKE_INSTALL_PREFIX:PATH="D:/UltimMC/UltimMC" ^
-           -DCMAKE_PREFIX_PATH="D:\Qt\5.6.3\mingw49_32" ^
-           -DQt5_DIR="D:\Qt\5.6.3\mingw49_32" ^
+           -DCMAKE_INSTALL_PREFIX:PATH="C:/LauncherMC" ^
+           -DCMAKE_PREFIX_PATH="C:\Qt\5.6.3\mingw49_32" ^
+           -DQt5_DIR="C:\Qt\5.6.3\mingw49_32" ^
            -DLauncher_LAYOUT=win-bundle ^
            -DLauncher_BUILD_PLATFORM=win32 ^
            -DLauncher_EMBED_SECRETS=On ^
@@ -147,7 +150,7 @@ jobs:
         shell: cmd
         run: |
           for /f "tokens=*" %%n in ('powershell -NoLogo -Command "$(ls $pwd\cmake-*-windows-i386\bin).Fullname"') do @(set PATHCM=%%n)
-          set PATH=D:\Qt\5.6.3\mingw49_32\bin;D:\Qt\Tools\mingw492_32\bin;
+          set PATH=C:\Qt\5.6.3\mingw49_32\bin;C:\Qt\Tools\mingw492_32\bin;
           set PATH=%CD%\zlib;%CD%\zlib\bin;%PATH%
           set PATH=%CD%\OpenSSL;%PATH%
           set PATH=%PATHCM%;%PATH%
@@ -158,11 +161,11 @@ jobs:
       - name: Copy OpenSSL
         shell: cmd
         run: |
-          cp OpenSSL/ssleay32.dll D:/UltimMC/UltimMC/ssleay32.dll
-          cp OpenSSL/libeay32.dll D:/UltimMC/UltimMC/libeay32.dll
+          cp OpenSSL/ssleay32.dll C:/LauncherMC/LauncherMC/ssleay32.dll
+          cp OpenSSL/libeay32.dll C:/LauncherMC/LauncherMC/libeay32.dll
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@main
         with:
           name: LauncherMC-win32
-          path: "D:/UltimMC"
+          path: "C:/LauncherMC"
