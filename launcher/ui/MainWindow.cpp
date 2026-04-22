@@ -58,11 +58,8 @@
 #include <BuildConfig.h>
 #include <net/NetJob.h>
 #include <net/Download.h>
-#include <news/NewsChecker.h>
-#include <notifications/NotificationChecker.h>
 #include <tools/BaseProfiler.h>
 #include <updater/DownloadTask.h>
-#include <updater/UpdateChecker.h>
 #include <DesktopServices.h>
 #include "InstanceWindow.h"
 #include "InstancePageProvider.h"
@@ -82,13 +79,11 @@
 #include "ui/dialogs/CopyInstanceDialog.h"
 #include "ui/dialogs/UpdateDialog.h"
 #include "ui/dialogs/EditAccountDialog.h"
-#include "ui/dialogs/NotificationDialog.h"
 #include "ui/dialogs/CreateShortcutDialog.h"
 #include "ui/dialogs/ExportInstanceDialog.h"
 #include "ui/dialogs/ModrinthExportDialog.h"
 
 #include "UpdateController.h"
-#include "KonamiCode.h"
 
 #include "InstanceImportTask.h"
 #include "InstanceCopyTask.h"
@@ -201,10 +196,7 @@ class MainWindow::Ui
 public:
     TranslatedAction actionAddInstance;
     //TranslatedAction actionRefresh;
-    TranslatedAction actionCheckUpdate;
     TranslatedAction actionSettings;
-    TranslatedAction actionPatreon;
-    TranslatedAction actionMoreNews;
     TranslatedAction actionManageAccounts;
     TranslatedAction actionLaunchInstance;
     TranslatedAction actionRenameInstance;
@@ -219,7 +211,6 @@ public:
     TranslatedAction actionViewSelectedModsFolder;
     TranslatedAction actionDeleteInstance;
     TranslatedAction actionConfig_Folder;
-    TranslatedAction actionCAT;
     TranslatedAction actionCopyInstance;
     TranslatedAction actionLaunchInstanceOffline;
     TranslatedAction actionScreenshots;
@@ -237,9 +228,6 @@ public:
 
     QMenu * helpMenu = nullptr;
     TranslatedToolButton helpMenuButton;
-    TranslatedAction actionReportBug;
-    TranslatedAction actionDISCORD;
-    TranslatedAction actionREDDIT;
     TranslatedAction actionAbout;
 
     QVector<TranslatedToolButton *> all_toolbuttons;
@@ -338,34 +326,10 @@ public:
         helpMenu = new QMenu(MainWindow);
         helpMenu->setToolTipsVisible(true);
 
-        if (!BuildConfig.BUG_TRACKER_URL.isEmpty()) {
-            actionReportBug = TranslatedAction(MainWindow);
-            actionReportBug->setObjectName(QStringLiteral("actionReportBug"));
-            actionReportBug->setIcon(APPLICATION->getThemedIcon("bug"));
-            actionReportBug.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Report a Bug"));
-            actionReportBug.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open the bug tracker to report a bug with %1."));
-            all_actions.append(&actionReportBug);
-            helpMenu->addAction(actionReportBug);
         }
 
-        if (!BuildConfig.DISCORD_URL.isEmpty()) {
-            actionDISCORD = TranslatedAction(MainWindow);
-            actionDISCORD->setObjectName(QStringLiteral("actionDISCORD"));
-            actionDISCORD->setIcon(APPLICATION->getThemedIcon("discord"));
-            actionDISCORD.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Discord"));
-            actionDISCORD.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open %1 discord voice chat."));
-            all_actions.append(&actionDISCORD);
-            helpMenu->addAction(actionDISCORD);
         }
 
-        if (!BuildConfig.SUBREDDIT_URL.isEmpty()) {
-            actionREDDIT = TranslatedAction(MainWindow);
-            actionREDDIT->setObjectName(QStringLiteral("actionREDDIT"));
-            actionREDDIT->setIcon(APPLICATION->getThemedIcon("reddit-alien"));
-            actionREDDIT.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Reddit"));
-            actionREDDIT.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open %1 subreddit."));
-            all_actions.append(&actionREDDIT);
-            helpMenu->addAction(actionREDDIT);
         }
 
         actionAbout = TranslatedAction(MainWindow);
@@ -392,34 +356,10 @@ public:
 
         if(BuildConfig.UPDATER_ENABLED)
         {
-            actionCheckUpdate = TranslatedAction(MainWindow);
-            actionCheckUpdate->setObjectName(QStringLiteral("actionCheckUpdate"));
-            actionCheckUpdate->setIcon(APPLICATION->getThemedIcon("checkupdate"));
-            actionCheckUpdate.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Update"));
-            actionCheckUpdate.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Check for new updates for %1."));
-            all_actions.append(&actionCheckUpdate);
-            mainToolBar->addAction(actionCheckUpdate);
         }
 
         mainToolBar->addSeparator();
 
-        actionPatreon = TranslatedAction(MainWindow);
-        actionPatreon->setObjectName(QStringLiteral("actionPatreon"));
-        actionPatreon->setIcon(APPLICATION->getThemedIcon("patreon"));
-        actionPatreon.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Support %1"));
-        actionPatreon.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open the %1 Patreon page."));
-        all_actions.append(&actionPatreon);
-        mainToolBar->addAction(actionPatreon);
-
-        actionCAT = TranslatedAction(MainWindow);
-        actionCAT->setObjectName(QStringLiteral("actionCAT"));
-        actionCAT->setCheckable(true);
-        actionCAT->setIcon(APPLICATION->getThemedIcon("cat"));
-        actionCAT.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Meow"));
-        actionCAT.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "It's a fluffy kitty :3"));
-        actionCAT->setPriority(QAction::LowPriority);
-        all_actions.append(&actionCAT);
-        mainToolBar->addAction(actionCAT);
 
         // profile menu and its actions
         actionManageAccounts = TranslatedAction(MainWindow);
@@ -452,13 +392,6 @@ public:
         newsToolBar->setFloatable(false);
         newsToolBar->setWindowTitle(QT_TRANSLATE_NOOP("MainWindow", "News Toolbar"));
 
-        actionMoreNews = TranslatedAction(MainWindow);
-        actionMoreNews->setObjectName(QStringLiteral("actionMoreNews"));
-        actionMoreNews->setIcon(APPLICATION->getThemedIcon("news"));
-        actionMoreNews.setTextId(QT_TRANSLATE_NOOP("MainWindow", "More news..."));
-        actionMoreNews.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open the development blog to read more news about %1."));
-        all_actions.append(&actionMoreNews);
-        newsToolBar->addAction(actionMoreNews);
 
         all_toolbars.append(&newsToolBar);
         MainWindow->addToolBar(Qt::BottomToolBarArea, newsToolBar);
@@ -706,132 +639,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new MainWindow
 
     // Konami Code
     {
-        secretEventFilter = new KonamiCode(this);
-        connect(secretEventFilter, &KonamiCode::triggered, this, &MainWindow::konamiTriggered);
-    }
+        (this);
+            }
 
     // Add the news label to the news toolbar.
     {
-        m_newsChecker.reset(new NewsChecker(APPLICATION->network(), BuildConfig.NEWS_RSS_URL));
-        newsLabel = new QToolButton();
-        newsLabel->setIcon(APPLICATION->getThemedIcon("news"));
-        newsLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-        newsLabel->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-        newsLabel->setFocusPolicy(Qt::NoFocus);
-        ui->newsToolBar->insertWidget(ui->actionMoreNews, newsLabel);
-        QObject::connect(newsLabel, &QAbstractButton::clicked, this, &MainWindow::newsButtonClicked);
-        QObject::connect(m_newsChecker.get(), &NewsChecker::newsLoaded, this, &MainWindow::updateNewsLabel);
-        updateNewsLabel();
-    }
-
-    // Create the instance list widget
-    {
-        view = new InstanceView(ui->centralWidget);
-
-        view->setSelectionMode(QAbstractItemView::SingleSelection);
-        // FIXME: leaks ListViewDelegate
-        view->setItemDelegate(new ListViewDelegate(this));
-        view->setFrameShape(QFrame::NoFrame);
-        // do not show ugly blue border on the mac
-        view->setAttribute(Qt::WA_MacShowFocusRect, false);
-
-        view->installEventFilter(this);
-        view->setContextMenuPolicy(Qt::CustomContextMenu);
-        connect(view, &QWidget::customContextMenuRequested, this, &MainWindow::showInstanceContextMenu);
-        connect(view, &InstanceView::droppedURLs, this, &MainWindow::droppedURLs, Qt::QueuedConnection);
-
-        proxymodel = new InstanceProxyModel(this);
-        proxymodel->setSourceModel(APPLICATION->instances().get());
-        proxymodel->sort(0);
-        connect(proxymodel, &InstanceProxyModel::dataChanged, this, &MainWindow::instanceDataChanged);
-
-        view->setModel(proxymodel);
-        view->setSourceOfGroupCollapseStatus([](const QString & groupName)->bool {
-            return APPLICATION->instances()->isGroupCollapsed(groupName);
-        });
-        connect(view, &InstanceView::groupStateChanged, APPLICATION->instances().get(), &InstanceList::on_GroupStateChanged);
-        ui->horizontalLayout->addWidget(view);
-    }
-    // The cat background
-    {
-        bool cat_enable = APPLICATION->settings()->get("TheCat").toBool();
-        ui->actionCAT->setChecked(cat_enable);
-        // NOTE: calling the operator like that is an ugly hack to appease ancient gcc...
-        connect(ui->actionCAT.operator->(), SIGNAL(toggled(bool)), SLOT(onCatToggled(bool)));
-        setCatBackground(cat_enable);
-    }
-    // start instance when double-clicked
-    connect(view, &InstanceView::activated, this, &MainWindow::instanceActivated);
-
-    // track the selection -- update the instance toolbar
-    connect(view->selectionModel(), &QItemSelectionModel::currentChanged, this, &MainWindow::instanceChanged);
-
-    // track icon changes and update the toolbar!
-    connect(APPLICATION->icons().get(), &IconList::iconUpdated, this, &MainWindow::iconUpdated);
-
-    // model reset -> selection is invalid. All the instance pointers are wrong.
-    connect(APPLICATION->instances().get(), &InstanceList::dataIsInvalid, this, &MainWindow::selectionBad);
-
-    // handle newly added instances
-    connect(APPLICATION->instances().get(), &InstanceList::instanceSelectRequest, this, &MainWindow::instanceSelectRequest);
-
-    // When the global settings page closes, we want to know about it and update our state
-    connect(APPLICATION, &Application::globalSettingsClosed, this, &MainWindow::globalSettingsClosed);
-
-    m_statusLeft = new QLabel(tr("No instance selected"), this);
-    m_statusCenter = new QLabel(tr("Total playtime: 0s"), this);
-    statusBar()->addPermanentWidget(m_statusLeft, 1);
-    statusBar()->addPermanentWidget(m_statusCenter, 0);
-
-    // Add "manage accounts" button, right align
-    QWidget *spacer = new QWidget();
-    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    ui->mainToolBar->addWidget(spacer);
-
-    accountMenu = new QMenu(this);
-
-    repopulateAccountsMenu();
-
-    accountMenuButton = new QToolButton(this);
-    accountMenuButton->setMenu(accountMenu);
-    accountMenuButton->setPopupMode(QToolButton::InstantPopup);
-    accountMenuButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    accountMenuButton->setIcon(APPLICATION->getThemedIcon("noaccount"));
-
-    QWidgetAction *accountMenuButtonAction = new QWidgetAction(this);
-    accountMenuButtonAction->setDefaultWidget(accountMenuButton);
-
-    ui->mainToolBar->addAction(accountMenuButtonAction);
-
-    // Update the menu when the active account changes.
-    // Shouldn't have to use lambdas here like this, but if I don't, the compiler throws a fit.
-    // Template hell sucks...
-    connect(
-        APPLICATION->accounts().get(),
-        &AccountList::defaultAccountChanged,
-        [this] {
-            defaultAccountChanged();
-        }
-    );
-    connect(
-        APPLICATION->accounts().get(),
-        &AccountList::listChanged,
-        [this]
-        {
-            repopulateAccountsMenu();
-        }
-    );
-
-    // Show initial account
-    defaultAccountChanged();
-
-    // TODO: refresh accounts here?
-    // auto accounts = APPLICATION->accounts();
-
-    // load the news
-    {
-        m_newsChecker->reloadNews();
-        updateNewsLabel();
+        
     }
 
 
@@ -841,7 +654,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new MainWindow
         updatesAllowedChanged(updatesAllowed);
 
         // NOTE: calling the operator like that is an ugly hack to appease ancient gcc...
-        connect(ui->actionCheckUpdate.operator->(), &QAction::triggered, this, &MainWindow::checkForUpdates);
 
         // set up the updater object.
         auto updater = APPLICATION->updateChecker();
@@ -855,12 +667,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new MainWindow
     }
 
     {
-        auto checker = new NotificationChecker();
-        checker->setNotificationsUrl(QUrl(BuildConfig.NOTIFICATION_URL));
-        checker->setApplicationPlatform(BuildConfig.BUILD_PLATFORM);
-        checker->setApplicationFullVersion(BuildConfig.FULL_VERSION_STR);
-        m_notificationChecker.reset(checker);
-        connect(m_notificationChecker.get(), &NotificationChecker::notificationCheckFinished, this, &MainWindow::notificationsChanged);
+        
+        
         checker->checkForNotifications();
     }
 
@@ -904,10 +712,6 @@ QMenu * MainWindow::createPopupMenu()
     return filteredMenu;
 }
 
-void MainWindow::konamiTriggered()
-{
-    qDebug() << "Super Secret Mode ACTIVATED!";
-}
 
 void MainWindow::showInstanceContextMenu(const QPoint &pos)
 {
@@ -1150,7 +954,6 @@ void MainWindow::updatesAllowedChanged(bool allowed)
     {
         return;
     }
-    ui->actionCheckUpdate->setEnabled(allowed);
 }
 
 /*
@@ -1234,16 +1037,13 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *ev)
     return QMainWindow::eventFilter(obj, ev);
 }
 
-void MainWindow::updateNewsLabel()
 {
-    if (m_newsChecker->isLoadingNews())
     {
         newsLabel->setText(tr("Loading news..."));
         newsLabel->setEnabled(false);
     }
     else
     {
-        QList<NewsEntryPtr> entries = m_newsChecker->getNewsEntries();
         if (entries.length() > 0)
         {
             newsLabel->setText(entries[0]->title);
@@ -1302,14 +1102,10 @@ QString intListToString(const QList<int> &list)
     }
     return slist.join(',');
 }
-void MainWindow::notificationsChanged()
 {
-    QList<NotificationChecker::NotificationEntry> entries = m_notificationChecker->notificationEntries();
-    QList<int> shownNotifications = stringToIntList(APPLICATION->settings()->get("ShownNotifications").toString());
-    for (auto it = entries.begin(); it != entries.end(); ++it)
+    QList<    for (auto it = entries.begin(); it != entries.end(); ++it)
     {
-        NotificationChecker::NotificationEntry entry = *it;
-        if (!shownNotifications.contains(entry.id))
+                if (!shownNotifications.contains(entry.id))
         {
             NotificationDialog dialog(entry, this);
             if (dialog.exec() == NotificationDialog::DontShowAgain)
@@ -1537,12 +1333,10 @@ void MainWindow::droppedURLs(QList<QUrl> urls)
 
 void MainWindow::on_actionREDDIT_triggered()
 {
-    DesktopServices::openUrl(QUrl(BuildConfig.SUBREDDIT_URL));
 }
 
 void MainWindow::on_actionDISCORD_triggered()
 {
-    DesktopServices::openUrl(QUrl(BuildConfig.DISCORD_URL));
 }
 
 void MainWindow::on_actionChangeInstIcon_triggered()
@@ -1727,7 +1521,6 @@ void MainWindow::on_actionManageAccounts_triggered()
 
 void MainWindow::on_actionReportBug_triggered()
 {
-    DesktopServices::openUrl(QUrl(BuildConfig.BUG_TRACKER_URL));
 }
 
 void MainWindow::on_actionPatreon_triggered()
@@ -1742,7 +1535,6 @@ void MainWindow::on_actionMoreNews_triggered()
 
 void MainWindow::newsButtonClicked()
 {
-    QList<NewsEntryPtr> entries = m_newsChecker->getNewsEntries();
     if (entries.count() > 0)
     {
         DesktopServices::openUrl(QUrl(entries[0]->link));

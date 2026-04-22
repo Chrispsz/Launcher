@@ -68,7 +68,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_NO_DEPRECATED_WARNINGS=Y")
 ##################################### Set Application options #####################################
 
 ######## Set URLs ########
-set(Launcher_NEWS_RSS_URL "https://multimc.org/rss.xml" CACHE STRING "URL to fetch Launcher's news RSS feed from.")
+set(Launcher_NEWS_RSS_URL "" CACHE STRING "URL to fetch Launcher's news RSS feed from.")
 
 ######## Set version numbers ########
 set(Launcher_VERSION_MAJOR    0)
@@ -88,16 +88,16 @@ set(Launcher_UPDATER_BASE "" CACHE STRING "Base URL for the updater.")
 set(Launcher_NOTIFICATION_URL "" CACHE STRING "URL for checking for notifications.")
 
 # The metadata server
-set(Launcher_META_URL "https://meta.multimc.org/v1/" CACHE STRING "URL to fetch Launcher's meta files from.")
+set(Launcher_META_URL "" CACHE STRING "URL to fetch Launcher's meta files from.")
 
 # paste.ee API key
-set(Launcher_PASTE_EE_API_KEY "utLvciUouSURFzfjPxLBf5W4ISsUX4pwBDF7N1AfZ" CACHE STRING "API key you can get from paste.ee when you register an account")
+set(Launcher_PASTE_EE_API_KEY "" CACHE STRING "API key you can get from paste.ee when you register an account")
 
 # Imgur API Client ID
-set(Launcher_IMGUR_CLIENT_ID "5b97b0713fba4a3" CACHE STRING "Client ID you can get from Imgur when you register an application")
+set(Launcher_IMGUR_CLIENT_ID "" CACHE STRING "Client ID you can get from Imgur when you register an application")
 
 # Google analytics ID
-set(Launcher_ANALYTICS_ID "UA-87731965-2" CACHE STRING "ID you can get from Google analytics")
+set(Launcher_ANALYTICS_ID "" CACHE STRING "ID you can get from Google analytics")
 
 # Bug tracker URL
 set(Launcher_BUG_TRACKER_URL "" CACHE STRING "URL for the bug tracker.")
@@ -120,7 +120,7 @@ option(Launcher_EMBED_SECRETS "Determines whether to embed secrets. Secrets are 
 
 # By using this key in your builds you accept the terms of use laid down in
 # https://docs.microsoft.com/en-us/legal/microsoft-identity-platform/terms-of-use
-set(Launcher_MSA_CLIENT_ID "f4404707-7bbe-4e40-80ba-85fb2bb825a1" CACHE STRING "Client ID you can get from Microsoft Identity Platform when you register an application")
+set(Launcher_MSA_CLIENT_ID "" CACHE STRING "Client ID you can get from Microsoft Identity Platform when you register an application")
 
 #### Check the current Git commit and branch
 include(GetGitRevisionDescription)
@@ -267,7 +267,7 @@ set(NBT_NAME Launcher_nbt++)
 set(NBT_DEST_DIR ${LIBRARY_DEST_DIR})
 add_subdirectory(libraries/libnbtplusplus)
 
-add_subdirectory(libraries/ganalytics) # google analytics library
+# DESATIVADO: add_subdirectory(libraries/ganalytics) # google analytics library
 add_subdirectory(libraries/systeminfo) # system information library
 add_subdirectory(libraries/hoedown) # markdown parser
 add_subdirectory(libraries/launcher) # java based launcher part for Minecraft

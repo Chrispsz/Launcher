@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "TranslationsModel.h"
 
 #include <QCoreApplication>
@@ -320,6 +321,16 @@ void TranslationsModel::reloadLocalFiles()
     std::sort(d->m_languages.begin(), d->m_languages.end(), [](const Language& a, const Language& b) {
         return a.key.compare(b.key) < 0;
     });
+
+    // LAUNCHERMC: Filtrar apenas pt_BR e en_US
+    d->m_languages.erase(
+        std::remove_if(d->m_languages.begin(), d->m_languages.end(),
+            [](const Language &l) {
+                return l.key != "pt_BR" && l.key != "en_US";
+            }),
+        d->m_languages.end()
+    );
+
     endInsertRows();
 }
 

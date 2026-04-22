@@ -27,14 +27,11 @@ class AccountList;
 class IconList;
 class QNetworkAccessManager;
 class JavaInstallList;
-class UpdateChecker;
 class BaseProfilerFactory;
 class BaseDetachedToolFactory;
 class TranslationsModel;
 class ITheme;
-class MCEditTool;
 class AuthServer;
-class GAnalytics;
 
 namespace Meta {
     class Index;
@@ -81,7 +78,7 @@ public:
 
     void setApplicationTheme(const QString& name, bool initial);
 
-    shared_qobject_ptr<UpdateChecker> updateChecker() {
+     {
         return m_updateChecker;
     }
 
@@ -98,7 +95,7 @@ public:
     }
 
     MCEditTool *mcedit() const {
-        return m_mcedit.get();
+        return ;
     }
 
     shared_qobject_ptr<AccountList> accounts() const {
@@ -139,13 +136,13 @@ public:
     InstanceWindow *showInstanceWindow(InstancePtr instance, QString page = QString());
     MainWindow *showMainWindow(bool minimized = false);
 
-    void updateIsRunning(bool running);
-    bool updatesAreAllowed();
+    
+    
 
     void ShowGlobalSettings(class QWidget * parent, QString open_page = QString());
 
 signals:
-    void updateAllowedChanged(bool status);
+    
     void globalSettingsAboutToOpen();
     void globalSettingsClosed();
 
@@ -165,7 +162,7 @@ private slots:
     void messageReceived(const QByteArray & message);
     void controllerSucceeded();
     void controllerFailed(const QString & error);
-    void analyticsSettingChanged(const Setting &setting, QVariant value);
+    const Setting &setting, QVariant value);
     void setupWizardFinished(int status);
 
 private:
@@ -185,7 +182,7 @@ private:
 
     shared_qobject_ptr<QNetworkAccessManager> m_network;
 
-    shared_qobject_ptr<UpdateChecker> m_updateChecker;
+    
     shared_qobject_ptr<AccountList> m_accounts;
 
     shared_qobject_ptr<HttpMetaCache> m_metacache;
@@ -198,7 +195,7 @@ private:
     std::shared_ptr<TranslationsModel> m_translations;
     std::shared_ptr<GenericPageProvider> m_globalSettingsProvider;
     std::map<QString, std::unique_ptr<ITheme>> m_themes;
-    std::unique_ptr<MCEditTool> m_mcedit;
+    
     std::shared_ptr<AuthServer> m_authserver;
     QString m_jarsPath;
     QSet<QString> m_features;
@@ -223,7 +220,7 @@ private:
     // main state variables
     size_t m_openWindows = 0;
     size_t m_runningInstances = 0;
-    bool m_updateRunning = false;
+    
 
     // main window, if any
     MainWindow * m_mainWindow = nullptr;
@@ -231,7 +228,7 @@ private:
     // peer launcher instance connector - used to implement single instance launcher and signalling
     LocalPeer * m_peerInstance = nullptr;
 
-    GAnalytics * m_analytics = nullptr;
+    
     SetupWizard * m_setupWizard = nullptr;
 public:
     QString m_instanceIdToLaunch;

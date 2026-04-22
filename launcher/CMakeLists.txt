@@ -122,8 +122,6 @@ set(NET_SOURCES
     net/NetAction.h
     net/NetJob.cpp
     net/NetJob.h
-    net/PasteUpload.cpp
-    net/PasteUpload.h
     net/Sink.h
     net/Validator.h
 )
@@ -150,43 +148,14 @@ set(LAUNCH_SOURCES
     launch/LogModel.h
 )
 
-# Old update system
+
 set(UPDATE_SOURCES
     updater/GoUpdate.h
     updater/GoUpdate.cpp
-    updater/UpdateChecker.h
-    updater/UpdateChecker.cpp
     updater/DownloadTask.h
     updater/DownloadTask.cpp
 )
 
-add_unit_test(UpdateChecker
-    SOURCES updater/UpdateChecker_test.cpp
-    LIBS Launcher_logic
-    DATA updater/testdata
-    )
-
-add_unit_test(DownloadTask
-    SOURCES updater/DownloadTask_test.cpp
-    LIBS Launcher_logic
-    DATA updater/testdata
-    )
-
-# Rarely used notifications
-set(NOTIFICATIONS_SOURCES
-    # Notifications - short warning messages
-    notifications/NotificationChecker.h
-    notifications/NotificationChecker.cpp
-)
-
-# Backend for the news bar... there's usually no news.
-set(NEWS_SOURCES
-    # News System
-    news/NewsChecker.h
-    news/NewsChecker.cpp
-    news/NewsEntry.h
-    news/NewsEntry.cpp
-)
 
 # Icon interface
 set(ICONS_SOURCES
@@ -221,45 +190,18 @@ set(MINECRAFT_SOURCES
 
     minecraft/auth/providers/BaseAuthProvider.h
     minecraft/auth/providers/LocalAuthProvider.h
-    minecraft/auth/providers/ElybyAuthProvider.h
-    minecraft/auth/providers/MojangAuthProvider.h
-    minecraft/auth/providers/MicrosoftAuthProvider.h
 
     minecraft/auth/flows/AuthFlow.cpp
     minecraft/auth/flows/AuthFlow.h
-    minecraft/auth/flows/Mojang.cpp
-    minecraft/auth/flows/Mojang.h
-    minecraft/auth/flows/MSA.cpp
-    minecraft/auth/flows/MSA.h
     minecraft/auth/flows/Local.cpp
     minecraft/auth/flows/Local.h
-    minecraft/auth/flows/Elyby.cpp
-    minecraft/auth/flows/Elyby.h
 
-    minecraft/auth/steps/EntitlementsStep.cpp
-    minecraft/auth/steps/EntitlementsStep.h
-    minecraft/auth/steps/ForcedMigrationStep.cpp
-    minecraft/auth/steps/ForcedMigrationStep.h
     minecraft/auth/steps/GetSkinStep.cpp
     minecraft/auth/steps/GetSkinStep.h
     minecraft/auth/steps/LauncherLoginStep.cpp
     minecraft/auth/steps/LauncherLoginStep.h
-    minecraft/auth/steps/MigrationEligibilityStep.cpp
-    minecraft/auth/steps/MigrationEligibilityStep.h
-    minecraft/auth/steps/MinecraftProfileStep.cpp
-    minecraft/auth/steps/MinecraftProfileStep.h
-    minecraft/auth/steps/ElybyProfileStep.cpp
-    minecraft/auth/steps/ElybyProfileStep.h
-    minecraft/auth/steps/MSAStep.cpp
-    minecraft/auth/steps/MSAStep.h
     minecraft/auth/steps/LocalStep.cpp
     minecraft/auth/steps/LocalStep.h
-    minecraft/auth/steps/XboxAuthorizationStep.cpp
-    minecraft/auth/steps/XboxAuthorizationStep.h
-    minecraft/auth/steps/XboxProfileStep.cpp
-    minecraft/auth/steps/XboxProfileStep.h
-    minecraft/auth/steps/XboxUserStep.cpp
-    minecraft/auth/steps/XboxUserStep.h
     minecraft/auth/steps/YggdrasilStep.cpp
     minecraft/auth/steps/YggdrasilStep.h
 
@@ -421,13 +363,7 @@ add_unit_test(ParseUtils
     )
 
 # the screenshots feature
-set(SCREENSHOTS_SOURCES
-    screenshots/Screenshot.h
-    screenshots/ImgurUpload.h
-    screenshots/ImgurUpload.cpp
-    screenshots/ImgurAlbumCreation.h
-    screenshots/ImgurAlbumCreation.cpp
-)
+
 
 set(TASKS_SOURCES
     # Tasks
@@ -485,19 +421,6 @@ set(TRANSLATIONS_SOURCES
     translations/POTranslator.cpp
 )
 
-set(TOOLS_SOURCES
-    # Tools
-    tools/BaseExternalTool.cpp
-    tools/BaseExternalTool.h
-    tools/BaseProfiler.cpp
-    tools/BaseProfiler.h
-    tools/JProfiler.cpp
-    tools/JProfiler.h
-    tools/JVisualVM.cpp
-    tools/JVisualVM.h
-    tools/MCEditTool.cpp
-    tools/MCEditTool.h
-)
 
 set(META_SOURCES
     # Metadata sources
@@ -524,31 +447,10 @@ set(FTB_SOURCES
     modplatform/legacy_ftb/PackHelpers.h
 )
 
-set(TECHNIC_SOURCES
-    modplatform/technic/SingleZipPackInstallTask.h
-    modplatform/technic/SingleZipPackInstallTask.cpp
-    modplatform/technic/SolderPackInstallTask.h
-    modplatform/technic/SolderPackInstallTask.cpp
-    modplatform/technic/SolderPackManifest.h
-    modplatform/technic/SolderPackManifest.cpp
-    modplatform/technic/TechnicPackProcessor.h
-    modplatform/technic/TechnicPackProcessor.cpp
-)
-
-set(ATLAUNCHER_SOURCES
-    modplatform/atlauncher/ATLPackIndex.cpp
-    modplatform/atlauncher/ATLPackIndex.h
-    modplatform/atlauncher/ATLPackInstallTask.cpp
-    modplatform/atlauncher/ATLPackInstallTask.h
-    modplatform/atlauncher/ATLPackManifest.cpp
-    modplatform/atlauncher/ATLPackManifest.h
-)
 
 set(MODRINTH_SOURCES
     modplatform/modrinth/ModrinthPackManifest.cpp
     modplatform/modrinth/ModrinthPackManifest.h
-    modplatform/modrinth/ModrinthInstanceExportTask.h
-    modplatform/modrinth/ModrinthInstanceExportTask.cpp
     modplatform/modrinth/ModrinthHashLookupRequest.h
     modplatform/modrinth/ModrinthHashLookupRequest.cpp
 )
@@ -591,8 +493,6 @@ SET(LAUNCHER_SOURCES
     # Application base
     Application.h
     Application.cpp
-    UpdateController.cpp
-    UpdateController.h
     ApplicationMessage.h
     ApplicationMessage.cpp
 
@@ -604,11 +504,8 @@ SET(LAUNCHER_SOURCES
     HoeDown.h
 
     # Super secret!
-    KonamiCode.h
-    KonamiCode.cpp
 
     # Bundled resources
-    resources/backgrounds/backgrounds.qrc
     resources/multimc/multimc.qrc
     resources/pe_dark/pe_dark.qrc
     resources/pe_light/pe_light.qrc
@@ -637,14 +534,10 @@ SET(LAUNCHER_SOURCES
     ui/InstanceWindow.cpp
 
     # FIXME: maybe find a better home for this.
-    SkinUtils.cpp
-    SkinUtils.h
 
     # GUI - setup wizard
     ui/setupwizard/SetupWizard.h
     ui/setupwizard/SetupWizard.cpp
-    ui/setupwizard/AnalyticsWizardPage.cpp
-    ui/setupwizard/AnalyticsWizardPage.h
     ui/setupwizard/BaseWizardPage.h
     ui/setupwizard/JavaWizardPage.cpp
     ui/setupwizard/JavaWizardPage.h
@@ -652,12 +545,8 @@ SET(LAUNCHER_SOURCES
     ui/setupwizard/LanguageWizardPage.h
 
     # GUI - themes
-    ui/themes/FusionTheme.cpp
-    ui/themes/FusionTheme.h
     ui/themes/BrightTheme.cpp
     ui/themes/BrightTheme.h
-    ui/themes/CustomTheme.cpp
-    ui/themes/CustomTheme.h
     ui/themes/DarkTheme.cpp
     ui/themes/DarkTheme.h
     ui/themes/ITheme.cpp
@@ -697,14 +586,10 @@ SET(LAUNCHER_SOURCES
     ui/pages/instance/LogPage.h
     ui/pages/instance/InstanceSettingsPage.cpp
     ui/pages/instance/InstanceSettingsPage.h
-    ui/pages/instance/ScreenshotsPage.cpp
-    ui/pages/instance/ScreenshotsPage.h
     ui/pages/instance/OtherLogsPage.cpp
     ui/pages/instance/OtherLogsPage.h
     ui/pages/instance/ServersPage.cpp
     ui/pages/instance/ServersPage.h
-    ui/pages/instance/LegacyUpgradePage.cpp
-    ui/pages/instance/LegacyUpgradePage.h
     ui/pages/instance/WorldListPage.cpp
     ui/pages/instance/WorldListPage.h
 
@@ -713,45 +598,17 @@ SET(LAUNCHER_SOURCES
     ui/pages/global/AccountListPage.h
     ui/pages/global/CustomCommandsPage.cpp
     ui/pages/global/CustomCommandsPage.h
-    ui/pages/global/ExternalToolsPage.cpp
-    ui/pages/global/ExternalToolsPage.h
     ui/pages/global/JavaPage.cpp
     ui/pages/global/JavaPage.h
-    ui/pages/global/LanguagePage.cpp
-    ui/pages/global/LanguagePage.h
     ui/pages/global/MinecraftPage.cpp
     ui/pages/global/MinecraftPage.h
     ui/pages/global/LauncherPage.cpp
     ui/pages/global/LauncherPage.h
-    ui/pages/global/ProxyPage.cpp
-    ui/pages/global/ProxyPage.h
-    ui/pages/global/PasteEEPage.cpp
-    ui/pages/global/PasteEEPage.h
 
     # GUI - platform pages
     ui/pages/modplatform/VanillaPage.cpp
     ui/pages/modplatform/VanillaPage.h
 
-    ui/pages/modplatform/atlauncher/AtlFilterModel.cpp
-    ui/pages/modplatform/atlauncher/AtlFilterModel.h
-    ui/pages/modplatform/atlauncher/AtlListModel.cpp
-    ui/pages/modplatform/atlauncher/AtlListModel.h
-    ui/pages/modplatform/atlauncher/AtlOptionalModDialog.cpp
-    ui/pages/modplatform/atlauncher/AtlOptionalModDialog.h
-    ui/pages/modplatform/atlauncher/AtlPage.cpp
-    ui/pages/modplatform/atlauncher/AtlPage.h
-
-    ui/pages/modplatform/legacy_ftb/Page.cpp
-    ui/pages/modplatform/legacy_ftb/Page.h
-    ui/pages/modplatform/legacy_ftb/ListModel.h
-    ui/pages/modplatform/legacy_ftb/ListModel.cpp
-
-    ui/pages/modplatform/import_ftb/PackInstallTask.cpp
-    ui/pages/modplatform/import_ftb/PackInstallTask.h
-    ui/pages/modplatform/import_ftb/Model.cpp
-    ui/pages/modplatform/import_ftb/Model.h
-    ui/pages/modplatform/import_ftb/FTBAPage.cpp
-    ui/pages/modplatform/import_ftb/FTBAPage.h
 
     ui/pages/modplatform/modrinth/ModrinthData.h
     ui/pages/modplatform/modrinth/ModrinthModel.cpp
@@ -761,10 +618,6 @@ SET(LAUNCHER_SOURCES
     ui/pages/modplatform/modrinth/ModrinthPage.cpp
     ui/pages/modplatform/modrinth/ModrinthPage.h
 
-    ui/pages/modplatform/technic/TechnicModel.cpp
-    ui/pages/modplatform/technic/TechnicModel.h
-    ui/pages/modplatform/technic/TechnicPage.cpp
-    ui/pages/modplatform/technic/TechnicPage.h
 
     ui/pages/modplatform/ImportPage.cpp
     ui/pages/modplatform/ImportPage.h
@@ -772,10 +625,6 @@ SET(LAUNCHER_SOURCES
     # GUI - dialogs
     ui/dialogs/AboutDialog.cpp
     ui/dialogs/AboutDialog.h
-    ui/dialogs/ProfileSelectDialog.cpp
-    ui/dialogs/ProfileSelectDialog.h
-    ui/dialogs/ProfileSetupDialog.cpp
-    ui/dialogs/ProfileSetupDialog.h
     ui/dialogs/CopyInstanceDialog.cpp
     ui/dialogs/CopyInstanceDialog.h
     ui/dialogs/CustomMessageBox.cpp
@@ -786,32 +635,18 @@ SET(LAUNCHER_SOURCES
     ui/dialogs/ExportInstanceDialog.h
     ui/dialogs/IconPickerDialog.cpp
     ui/dialogs/IconPickerDialog.h
-    ui/dialogs/LoginDialog.cpp
-    ui/dialogs/LoginDialog.h
-    ui/dialogs/MSALoginDialog.cpp
-    ui/dialogs/MSALoginDialog.h
-    ui/dialogs/LocalLoginDialog.cpp
-    ui/dialogs/LocalLoginDialog.h
     ui/dialogs/NewComponentDialog.cpp
     ui/dialogs/NewComponentDialog.h
     ui/dialogs/NewInstanceDialog.cpp
     ui/dialogs/NewInstanceDialog.h
-    ui/dialogs/NotificationDialog.cpp
-    ui/dialogs/NotificationDialog.h
     ui/pagedialog/PageDialog.cpp
     ui/pagedialog/PageDialog.h
     ui/dialogs/ProgressDialog.cpp
     ui/dialogs/ProgressDialog.h
-    ui/dialogs/UpdateDialog.cpp
-    ui/dialogs/UpdateDialog.h
     ui/dialogs/VersionSelectDialog.cpp
     ui/dialogs/VersionSelectDialog.h
-    ui/dialogs/SkinUploadDialog.cpp
-    ui/dialogs/SkinUploadDialog.h
     ui/dialogs/CreateShortcutDialog.cpp
     ui/dialogs/CreateShortcutDialog.h
-    ui/dialogs/ModrinthExportDialog.cpp
-    ui/dialogs/ModrinthExportDialog.h
 
     # GUI - widgets
     ui/widgets/Common.cpp
@@ -868,10 +703,7 @@ qt5_wrap_ui(LAUNCHER_UI
     ui/pages/global/AccountListPage.ui
     ui/pages/global/JavaPage.ui
     ui/pages/global/LauncherPage.ui
-    ui/pages/global/PasteEEPage.ui
-    ui/pages/global/ProxyPage.ui
     ui/pages/global/MinecraftPage.ui
-    ui/pages/global/ExternalToolsPage.ui
     ui/pages/instance/ModFolderPage.ui
     ui/pages/instance/NotesPage.ui
     ui/pages/instance/LogPage.ui
@@ -881,41 +713,24 @@ qt5_wrap_ui(LAUNCHER_UI
     ui/pages/instance/InstanceSettingsPage.ui
     ui/pages/instance/VersionPage.ui
     ui/pages/instance/WorldListPage.ui
-    ui/pages/instance/LegacyUpgradePage.ui
-    ui/pages/instance/ScreenshotsPage.ui
-    ui/pages/modplatform/atlauncher/AtlOptionalModDialog.ui
-    ui/pages/modplatform/atlauncher/AtlPage.ui
     ui/pages/modplatform/VanillaPage.ui
-    ui/pages/modplatform/legacy_ftb/Page.ui
-    ui/pages/modplatform/import_ftb/FTBAPage.ui
     ui/pages/modplatform/ImportPage.ui
     ui/pages/modplatform/modrinth/ModrinthPage.ui
-    ui/pages/modplatform/technic/TechnicPage.ui
     ui/widgets/InstanceCardWidget.ui
     ui/widgets/CustomCommands.ui
     ui/widgets/MCModInfoFrame.ui
     ui/dialogs/CopyInstanceDialog.ui
-    ui/dialogs/ProfileSetupDialog.ui
     ui/dialogs/ProgressDialog.ui
     ui/dialogs/NewInstanceDialog.ui
-    ui/dialogs/NotificationDialog.ui
-    ui/dialogs/UpdateDialog.ui
     ui/dialogs/NewComponentDialog.ui
-    ui/dialogs/ProfileSelectDialog.ui
-    ui/dialogs/SkinUploadDialog.ui
     ui/dialogs/ExportInstanceDialog.ui
     ui/dialogs/IconPickerDialog.ui
-    ui/dialogs/MSALoginDialog.ui
     ui/dialogs/AboutDialog.ui
-    ui/dialogs/LocalLoginDialog.ui
-    ui/dialogs/LoginDialog.ui
     ui/dialogs/EditAccountDialog.ui
     ui/dialogs/CreateShortcutDialog.ui
-    ui/dialogs/ModrinthExportDialog.ui
 )
 
 qt5_add_resources(LAUNCHER_RESOURCES
-    resources/backgrounds/backgrounds.qrc
     resources/multimc/multimc.qrc
     resources/pe_dark/pe_dark.qrc
     resources/pe_light/pe_light.qrc

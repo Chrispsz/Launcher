@@ -1,8 +1,5 @@
 #include "AuthProviders.h"
-#include "providers/ElybyAuthProvider.h"
 #include "providers/LocalAuthProvider.h"
-#include "providers/MojangAuthProvider.h"
-#include "providers/MicrosoftAuthProvider.h"
 #include "../../AuthServer.h"
 
 #define REGISTER_AUTH_PROVIDER(Provider)          \
@@ -18,10 +15,7 @@ namespace AuthProviders
 
     void load(std::shared_ptr<AuthServer> authserver)
     {
-        REGISTER_AUTH_PROVIDER(ElybyAuthProvider);
         REGISTER_AUTH_PROVIDER(LocalAuthProvider);
-        REGISTER_AUTH_PROVIDER(MojangAuthProvider);
-        REGISTER_AUTH_PROVIDER(MicrosoftAuthProvider);
     }
 
     AuthProviderPtr lookup(QString id)

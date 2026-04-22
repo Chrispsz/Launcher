@@ -10,23 +10,17 @@
 #include "ui/pages/global/LauncherPage.h"
 #include "ui/pages/global/MinecraftPage.h"
 #include "ui/pages/global/JavaPage.h"
-#include "ui/pages/global/LanguagePage.h"
-#include "ui/pages/global/ProxyPage.h"
-#include "ui/pages/global/ExternalToolsPage.h"
 #include "ui/pages/global/AccountListPage.h"
-#include "ui/pages/global/PasteEEPage.h"
 #include "ui/pages/global/CustomCommandsPage.h"
 
 #include "ui/themes/ITheme.h"
 #include "ui/themes/SystemTheme.h"
 #include "ui/themes/DarkTheme.h"
 #include "ui/themes/BrightTheme.h"
-#include "ui/themes/CustomTheme.h"
 
 #include "ui/setupwizard/SetupWizard.h"
 #include "ui/setupwizard/LanguageWizardPage.h"
 #include "ui/setupwizard/JavaWizardPage.h"
-#include "ui/setupwizard/AnalyticsWizardPage.h"
 
 #include "ui/dialogs/CustomMessageBox.h"
 
@@ -56,11 +50,7 @@
 
 #include "java/JavaUtils.h"
 
-#include "updater/UpdateChecker.h"
 
-#include "tools/JProfiler.h"
-#include "tools/JVisualVM.h"
-#include "tools/MCEditTool.h"
 #include "AuthServer.h"
 
 #include <xdgicon.h>
@@ -657,81 +647,89 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     {
         m_settings.reset(new INISettingsObject(BuildConfig.LAUNCHER_CONFIGFILE, this));
         // Updates
-        m_settings->registerSetting("AutoUpdate", true);
+            // ═══════════════════════════════════════════
+    //  LAUNCHERMC — CONFIGURAÇÕES PADRÃO
+    // ═══════════════════════════════════════════
 
-        // Theming
-        m_settings->registerSetting("IconTheme", QString("multimc"));
-        m_settings->registerSetting("ApplicationTheme", QString("system"));
+    // ── IDIOMA (só PT-BR e EN) ──
+    QLocale::setDefault(QLocale("pt_BR"));
+    m_settings->registerSetting("Language", "pt_BR");
 
-        // Notifications
-        m_settings->registerSetting("ShownNotifications", QString());
+    // ── TEMA ──
+    m_settings->registerSetting("IconTheme", QString("multimc"));
+    m_settings->registerSetting("ApplicationTheme", QString("dark"));
+    m_settings->registerSetting("ShownNotifications", QString());
+    m_settings->registerSetting("LastUsedGroupForNewInstance", QString());
 
-        // Remembered state
-        m_settings->registerSetting("LastUsedGroupForNewInstance", QString());
+    // ── CONSOLE ──
+    m_settings->registerSetting("ConsoleFont", resolvedDefaultMonospace);
+    m_settings->registerSetting("ConsoleFontSize", defaultSize);
+    m_settings->registerSetting("ConsoleMaxLines", 50000);
+    m_settings->registerSetting("ConsoleOverflowStop", true);
 
-        QString defaultMonospace;
-        int defaultSize = 11;
-#ifdef Q_OS_WIN32
-        defaultMonospace = "Courier";
-        defaultSize = 10;
-#elif defined(Q_OS_MAC)
-        defaultMonospace = "Menlo";
-#else
-        defaultMonospace = "Monospace";
-#endif
+    // ── INSTÂNCIAS ──
+    m_settings->registerSetting("InstanceDir", "instances");
+    m_settings->registerSetting({"CentralModsDir", "ModsDir"}, "mods");
+    m_settings->registerSetting("IconsDir", "icons");
+    m_settings->registerSetting("JsonEditor", QString());
 
-        // resolve the font so the default actually matches
-        QFont consoleFont;
-        consoleFont.setFamily(defaultMonospace);
-        consoleFont.setStyleHint(QFont::Monospace);
-        consoleFont.setFixedPitch(true);
-        QFontInfo consoleFontInfo(consoleFont);
-        QString resolvedDefaultMonospace = consoleFontInfo.family();
-        QFont resolvedFont(resolvedDefaultMonospace);
-        qDebug() << "Detected default console font:" << resolvedDefaultMonospace
-            << ", substitutions:" << resolvedFont.substitutions().join(',');
+    // ── CONSOLE DO LAUNCHER ──
+    m_settings->registerSetting("ShowConsole", false);
+    m_settings->registerSetting("AutoCloseConsole", true);
+    m_settings->registerSetting("ShowConsoleOnError", true);
+    m_settings->registerSetting("LogPrePostOutput", false);
 
-        m_settings->registerSetting("ConsoleFont", resolvedDefaultMonospace);
-        m_settings->registerSetting("ConsoleFontSize", defaultSize);
-        m_settings->registerSetting("ConsoleMaxLines", 100000);
-        m_settings->registerSetting("ConsoleOverflowStop", true);
+    // ── JANELA DO MINECRAFT ──
+    m_settings->registerSetting({"LaunchMaximized", "MCWindowMaximize"}, false);
+    m_settings->registerSetting({"MinecraftWinWidth", "MCWindowWidth"}, 1280);
+    m_settings->registerSetting({"MinecraftWinHeight", "MCWindowHeight"}, 720);
 
-        // Folders
-        m_settings->registerSetting("InstanceDir", "instances");
-        m_settings->registerSetting({"CentralModsDir", "ModsDir"}, "mods");
-        m_settings->registerSetting("IconsDir", "icons");
+    // ── JAVA / MEMÓRIA (OTIMIZADO) ──
+    m_settings->registerSetting({"MinMemAlloc", "MinMemoryAlloc"}, 2048);
+    m_settings->registerSetting({"MaxMemAlloc", "MaxMemoryAlloc"}, 4096);
+    m_settings->registerSetting("PermGen", 256);
+    m_settings->registerSetting("JavaPath", "");
+    m_settings->registerSetting("JavaTimestamp", 0);
+    m_settings->registerSetting("JavaArchitecture", "");
+    m_settings->registerSetting("JavaVersion", "");
+    m_settings->registerSetting("JavaVendor", "");
+    m_settings->registerSetting("LastHostname", "");
 
-        // Editors
-        m_settings->registerSetting("JsonEditor", QString());
+    // ── JVM ARGS (FLAGS AIKAR) ──
+    m_settings->registerSetting("JvmArgs",
+        "-XX:+UseG1GC"
+        " -XX:+ParallelRefProcEnabled"
+        " -XX:MaxGCPauseMillis=200"
+        " -XX:+UnlockExperimentalVMOptions"
+        " -XX:+DisableExplicitGC"
+        " -XX:+AlwaysPreTouch"
+        " -XX:G1NewSizePercent=30"
+        " -XX:G1MaxNewSizePercent=40"
+        " -XX:G1HeapRegionSize=8M"
+        " -XX:G1ReservePercent=20"
+        " -XX:G1HeapWastePercent=5"
+        " -XX:G1MixedGCCountTarget=4"
+        " -XX:InitiatingHeapOccupancyPercent=15"
+        " -XX:G1MixedGCLiveThresholdPercent=90"
+        " -XX:G1RSetUpdatingPauseTimePercent=5"
+        " -XX:SurvivorRatio=32"
+        " -XX:+PerfDisableSharedMem"
+        " -XX:MaxTenuringThreshold=1"
+        " -Dusing.aikars.flags=https://mcflags.emc.gs"
+        " -Daikars.new.flags=true"
+    );
 
-        // Language
-        m_settings->registerSetting("Language", QString());
+    // ── MINECRAFT PERFORMANCE ──
+    m_settings->registerSetting("UseNativeOpenAL", true);
+    m_settings->registerSetting("UseNativeGLFW", true);
 
-        // Console
-        m_settings->registerSetting("ShowConsole", false);
-        m_settings->registerSetting("AutoCloseConsole", false);
-        m_settings->registerSetting("ShowConsoleOnError", true);
-        m_settings->registerSetting("LogPrePostOutput", true);
+    // ── GAME TIME ──
+    m_settings->registerSetting("ShowGameTime", true);
+    m_settings->registerSetting("ShowGlobalGameTime", false);
+    m_settings->registerSetting("RecordGameTime", true);
+    m_settings->registerSetting("ShowGameTimeHours", false);
 
-        // Window Size
-        m_settings->registerSetting({"LaunchMaximized", "MCWindowMaximize"}, false);
-        m_settings->registerSetting({"MinecraftWinWidth", "MCWindowWidth"}, 854);
-        m_settings->registerSetting({"MinecraftWinHeight", "MCWindowHeight"}, 480);
-
-        // Proxy Settings
-        m_settings->registerSetting("ProxyType", "None");
-        m_settings->registerSetting({"ProxyAddr", "ProxyHostName"}, "127.0.0.1");
-        m_settings->registerSetting("ProxyPort", 8080);
-        m_settings->registerSetting({"ProxyUser", "ProxyUsername"}, "");
-        m_settings->registerSetting({"ProxyPass", "ProxyPassword"}, "");
-
-        // Memory
-        m_settings->registerSetting({"MinMemAlloc", "MinMemoryAlloc"}, 512);
-        m_settings->registerSetting({"MaxMemAlloc", "MaxMemoryAlloc"}, 1024);
-        m_settings->registerSetting("PermGen", 128);
-
-        // Java Settings
-        m_settings->registerSetting("JavaPath", "");
+m_settings->registerSetting("JavaPath", "");
         m_settings->registerSetting("JavaTimestamp", 0);
         m_settings->registerSetting("JavaArchitecture", "");
         m_settings->registerSetting("JavaVersion", "");
@@ -800,12 +798,8 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
             m_globalSettingsProvider->addPage<LauncherPage>();
             m_globalSettingsProvider->addPage<MinecraftPage>();
             m_globalSettingsProvider->addPage<JavaPage>();
-            m_globalSettingsProvider->addPage<LanguagePage>();
             m_globalSettingsProvider->addPage<CustomCommandsPage>();
-            m_globalSettingsProvider->addPage<ProxyPage>();
-            m_globalSettingsProvider->addPage<ExternalToolsPage>();
             m_globalSettingsProvider->addPage<AccountListPage>();
-            m_globalSettingsProvider->addPage<PasteEEPage>();
         }
         qDebug() << "<> Settings loaded.";
     }
@@ -822,7 +816,6 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         int port = settings()->get("ProxyPort").value<qint16>();
         QString user = settings()->get("ProxyUser").toString();
         QString pass = settings()->get("ProxyPass").toString();
-        updateProxySettings(proxyTypeStr, addr, port, user, pass);
         qDebug() << "<> Network done.";
     }
 
@@ -883,7 +876,6 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         insertTheme(new SystemTheme());
         insertTheme(darkTheme);
         insertTheme(new BrightTheme());
-        insertTheme(new CustomTheme(darkTheme, "custom"));
         qDebug() << "<> Widget themes initialized.";
     }
 
@@ -962,7 +954,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
 
     // Create the MCEdit thing... why is this here?
     {
-        m_mcedit.reset(new MCEditTool(m_settings));
+        
     }
 
     connect(this, &Application::aboutToQuit, [this](){
@@ -996,7 +988,6 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         }
 
         auto analyticsSetting = m_settings->getSetting("Analytics");
-        connect(analyticsSetting.get(), &Setting::SettingChanged, this, &Application::analyticsSettingChanged);
         QString clientID = m_settings->get("AnalyticsClientID").toString();
         if(clientID.isEmpty())
         {
@@ -1005,7 +996,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
             clientID.remove(QLatin1Char('}'));
             m_settings->set("AnalyticsClientID", clientID);
         }
-        m_analytics = new GAnalytics(BuildConfig.ANALYTICS_ID, clientID, analyticsVersion, this);
+        
         m_analytics->setLogLevel(GAnalytics::Debug);
         m_analytics->setAnonymizeIPs(true);
         // FIXME: the ganalytics library has no idea about our fancy shared pointers...
@@ -1261,7 +1252,6 @@ void Application::messageReceived(const QByteArray& message)
     }
 }
 
-void Application::analyticsSettingChanged(const Setting&, QVariant value)
 {
     if(!m_analytics)
         return;
@@ -1454,7 +1444,6 @@ bool Application::updatesAreAllowed()
     return m_runningInstances == 0;
 }
 
-void Application::updateIsRunning(bool running)
 {
     m_updateRunning = running;
 }
@@ -1665,7 +1654,6 @@ QString Application::msaClientId() const {
     return Secrets::getMSAClientID('-');
 }
 
-void Application::updateProxySettings(QString proxyTypeStr, QString addr, int port, QString user, QString password)
 {
     // Set the application proxy settings.
     if (proxyTypeStr == "SOCKS5")
