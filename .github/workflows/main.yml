@@ -6,8 +6,11 @@ on:
   pull_request:
     branches: [ develop ]
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 1 * *"
+
+# Cancel in-progress runs for the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-linux:
@@ -21,29 +24,17 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32
-          sudo add-apt-repository 'deb http://dk.archive.ubuntu.com/ubuntu/ bionic main'
-          sudo add-apt-repository 'deb http://dk.archive.ubuntu.com/ubuntu/ bionic universe'
-          sudo apt update
-          sudo apt install libgl1-mesa-dev qttools5-dev g++-5 gcc-5
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev qttools5-dev g++
 
       - name: Build
         run: |
-          export JAVA_HOME=$JAVA_HOME_8_X64
           mkdir build
           cd build
           cmake \
-           -DCMAKE_C_COMPILER=/usr/bin/gcc-5 \
-           -DCMAKE_CXX_COMPILER=/usr/bin/g++-5 \
            -DCMAKE_BUILD_TYPE=Release \
-           -DLauncher_NOTIFICATION_URL:STRING=https://files.multimc.org/notifications.json \
-           -DCMAKE_INSTALL_PREFIX:PATH=/home/runner/UltimMC/UltimMC \
-           -DLauncher_UPDATER_BASE=https://files.multimc.org/update/ \
-           -DLauncher_PASTE_EE_API_KEY:STRING=utLvciUouSURFzfjPxLBf5W4ISsUX4pwBDF7N1AfZ \
-           -DLauncher_ANALYTICS_ID:STRING=UA-87731965-2 \
            -DLauncher_LAYOUT=lin-nodeps \
            -DLauncher_BUILD_PLATFORM=lin64 \
-           -DLauncher_BUG_TRACKER_URL=https://github.com/UltimMC/Launcher/issues \
            -DLauncher_EMBED_SECRETS=On \
            $GITHUB_WORKSPACE
 
@@ -52,24 +43,11 @@ jobs:
           cd build
           make -j$(nproc)
 
-      - name: Test
-        run: |
-          cd build
-          make test
-          cmake -E remove_directory "/home/runner/UltimMC/UltimMC"
-
-      - name: Install
-        run: |
-          cd build
-          make install
-          chmod +x /home/runner/UltimMC/UltimMC/UltimMC
-          chmod +x /home/runner/UltimMC/UltimMC/bin/UltimMC
-
       - name: Upload Artifacts
         uses: actions/upload-artifact@main
         with:
-          name: mmc-cracked-lin64
-          path: /home/runner/UltimMC
+          name: LauncherMC-linux64
+          path: /home/runner/work/Launcher/build
 
   build-windows:
     name: build-windows
@@ -144,7 +122,6 @@ jobs:
 
       - name: Build
         shell: cmd
-        if: steps.build-cached.outputs.cache-hit != 'true'
         run: |
           for /f "tokens=*" %%n in ('powershell -NoLogo -Command "$(ls $pwd\cmake-*-windows-i386\bin).Fullname"') do @(set PATHCM=%%n)
           set PATH=D:\Qt\5.6.3\mingw49_32\bin;D:\Qt\Tools\mingw492_32\bin;
@@ -157,16 +134,11 @@ jobs:
            -DCMAKE_C_COMPILER=gcc ^
            -DCMAKE_CXX_COMPILER=g++ ^
            -DCMAKE_BUILD_TYPE=Release ^
-           -DLauncher_NOTIFICATION_URL:STRING=https://files.multimc.org/notifications.json ^
            -DCMAKE_INSTALL_PREFIX:PATH="D:/UltimMC/UltimMC" ^
            -DCMAKE_PREFIX_PATH="D:\Qt\5.6.3\mingw49_32" ^
            -DQt5_DIR="D:\Qt\5.6.3\mingw49_32" ^
-           -DLauncher_UPDATER_BASE=https://files.multimc.org/update/ ^
-           -DLauncher_PASTE_EE_API_KEY:STRING=utLvciUouSURFzfjPxLBf5W4ISsUX4pwBDF7N1AfZ ^
-           -DLauncher_ANALYTICS_ID:STRING=UA-87731965-2 ^
            -DLauncher_LAYOUT=win-bundle ^
            -DLauncher_BUILD_PLATFORM=win32 ^
-           -DLauncher_BUG_TRACKER_URL=https://github.com/UltimMC/Launcher/issues ^
            -DLauncher_EMBED_SECRETS=On ^
            -G "MinGW Makefiles" ^
            ..
@@ -179,34 +151,9 @@ jobs:
           set PATH=%CD%\zlib;%CD%\zlib\bin;%PATH%
           set PATH=%CD%\OpenSSL;%PATH%
           set PATH=%PATHCM%;%PATH%
-          set PATH=C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;%PATH%
+          set PATH=C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;%PATH%
           cd build
           mingw32-make -j%NUMBER_OF_PROCESSORS%
-
-      - name: Test
-        shell: cmd
-        run: |
-          for /f "tokens=*" %%n in ('powershell -NoLogo -Command "$(ls $pwd\cmake-*-windows-i386\bin).Fullname"') do @(set PATHCM=%%n)
-          set PATH=D:\Qt\5.6.3\mingw49_32\bin;D:\Qt\Tools\mingw492_32\bin;
-          set PATH=%CD%\zlib;%CD%\zlib\bin;%PATH%
-          set PATH=%CD%\OpenSSL;%PATH%
-          set PATH=%PATHCM%;%PATH%
-          set PATH=C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;%PATH%
-          cd build
-          mingw32-make test
-          cmake -E remove_directory "D:/UltimMC/UltimMC"
-
-      - name: Install
-        shell: cmd
-        run: |
-          for /f "tokens=*" %%n in ('powershell -NoLogo -Command "$(ls $pwd\cmake-*-windows-i386\bin).Fullname"') do @(set PATHCM=%%n)
-          set PATH=D:\Qt\5.6.3\mingw49_32\bin;D:\Qt\Tools\mingw492_32\bin;
-          set PATH=%CD%\zlib;%CD%\zlib\bin;%PATH%
-          set PATH=%CD%\OpenSSL;%PATH%
-          set PATH=%PATHCM%;%PATH%
-          set PATH=C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;%PATH%
-          cd build
-          mingw32-make install
 
       - name: Copy OpenSSL
         shell: cmd
@@ -217,70 +164,5 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@main
         with:
-          name: mmc-cracked-win32
+          name: LauncherMC-win32
           path: "D:/UltimMC"
-
-  build-mac:
-    name: build-mac
-    runs-on: macos-13
-
-    steps:
-      - uses: actions/checkout@main
-        with:
-          submodules: 'recursive'
-
-      - name: Cache Dependencies
-        uses: actions/cache@main
-        with:
-          path: /Users/runner/Library/Caches/Homebrew
-          key: ${{ runner.os }}-deps-cache
-
-      - name: Install Dependencies
-        run: |
-          brew cleanup
-          brew install qt@5
-
-      - name: Build
-        run: |
-          mkdir build
-          cd build
-          cmake \
-           -DCMAKE_C_COMPILER=/usr/bin/clang \
-           -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
-           -DCMAKE_BUILD_TYPE=Release \
-           -DLauncher_NOTIFICATION_URL:STRING=https://files.multimc.org/notifications.json \
-           -DCMAKE_INSTALL_PREFIX:PATH="/Users/runner/work/UltimMC/build/dist" \
-           -DCMAKE_PREFIX_PATH="$(brew --prefix qt@5)/lib/cmake" \
-           -DQt5_DIR="$(brew --prefix qt@5)" \
-           -DLauncher_UPDATER_BASE=https://files.multimc.org/update/ \
-           -DLauncher_PASTE_EE_API_KEY:STRING=utLvciUouSURFzfjPxLBf5W4ISsUX4pwBDF7N1AfZ \
-           -DLauncher_ANALYTICS_ID:STRING=UA-87731965-2 \
-           -DLauncher_LAYOUT=mac-bundle \
-           -DLauncher_BUILD_PLATFORM=osx64-5.15.2 \
-           -DLauncher_BUG_TRACKER_URL=https://github.com/UltimMC/Launcher/issues \
-           -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 \
-           -DLauncher_EMBED_SECRETS=On \
-           $GITHUB_WORKSPACE
-
-      - name: Compile
-        run: |
-          cd build
-          make -j$(sysctl -n hw.logicalcpu)
-
-      - name: Test
-        run: |
-          cd build
-          make test
-          cmake -E remove_directory "/Users/runner/work/UltimMC/build/dist"
-
-      - name: Install
-        run: |
-          cd build
-          make install
-          chmod +x /Users/runner/work/UltimMC/build/dist/UltimMC.app/Contents/MacOS/UltimMC
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@main
-        with:
-          name: mmc-cracked-osx64
-          path: /Users/runner/work/UltimMC/build/dist
