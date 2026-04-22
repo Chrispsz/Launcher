@@ -101,7 +101,7 @@ void InstanceImportTask::processZipPack()
 
     QStringList blacklist = {"instance.cfg", "manifest.json"};
     QString mmcFound = MMCZip::findFolderOfFileInZip(m_packZip.get(), "instance.cfg");
-    bool technicFound = QuaZipDir(m_packZip.get()).exists("/bin/modpack.jar") || QuaZipDir(m_packZip.get()).exists("/bin/version.json");
+    // Technic support removed
     QString modrinthFound = MMCZip::findFolderOfFileInZip(m_packZip.get(), "modrinth.index.json");
     QString root;
     if(!mmcFound.isNull())
@@ -110,14 +110,6 @@ void InstanceImportTask::processZipPack()
         qDebug() << "MultiMC:" << mmcFound;
         root = mmcFound;
         m_modpackType = ModpackType::MultiMC;
-    }
-    else if (technicFound)
-    {
-        // process as Technic pack
-        qDebug() << "Technic:" << technicFound;
-        extractDir.mkpath(".minecraft");
-        extractDir.cd(".minecraft");
-        m_modpackType = ModpackType::Technic;
     }
     else if(!modrinthFound.isNull())
     {
@@ -185,9 +177,6 @@ void InstanceImportTask::extractFinished()
         case ModpackType::MultiMC:
             processMultiMC();
             return;
-        case ModpackType::Technic:
-            processTechnic();
-            return;
         case ModpackType::Modrinth:
             processModrinth();
             return;
@@ -201,14 +190,6 @@ void InstanceImportTask::extractAborted()
 {
     emitFailed(tr("Instance import has been aborted."));
     return;
-}
-
-void InstanceImportTask::processTechnic()
-{
-    shared_qobject_ptr<Technic::TechnicPackProcessor> packProcessor = new Technic::TechnicPackProcessor();
-    connect(packProcessor.get(), &Technic::TechnicPackProcessor::succeeded, this, &InstanceImportTask::emitSucceeded);
-    connect(packProcessor.get(), &Technic::TechnicPackProcessor::failed, this, &InstanceImportTask::emitFailed);
-    packProcessor->run(m_globalSettings, m_instName, m_instIcon, m_stagingPath);
 }
 
 void InstanceImportTask::processMultiMC()

@@ -26,10 +26,6 @@
 #include <nonstd/optional>
 
 class QuaZip;
-namespace Flame
-{
-    class FileResolvingTask;
-}
 
 class InstanceImportTask : public InstanceTask
 {
@@ -44,8 +40,6 @@ protected:
 private:
     void processZipPack();
     void processMultiMC();
-    void processTechnic();
-    void processFlame();
     void processModrinth();
 
 private slots:
@@ -57,7 +51,6 @@ private slots:
 
 private: /* data */
     NetJob::Ptr m_filesNetJob;
-    shared_qobject_ptr<Flame::FileResolvingTask> m_modIdResolver;
     QUrl m_sourceUrl;
     QString m_archivePath;
     bool m_downloadRequired = false;
@@ -67,7 +60,6 @@ private: /* data */
     enum class ModpackType{
         Unknown,
         MultiMC,
-        Technic,
         Modrinth,
     } m_modpackType = ModpackType::Unknown;
 };
