@@ -11,7 +11,6 @@
 #include "ui/pages/instance/TexturePackPage.h"
 #include "ui/pages/instance/ShaderPackPage.h"
 #include "ui/pages/instance/NotesPage.h"
-#include "ui/pages/instance/ScreenshotsPage.h"
 #include "ui/pages/instance/InstanceSettingsPage.h"
 #include "ui/pages/instance/OtherLogsPage.h"
 #include "ui/pages/instance/LegacyUpgradePage.h"
@@ -48,7 +47,6 @@ public:
             values.append(new WorldListPage(onesix, onesix->worldList()));
             values.append(new ServersPage(onesix));
             // values.append(new GameOptionsPage(onesix.get()));
-            values.append(new ScreenshotsPage(FS::PathCombine(onesix->gameRoot(), "screenshots")));
             values.append(new InstanceSettingsPage(onesix.get()));
         }
         std::shared_ptr<LegacyInstance> legacy = std::dynamic_pointer_cast<LegacyInstance>(inst);
@@ -57,7 +55,6 @@ public:
             values.append(new LegacyUpgradePage(legacy));
             values.append(new NotesPage(legacy.get()));
             values.append(new WorldListPage(legacy, legacy->worldList()));
-            values.append(new ScreenshotsPage(FS::PathCombine(legacy->gameRoot(), "screenshots")));
         }
         auto logMatcher = inst->getLogFileMatcher();
         if(logMatcher)
