@@ -29,7 +29,6 @@
 #include <QPainter>
 
 #include "AuthProviders.h"
-#include "flows/MSA.h"
 #include "flows/Mojang.h"
 #include "flows/Local.h"
 #include "flows/Elyby.h"

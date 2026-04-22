@@ -25,7 +25,6 @@
 #include <QTreeView>
 #include <QInputDialog>
 
-#include "tools/MCEditTool.h"
 #include "FileSystem.h"
 
 #include "ui/GuiUtil.h"
@@ -229,86 +228,23 @@ void WorldListPage::on_actionCopy_Seed_triggered()
 
 void WorldListPage::on_actionMCEdit_triggered()
 {
-    if(m_mceditStarting)
-        return;
-
-    auto mcedit = APPLICATION->mcedit();
-
-    const QString mceditPath = mcedit->path();
-
-    QModelIndex index = getSelectedWorld();
-
-    if (!index.isValid())
-    {
-        return;
-    }
-
-    if(!worldSafetyNagQuestion())
-        return;
-
-    auto fullPath = m_worlds->data(index, WorldList::FolderRole).toString();
-
-    auto program = mcedit->getProgramPath();
-    if(program.size())
-    {
-#ifdef Q_OS_WIN32
-        if(!QProcess::startDetached(program, {fullPath}, mceditPath))
-        {
-            mceditError();
-        }
-#else
-        m_mceditProcess.reset(new LoggedProcess());
-        m_mceditProcess->setDetachable(true);
-        connect(m_mceditProcess.get(), &LoggedProcess::stateChanged, this, &WorldListPage::mceditState);
-        m_mceditProcess->start(program, {fullPath});
-        m_mceditProcess->setWorkingDirectory(mceditPath);
-        m_mceditStarting = true;
-#endif
-    }
-    else
-    {
-        QMessageBox::warning(
-            this->parentWidget(),
-            tr("No MCEdit found or set up!"),
-            tr("You do not have MCEdit set up or it was moved.\nYou can set it up in the global settings.")
-        );
-    }
+    // MCEdit tool has been removed
+    QMessageBox::warning(
+        this->parentWidget(),
+        tr("MCEdit not available"),
+        tr("MCEdit support has been removed from this launcher.")
+    );
 }
 
 void WorldListPage::mceditError()
 {
-    QMessageBox::warning(
-        this->parentWidget(),
-        tr("MCEdit failed to start!"),
-        tr("MCEdit failed to start.\nIt may be necessary to reinstall it.")
-    );
+    // MCEdit tool has been removed
 }
 
 void WorldListPage::mceditState(LoggedProcess::State state)
 {
-    bool failed = false;
-    switch(state)
-    {
-        case LoggedProcess::NotRunning:
-        case LoggedProcess::Starting:
-            return;
-        case LoggedProcess::FailedToStart:
-        case LoggedProcess::Crashed:
-        case LoggedProcess::Aborted:
-        {
-            failed = true;
-        }
-        case LoggedProcess::Running:
-        case LoggedProcess::Finished:
-        {
-            m_mceditStarting = false;
-            break;
-        }
-    }
-    if(failed)
-    {
-        mceditError();
-    }
+    Q_UNUSED(state)
+    // MCEdit tool has been removed
 }
 
 void WorldListPage::worldChanged(const QModelIndex &current, const QModelIndex &previous)

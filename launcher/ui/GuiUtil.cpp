@@ -4,55 +4,17 @@
 #include <QApplication>
 #include <QFileDialog>
 
-#include "ui/dialogs/ProgressDialog.h"
 #include "ui/dialogs/CustomMessageBox.h"
-#include "net/PasteUpload.h"
 
 #include "Application.h"
-#include <settings/SettingsObject.h>
-#include <DesktopServices.h>
-#include <BuildConfig.h>
 
+// PasteUpload has been removed - stub the function
 QString GuiUtil::uploadPaste(const QString &text, QWidget *parentWidget)
 {
-    ProgressDialog dialog(parentWidget);
-    auto APIKeySetting = APPLICATION->settings()->get("PasteEEAPIKey").toString();
-    if(APIKeySetting == "multimc")
-    {
-        APIKeySetting = BuildConfig.PASTE_EE_KEY;
-    }
-    std::unique_ptr<PasteUpload> paste(new PasteUpload(parentWidget, text, APIKeySetting));
-
-    if (!paste->validateText())
-    {
-        CustomMessageBox::selectable(
-            parentWidget, QObject::tr("Upload failed"),
-            QObject::tr("The log file is too big. You'll have to upload it manually."),
-            QMessageBox::Warning)->exec();
-        return QString();
-    }
-
-    dialog.execWithTask(paste.get());
-    if (!paste->wasSuccessful())
-    {
-        CustomMessageBox::selectable(
-            parentWidget,
-            QObject::tr("Upload failed"),
-            paste->failReason(),
-            QMessageBox::Critical
-        )->exec();
-        return QString();
-    }
-    else
-    {
-        const QString link = paste->pasteLink();
-        setClipboardText(link);
-        CustomMessageBox::selectable(
-            parentWidget, QObject::tr("Upload finished"),
-            QObject::tr("The <a href=\"%1\">link to the uploaded log</a> has been placed in your clipboard.").arg(link),
-            QMessageBox::Information)->exec();
-        return link;
-    }
+    Q_UNUSED(text)
+    Q_UNUSED(parentWidget)
+    // PasteUpload functionality has been removed
+    return QString();
 }
 
 void GuiUtil::setClipboardText(const QString &text)

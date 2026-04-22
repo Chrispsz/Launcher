@@ -25,7 +25,6 @@
 
 #include "ui/dialogs/ProgressDialog.h"
 #include "ui/dialogs/LoginDialog.h"
-#include "ui/dialogs/MSALoginDialog.h"
 #include "ui/dialogs/LocalLoginDialog.h"
 #include "ui/dialogs/CustomMessageBox.h"
 #include "ui/dialogs/SkinUploadDialog.h"
@@ -159,10 +158,8 @@ void AccountListPage::on_actionAddMicrosoft_triggered()
         )->exec();
         return;
     }
-    MinecraftAccountPtr account = MSALoginDialog::newAccount(
-        this,
-        tr("Please enter your Mojang account email and password to add your account.")
-    );
+    // MSALoginDialog has been removed
+    MinecraftAccountPtr account = nullptr;
 
     if (account)
     {

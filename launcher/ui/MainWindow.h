@@ -24,7 +24,6 @@
 #include "BaseInstance.h"
 #include "minecraft/auth/MinecraftAccount.h"
 #include "net/NetJob.h"
-#include "updater/GoUpdate.h"
 
 class LaunchController;
 class QToolButton;
@@ -32,7 +31,6 @@ class InstanceProxyModel;
 class LabeledToolButton;
 class QLabel;
 class MinecraftLauncher;
-class BaseProfilerFactory;
 class InstanceView;
 class KonamiCode;
 class InstanceTask;
@@ -164,7 +162,7 @@ private slots:
 
     void startTask(Task *task);
 
-    void updateAvailable(GoUpdate::Status status);
+    void updateAvailable(/* GoUpdate::Status has been removed */);
 
     void updateNotAvailable();
 
@@ -177,9 +175,9 @@ private slots:
 
 
     /*!
-     * Runs the DownloadTask and installs updates.
+     * GoUpdate::DownloadTask has been removed
      */
-    void downloadUpdates(GoUpdate::Status status);
+    void downloadUpdates(/* GoUpdate::Status has been removed */);
 
 
     void globalSettingsClosed();

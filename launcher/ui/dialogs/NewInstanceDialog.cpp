@@ -35,11 +35,8 @@
 #include "ui/widgets/PageContainer.h"
 #include "ui/pages/modplatform/VanillaPage.h"
 #include "ui/pages/modplatform/atlauncher/AtlPage.h"
-#include "ui/pages/modplatform/legacy_ftb/Page.h"
-#include "ui/pages/modplatform/import_ftb/FTBAPage.h"
 #include "ui/pages/modplatform/ImportPage.h"
 #include "ui/pages/modplatform/modrinth/ModrinthPage.h"
-#include "ui/pages/modplatform/technic/TechnicPage.h"
 
 
 
@@ -126,16 +123,13 @@ void NewInstanceDialog::accept()
 QList<BasePage *> NewInstanceDialog::getPages()
 {
     importPage = new ImportPage(this);
-    auto technicPage = new TechnicPage(this);
     return
     {
         new VanillaPage(this),
         importPage,
         new ModrinthPage(this),
-        new AtlPage(this),
-        new ImportFTB::FTBAPage(this),
-        new LegacyFTB::Page(this),
-        technicPage
+        new AtlPage(this)
+        // TechnicPage, FTBAPage, and LegacyFTB::Page have been removed
     };
 }
 

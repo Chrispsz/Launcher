@@ -21,7 +21,6 @@
 #include <QDir>
 #include <QTextCharFormat>
 
-#include "updater/UpdateChecker.h"
 
 #include "settings/SettingsObject.h"
 #include <FileSystem.h>
@@ -56,17 +55,11 @@ LauncherPage::LauncherPage(QWidget *parent) : QWidget(parent), ui(new Ui::Launch
     m_languageModel = APPLICATION->translations();
     loadSettings();
 
-    // Updater
-    if(!BuildConfig.UPDATER_ENABLED)
-    {
-        ui->updateSettingsBox->setHidden(true);
-    }
+    // Updater - BuildConfig.UPDATER_ENABLED has been removed, always hide updater settings
+    ui->updateSettingsBox->setHidden(true);
 
-    // Analytics
-    if(BuildConfig.ANALYTICS_ID.isEmpty())
-    {
-        ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->analyticsTab));
-    }
+    // Analytics - BuildConfig.ANALYTICS_ID has been removed
+    ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->analyticsTab));
     connect(ui->fontSizeBox, SIGNAL(valueChanged(int)), SLOT(refreshFontPreview()));
     connect(ui->consoleFont, SIGNAL(currentFontChanged(QFont)), SLOT(refreshFontPreview()));
 
@@ -238,11 +231,8 @@ void LauncherPage::applySettings()
         break;
     }
 
-    // Analytics
-    if(!BuildConfig.ANALYTICS_ID.isEmpty())
-    {
-        s->set("Analytics", ui->analyticsCheck->isChecked());
-    }
+    // Analytics has been removed
+    // s->set("Analytics", ui->analyticsCheck->isChecked());
 }
 void LauncherPage::loadSettings()
 {
@@ -338,11 +328,8 @@ void LauncherPage::loadSettings()
         ui->sortByNameBtn->setChecked(true);
     }
 
-    // Analytics
-    if(!BuildConfig.ANALYTICS_ID.isEmpty())
-    {
-        ui->analyticsCheck->setChecked(s->get("Analytics").toBool());
-    }
+    // Analytics has been removed
+    // ui->analyticsCheck->setChecked(s->get("Analytics").toBool());
 }
 
 void LauncherPage::refreshFontPreview()

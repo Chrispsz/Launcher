@@ -149,14 +149,6 @@ set(LAUNCH_SOURCES
 )
 
 
-set(UPDATE_SOURCES
-    updater/GoUpdate.h
-    updater/GoUpdate.cpp
-    updater/DownloadTask.h
-    updater/DownloadTask.cpp
-)
-
-
 # Icon interface
 set(ICONS_SOURCES
     # Icons System and related code
@@ -436,18 +428,6 @@ set(META_SOURCES
     meta/Index.h
 )
 
-set(FTB_SOURCES
-    modplatform/legacy_ftb/PackFetchTask.h
-    modplatform/legacy_ftb/PackFetchTask.cpp
-    modplatform/legacy_ftb/PackInstallTask.h
-    modplatform/legacy_ftb/PackInstallTask.cpp
-    modplatform/legacy_ftb/PrivatePackManager.h
-    modplatform/legacy_ftb/PrivatePackManager.cpp
-
-    modplatform/legacy_ftb/PackHelpers.h
-)
-
-
 set(MODRINTH_SOURCES
     modplatform/modrinth/ModrinthPackManifest.cpp
     modplatform/modrinth/ModrinthPackManifest.h
@@ -470,22 +450,13 @@ set(LOGIC_SOURCES
     ${PATHMATCHER_SOURCES}
     ${NET_SOURCES}
     ${LAUNCH_SOURCES}
-    ${UPDATE_SOURCES}
-    ${NOTIFICATIONS_SOURCES}
-    ${NEWS_SOURCES}
     ${MINECRAFT_SOURCES}
-    ${SCREENSHOTS_SOURCES}
     ${TASKS_SOURCES}
     ${SETTINGS_SOURCES}
     ${JAVA_SOURCES}
     ${TRANSLATIONS_SOURCES}
-    ${TOOLS_SOURCES}
     ${META_SOURCES}
     ${ICONS_SOURCES}
-    ${FTB_SOURCES}
-    ${FTBA_SOURCES}
-    ${TECHNIC_SOURCES}
-    ${ATLAUNCHER_SOURCES}
     ${MODRINTH_SOURCES}
 )
 
@@ -774,7 +745,6 @@ target_link_libraries(Launcher_logic
     hoedown
     Launcher_rainbow
     LocalPeer
-    ganalytics
 )
 
 target_link_libraries(Launcher_logic secrets)

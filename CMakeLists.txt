@@ -67,9 +67,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_NO_DEPRECATED_WARNINGS=Y")
 
 ##################################### Set Application options #####################################
 
-######## Set URLs ########
-set(Launcher_NEWS_RSS_URL "" CACHE STRING "URL to fetch Launcher's news RSS feed from.")
-
 ######## Set version numbers ########
 set(Launcher_VERSION_MAJOR    0)
 set(Launcher_VERSION_MINOR    7)
@@ -79,48 +76,10 @@ set(Launcher_VERSION_HOTFIX   0)
 set(Launcher_VERSION_BUILD -1 CACHE STRING "Build number. -1 for no build number.")
 
 # Build platform.
-set(Launcher_BUILD_PLATFORM "" CACHE STRING "A short string identifying the platform that this build was built for. Only used by the notification system and to display in the about dialog.")
-
-# Channel list URL
-set(Launcher_UPDATER_BASE "" CACHE STRING "Base URL for the updater.")
-
-# Notification URL
-set(Launcher_NOTIFICATION_URL "" CACHE STRING "URL for checking for notifications.")
-
-# The metadata server
-set(Launcher_META_URL "" CACHE STRING "URL to fetch Launcher's meta files from.")
-
-# paste.ee API key
-set(Launcher_PASTE_EE_API_KEY "" CACHE STRING "API key you can get from paste.ee when you register an account")
-
-# Imgur API Client ID
-set(Launcher_IMGUR_CLIENT_ID "" CACHE STRING "Client ID you can get from Imgur when you register an application")
-
-# Google analytics ID
-set(Launcher_ANALYTICS_ID "" CACHE STRING "ID you can get from Google analytics")
-
-# Bug tracker URL
-set(Launcher_BUG_TRACKER_URL "" CACHE STRING "URL for the bug tracker.")
-
-# Discord URL
-set(Launcher_DISCORD_URL "" CACHE STRING "URL for the Discord guild.")
-
-# Subreddit URL
-set(Launcher_SUBREDDIT_URL "" CACHE STRING "URL for the subreddit.")
+set(Launcher_BUILD_PLATFORM "" CACHE STRING "A short string identifying the platform.")
 
 # Use the secrets library or a public stub?
 option(Launcher_EMBED_SECRETS "Determines whether to embed secrets. Secrets are separate and non-public." OFF)
-
-# API Keys
-# NOTE: These API keys are here for convenience. If you rebrand this software or intend to break the terms of service
-# of these platforms, please change these API keys beforehand.
-# Be aware that if you were to use these API keys for malicious purposes they might get revoked, which might cause
-# breakage to thousands of users.
-# If you don't plan to use these features of this software, you can just remove these values.
-
-# By using this key in your builds you accept the terms of use laid down in
-# https://docs.microsoft.com/en-us/legal/microsoft-identity-platform/terms-of-use
-set(Launcher_MSA_CLIENT_ID "" CACHE STRING "Client ID you can get from Microsoft Identity Platform when you register an application")
 
 #### Check the current Git commit and branch
 include(GetGitRevisionDescription)
@@ -277,7 +236,7 @@ add_subdirectory(libraries/quazip) # zip manipulation library
 add_subdirectory(libraries/rainbow) # Qt extension for colors
 add_subdirectory(libraries/iconfix) # fork of Qt's QIcon loader
 add_subdirectory(libraries/LocalPeer) # fork of a library from Qt solutions
-add_subdirectory(libraries/classparser) # google analytics library
+add_subdirectory(libraries/classparser) # Java class file parser
 add_subdirectory(libraries/optional-bare)
 add_subdirectory(libraries/tomlc99) # toml parser
 add_subdirectory(libraries/katabasis) # An OAuth2 library that tried to do too much

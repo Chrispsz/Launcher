@@ -65,7 +65,6 @@
 #include <DesktopServices.h>
 #include <LocalPeer.h>
 
-#include <ganalytics.h>
 #include <sys.h>
 
 #include <Secrets.h>
@@ -729,24 +728,6 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     m_settings->registerSetting("RecordGameTime", true);
     m_settings->registerSetting("ShowGameTimeHours", false);
 
-m_settings->registerSetting("JavaPath", "");
-        m_settings->registerSetting("JavaTimestamp", 0);
-        m_settings->registerSetting("JavaArchitecture", "");
-        m_settings->registerSetting("JavaVersion", "");
-        m_settings->registerSetting("JavaVendor", "");
-        m_settings->registerSetting("LastHostname", "");
-        m_settings->registerSetting("JvmArgs", "");
-
-        // Native library workarounds
-        m_settings->registerSetting("UseNativeOpenAL", false);
-        m_settings->registerSetting("UseNativeGLFW", false);
-
-        // Game time
-        m_settings->registerSetting("ShowGameTime", true);
-        m_settings->registerSetting("ShowGlobalGameTime", true);
-        m_settings->registerSetting("RecordGameTime", true);
-        m_settings->registerSetting("ShowGameTimeHours", false);
-
         // Minecraft launch method
         m_settings->registerSetting("MCLaunchMethod", "LauncherPart");
 
@@ -781,16 +762,7 @@ m_settings->registerSetting("JavaPath", "");
 
         m_settings->registerSetting("UpdateDialogGeometry", "");
 
-        // paste.ee API key
-        m_settings->registerSetting("PasteEEAPIKey", "multimc");
 
-        if(!BuildConfig.ANALYTICS_ID.isEmpty())
-        {
-            // Analytics
-            m_settings->registerSetting("Analytics", true);
-            m_settings->registerSetting("AnalyticsSeen", 0);
-            m_settings->registerSetting("AnalyticsClientID", QString());
-        }
 
         // Init page provider
         {
@@ -828,15 +800,7 @@ m_settings->registerSetting("JavaPath", "");
         qDebug() << "<> Translations loaded.";
     }
 
-    // initialize the updater
-    if(BuildConfig.UPDATER_ENABLED)
-    {
-        auto platform = getIdealPlatform(BuildConfig.BUILD_PLATFORM);
-        auto channelUrl = BuildConfig.UPDATER_BASE + platform + "/channels.json";
-        qDebug() << "Initializing updater with platform: " << platform << " -- " << channelUrl;
-        m_updateChecker.reset(new UpdateChecker(m_network, channelUrl, BuildConfig.VERSION_BUILD));
-        qDebug() << "<> Updater started.";
-    }
+
 
     // Instance icons
     {
@@ -944,18 +908,7 @@ m_settings->registerSetting("JavaPath", "");
     // now we have network, download translation updates
     m_translations->downloadIndex();
 
-    //FIXME: what to do with these?
-    m_profilers.insert("jprofiler", std::shared_ptr<BaseProfilerFactory>(new JProfilerFactory()));
-    m_profilers.insert("jvisualvm", std::shared_ptr<BaseProfilerFactory>(new JVisualVMFactory()));
-    for (auto profiler : m_profilers.values())
-    {
-        profiler->registerSettings(m_settings);
-    }
 
-    // Create the MCEdit thing... why is this here?
-    {
-        
-    }
 
     connect(this, &Application::aboutToQuit, [this](){
         if(m_instances)
@@ -977,46 +930,7 @@ m_settings->registerSetting("JavaPath", "");
         qDebug() << "<> Application theme set.";
     }
 
-    // Initialize analytics
-    /*
-    [this]()
-    {
-        const int analyticsVersion = 2;
-        if(BuildConfig.ANALYTICS_ID.isEmpty())
-        {
-            return;
-        }
 
-        auto analyticsSetting = m_settings->getSetting("Analytics");
-        QString clientID = m_settings->get("AnalyticsClientID").toString();
-        if(clientID.isEmpty())
-        {
-            clientID = QUuid::createUuid().toString();
-            clientID.remove(QLatin1Char('{'));
-            clientID.remove(QLatin1Char('}'));
-            m_settings->set("AnalyticsClientID", clientID);
-        }
-        
-        m_analytics->setLogLevel(GAnalytics::Debug);
-        m_analytics->setAnonymizeIPs(true);
-        // FIXME: the ganalytics library has no idea about our fancy shared pointers...
-        m_analytics->setNetworkAccessManager(network().get());
-
-        if(m_settings->get("AnalyticsSeen").toInt() < m_analytics->version())
-        {
-            qDebug() << "Analytics info not seen by user yet (or old version).";
-            return;
-        }
-        if(!m_settings->get("Analytics").toBool())
-        {
-            qDebug() << "Analytics disabled by user.";
-            return;
-        }
-
-        m_analytics->enable();
-        qDebug() << "<> Initialized analytics with tid" << BuildConfig.ANALYTICS_ID;
-    }();
-    */
 
     if(createSetupWizard())
     {
@@ -1044,22 +958,8 @@ bool Application::createSetupWizard()
         }
         return false;
     }();
-    bool analyticsRequired = [&]()
-    {
-        if(!m_analytics) {
-            return false;
-        }
-        if(BuildConfig.ANALYTICS_ID.isEmpty()) {
-            return false;
-        }
-        if (!settings()->get("Analytics").toBool()) {
-            return false;
-        }
-        if (settings()->get("AnalyticsSeen").toInt() < analytics()->version()) {
-            return true;
-        }
-        return false;
-    }();
+    // Analytics (GAnalytics) has been removed
+    bool analyticsRequired = false;
     bool languageRequired = [&]()
     {
         if (settings()->get("Language").toString().isEmpty())
@@ -1079,10 +979,7 @@ bool Application::createSetupWizard()
         {
             m_setupWizard->addPage(new JavaWizardPage(m_setupWizard));
         }
-        if(analyticsRequired)
-        {
-            m_setupWizard->addPage(new AnalyticsWizardPage(m_setupWizard));
-        }
+
         connect(m_setupWizard, &QDialog::finished, this, &Application::setupWizardFinished);
         m_setupWizard->show();
         return true;
@@ -1338,7 +1235,7 @@ bool Application::openJsonEditor(const QString &filename)
 bool Application::launch(
         InstancePtr instance,
         bool online,
-        BaseProfilerFactory *profiler,
+        /* BaseProfilerFactory *profiler, */
         QuickPlayTargetPtr quickPlayTarget,
         MinecraftAccountPtr accountToUse,
         const QString& offlineName
@@ -1362,7 +1259,7 @@ bool Application::launch(
         controller.reset(new LaunchController());
         controller->setInstance(instance);
         controller->setOnline(online);
-        controller->setProfiler(profiler);
+        // profiler system has been removed - setProfiler call removed
         controller->setQuickPlayTarget(quickPlayTarget);
         controller->setAuthserver(m_authserver);
         controller->setAccountToUse(accountToUse);

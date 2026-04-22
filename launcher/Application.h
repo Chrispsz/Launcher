@@ -7,7 +7,6 @@
 #include <QIcon>
 #include <QDateTime>
 #include <QUrl>
-#include <updater/GoUpdate.h>
 
 #include <BaseInstance.h>
 
@@ -27,8 +26,6 @@ class AccountList;
 class IconList;
 class QNetworkAccessManager;
 class JavaInstallList;
-class BaseProfilerFactory;
-class BaseDetachedToolFactory;
 class TranslationsModel;
 class ITheme;
 class AuthServer;
@@ -58,10 +55,6 @@ public:
     Application(int &argc, char **argv);
     virtual ~Application();
 
-    GAnalytics *analytics() const {
-        return m_analytics;
-    }
-
     std::shared_ptr<SettingsObject> settings() const {
         return m_settings;
     }
@@ -78,10 +71,6 @@ public:
 
     void setApplicationTheme(const QString& name, bool initial);
 
-     {
-        return m_updateChecker;
-    }
-
     std::shared_ptr<TranslationsModel> translations();
 
     std::shared_ptr<JavaInstallList> javalist();
@@ -94,23 +83,15 @@ public:
         return m_icons;
     }
 
-    MCEditTool *mcedit() const {
-        return ;
-    }
-
     shared_qobject_ptr<AccountList> accounts() const {
         return m_accounts;
     }
-
-    QString msaClientId() const;
 
     Status status() const {
         return m_status;
     }
 
-    const QMap<QString, std::shared_ptr<BaseProfilerFactory>> &profilers() const {
-        return m_profilers;
-    }
+    // profiler system (BaseProfilerFactory) has been removed
 
     void updateProxySettings(QString proxyTypeStr, QString addr, int port, QString user, QString password);
 
@@ -136,13 +117,9 @@ public:
     InstanceWindow *showInstanceWindow(InstancePtr instance, QString page = QString());
     MainWindow *showMainWindow(bool minimized = false);
 
-    
-    
-
     void ShowGlobalSettings(class QWidget * parent, QString open_page = QString());
 
 signals:
-    
     void globalSettingsAboutToOpen();
     void globalSettingsClosed();
 
@@ -150,7 +127,7 @@ public slots:
     bool launch(
             InstancePtr instance,
             bool online = true,
-            BaseProfilerFactory *profiler = nullptr,
+            /* BaseProfilerFactory *profiler = nullptr, */
             QuickPlayTargetPtr quickPlayTarget = nullptr,
             MinecraftAccountPtr accountToUse = nullptr,
             const QString &offlineName = QString()
@@ -162,7 +139,6 @@ private slots:
     void messageReceived(const QByteArray & message);
     void controllerSucceeded();
     void controllerFailed(const QString & error);
-    const Setting &setting, QVariant value);
     void setupWizardFinished(int status);
 
 private:
@@ -182,7 +158,6 @@ private:
 
     shared_qobject_ptr<QNetworkAccessManager> m_network;
 
-    
     shared_qobject_ptr<AccountList> m_accounts;
 
     shared_qobject_ptr<HttpMetaCache> m_metacache;
@@ -195,12 +170,12 @@ private:
     std::shared_ptr<TranslationsModel> m_translations;
     std::shared_ptr<GenericPageProvider> m_globalSettingsProvider;
     std::map<QString, std::unique_ptr<ITheme>> m_themes;
-    
+
     std::shared_ptr<AuthServer> m_authserver;
     QString m_jarsPath;
     QSet<QString> m_features;
 
-    QMap<QString, std::shared_ptr<BaseProfilerFactory>> m_profilers;
+    // profiler system has been removed
 
     QString m_rootPath;
     Status m_status = Application::StartingUp;
@@ -220,7 +195,6 @@ private:
     // main state variables
     size_t m_openWindows = 0;
     size_t m_runningInstances = 0;
-    
 
     // main window, if any
     MainWindow * m_mainWindow = nullptr;
@@ -228,7 +202,6 @@ private:
     // peer launcher instance connector - used to implement single instance launcher and signalling
     LocalPeer * m_peerInstance = nullptr;
 
-    
     SetupWizard * m_setupWizard = nullptr;
 public:
     QString m_instanceIdToLaunch;

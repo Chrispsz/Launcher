@@ -58,8 +58,6 @@
 #include <BuildConfig.h>
 #include <net/NetJob.h>
 #include <net/Download.h>
-#include <tools/BaseProfiler.h>
-#include <updater/DownloadTask.h>
 #include <DesktopServices.h>
 #include "InstanceWindow.h"
 #include "InstancePageProvider.h"
@@ -354,9 +352,7 @@ public:
         helpButtonAction->setDefaultWidget(helpMenuButton);
         mainToolBar->addAction(helpButtonAction);
 
-        if(BuildConfig.UPDATER_ENABLED)
-        {
-        }
+        // BuildConfig.UPDATER_ENABLED has been removed
 
         mainToolBar->addSeparator();
 
@@ -648,23 +644,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new MainWindow
     }
 
 
-    if(BuildConfig.UPDATER_ENABLED)
-    {
-        bool updatesAllowed = APPLICATION->updatesAreAllowed();
-        updatesAllowedChanged(updatesAllowed);
-
-        // NOTE: calling the operator like that is an ugly hack to appease ancient gcc...
-
-        // set up the updater object.
-        auto updater = APPLICATION->updateChecker();
-        connect(updater.get(), &UpdateChecker::updateAvailable, this, &MainWindow::updateAvailable);
-        connect(updater.get(), &UpdateChecker::noUpdateFound, this, &MainWindow::updateNotAvailable);
-        // if automatic update checks are allowed, start one.
-        if (APPLICATION->settings()->get("AutoUpdate").toBool() && updatesAllowed)
-        {
-            updater->checkForUpdate(false);
-        }
-    }
+    // UpdateChecker has been removed - updater functionality disabled
+    // BuildConfig.UPDATER_ENABLED has been removed
 
     {
         
@@ -848,34 +829,8 @@ void MainWindow::updateToolsMenu()
             {
                 APPLICATION->launch(m_selectedInstance, false);
             });
-    QString profilersTitle = tr("Profilers");
-    launchMenu->addSeparator()->setText(profilersTitle);
-    launchOfflineMenu->addSeparator()->setText(profilersTitle);
-    for (auto profiler : APPLICATION->profilers().values())
-    {
-        QAction *profilerAction = launchMenu->addAction(profiler->name());
-        QAction *profilerOfflineAction = launchOfflineMenu->addAction(profiler->name());
-        QString error;
-        if (!profiler->check(&error))
-        {
-            profilerAction->setDisabled(true);
-            profilerOfflineAction->setDisabled(true);
-            QString profilerToolTip = tr("Profiler not setup correctly. Go into settings, \"External Tools\".");
-            profilerAction->setToolTip(profilerToolTip);
-            profilerOfflineAction->setToolTip(profilerToolTip);
-        }
-        else
-        {
-            connect(profilerAction, &QAction::triggered, [this, profiler]()
-                    {
-                        APPLICATION->launch(m_selectedInstance, true, profiler.get());
-                    });
-            connect(profilerOfflineAction, &QAction::triggered, [this, profiler]()
-                    {
-                        APPLICATION->launch(m_selectedInstance, false, profiler.get());
-                    });
-        }
-    }
+    // Profiler system (BaseProfilerFactory) has been removed
+    // Pro profiler menu items are added
     ui->actionLaunchInstance->setMenu(launchMenu);
     ui->actionLaunchInstanceOffline->setMenu(launchOfflineMenu);
 }
@@ -950,10 +905,8 @@ void MainWindow::repopulateAccountsMenu()
 
 void MainWindow::updatesAllowedChanged(bool allowed)
 {
-    if(!BuildConfig.UPDATER_ENABLED)
-    {
-        return;
-    }
+    Q_UNUSED(allowed)
+    // BuildConfig.UPDATER_ENABLED has been removed
 }
 
 /*
@@ -1057,24 +1010,9 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *ev)
     }
 }
 
-void MainWindow::updateAvailable(GoUpdate::Status status)
+void MainWindow::updateAvailable(/* GoUpdate::Status has been removed */)
 {
-    if(!APPLICATION->updatesAreAllowed())
-    {
-        updateNotAvailable();
-        return;
-    }
-    UpdateDialog dlg(true, this);
-    UpdateAction action = (UpdateAction)dlg.exec();
-    switch (action)
-    {
-    case UPDATE_LATER:
-        qDebug() << "Update will be installed later.";
-        break;
-    case UPDATE_NOW:
-        downloadUpdates(status);
-        break;
-    }
+    // GoUpdate has been removed
 }
 
 void MainWindow::updateNotAvailable()
@@ -1117,38 +1055,9 @@ QString intListToString(const QList<int> &list)
     APPLICATION->settings()->set("ShownNotifications", intListToString(shownNotifications));
 }
 
-void MainWindow::downloadUpdates(GoUpdate::Status status)
+void MainWindow::downloadUpdates(/* GoUpdate::Status has been removed */)
 {
-    if(!APPLICATION->updatesAreAllowed())
-    {
-        return;
-    }
-    qDebug() << "Downloading updates.";
-    ProgressDialog updateDlg(this);
-    status.rootPath = APPLICATION->root();
-
-    auto dlPath = FS::PathCombine(APPLICATION->root(), "update", "XXXXXX");
-    if (!FS::ensureFilePathExists(dlPath))
-    {
-        CustomMessageBox::selectable(this, tr("Error"), tr("Couldn't create folder for update downloads:\n%1").arg(dlPath), QMessageBox::Warning)->show();
-    }
-    GoUpdate::DownloadTask updateTask(APPLICATION->network(), status, dlPath, &updateDlg);
-    // If the task succeeds, install the updates.
-    if (updateDlg.execWithTask(&updateTask))
-    {
-        /**
-         * NOTE: This disables launching instances until the update either succeeds (and this process exits)
-         * or the update fails (and the control leaves this scope).
-         */
-        APPLICATION->updateIsRunning(true);
-        UpdateController update(this, APPLICATION->root(), updateTask.updateFilesDir(), updateTask.operations());
-        update.installUpdates();
-        APPLICATION->updateIsRunning(false);
-    }
-    else
-    {
-        CustomMessageBox::selectable(this, tr("Error"), updateTask.failReason(), QMessageBox::Warning)->show();
-    }
+    // GoUpdate and DownloadTask have been removed
 }
 
 void MainWindow::onCatToggled(bool state)
@@ -1457,15 +1366,7 @@ void MainWindow::on_actionConfig_Folder_triggered()
 
 void MainWindow::checkForUpdates()
 {
-    if(BuildConfig.UPDATER_ENABLED)
-    {
-        auto updater = APPLICATION->updateChecker();
-        updater->checkForUpdate(true);
-    }
-    else
-    {
-        qWarning() << "Updater not set up. Cannot check for updates.";
-    }
+    // UpdateChecker has been removed - BuildConfig.UPDATER_ENABLED has been removed
 }
 
 void MainWindow::on_actionSettings_triggered()

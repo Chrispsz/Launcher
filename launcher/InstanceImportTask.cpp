@@ -29,7 +29,6 @@
 #include "Json.h"
 #include <quazipdir.h>
 #include "modplatform/modrinth/ModrinthPackManifest.h"
-#include "modplatform/technic/TechnicPackProcessor.h"
 
 #include "icons/IconList.h"
 #include "Application.h"

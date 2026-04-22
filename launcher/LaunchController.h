@@ -1,7 +1,6 @@
 #pragma once
 #include <QObject>
 #include <BaseInstance.h>
-#include <tools/BaseProfiler.h>
 
 #include "minecraft/launch/QuickPlayTarget.h"
 #include "minecraft/auth/MinecraftAccount.h"
@@ -33,9 +32,9 @@ public:
         m_offlineName = offlineName;
     }
 
-    void setProfiler(BaseProfilerFactory *profiler) {
-        m_profiler = profiler;
-    }
+    // profiler system has been removed - setProfiler removed
+
+    bool abort() override;
 
     void setParentWidget(QWidget * widget) {
         m_parentWidget = widget;
@@ -73,7 +72,7 @@ private slots:
     void onProgressRequested(Task *task);
 
 private:
-    BaseProfilerFactory *m_profiler = nullptr;
+    // profiler system (BaseProfilerFactory) has been removed
     bool m_online = true;
     QString m_offlineName;
     InstancePtr m_instance;

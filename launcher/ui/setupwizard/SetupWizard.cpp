@@ -2,12 +2,11 @@
 
 #include "LanguageWizardPage.h"
 #include "JavaWizardPage.h"
-#include "AnalyticsWizardPage.h"
+// AnalyticsWizardPage has been removed
 
 #include "translations/TranslationsModel.h"
 #include <Application.h>
 #include <FileSystem.h>
-#include <ganalytics.h>
 
 #include <QAbstractButton>
 #include <BuildConfig.h>
