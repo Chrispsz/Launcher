@@ -5,11 +5,8 @@
 #include "ui/MainWindow.h"
 #include "ui/InstanceWindow.h"
 #include "ui/dialogs/CustomMessageBox.h"
-#include "ui/dialogs/ProfileSelectDialog.h"
 #include "ui/dialogs/ProgressDialog.h"
-#include "ui/dialogs/EditAccountDialog.h"
-#include "ui/dialogs/ProfileSetupDialog.h"
-#include "ui/dialogs/LoginDialog.h"
+
 
 #include <QLineEdit>
 #include <QInputDialog>
@@ -76,22 +73,8 @@ void LaunchController::decideAccount()
     m_accountToUse = accounts->defaultAccount();
     if (!m_accountToUse)
     {
-        // If no default account is set, ask the user which one to use.
-        ProfileSelectDialog selectDialog(
-            tr("Which account would you like to use?"),
-            ProfileSelectDialog::GlobalDefaultCheckbox,
-            m_parentWidget
-        );
-
-        selectDialog.exec();
-
-        // Launch the instance with the selected account.
-        m_accountToUse = selectDialog.selectedAccount();
-
-        // If the user said to use the account as default, do that.
-        if (selectDialog.useAsGlobalDefault() && m_accountToUse) {
-            accounts->setDefaultAccount(m_accountToUse);
-        }
+        // No default account set - just use the first available one
+        m_accountToUse = accounts->defaultAccount();
     }
 }
 
@@ -166,18 +149,11 @@ void LaunchController::login() {
                 }
                 if(m_accountToUse->ownsMinecraft()) {
                     if(!m_accountToUse->hasProfile()) {
-                        // Now handle setting up a profile name here...
-                        ProfileSetupDialog dialog(m_accountToUse, m_parentWidget);
-                        if (dialog.exec() == QDialog::Accepted)
-                        {
-                            tryagain = true;
-                            continue;
-                        }
-                        else
-                        {
-                            emitFailed(tr("Received undetermined session status during login."));
-                            return;
-                        }
+                        // No profile - just launch offline
+                        m_session->wants_online = false;
+                        m_session->MakeOffline(m_accountToUse->profileId());
+                        launchInstance();
+                        return;
                     }
                     // we own Minecraft, there is a profile, it's all ready to go!
                     launchInstance();
@@ -229,58 +205,11 @@ void LaunchController::login() {
             }
             */
             case AccountState::Expired: {
-                auto errorString = tr("The account has expired and needs to be logged into manually. Press OK to log in again.");
-                auto button = QMessageBox::warning(
-                    m_parentWidget,
-                    tr("Account refresh failed"),
-                    errorString,
-                    QMessageBox::StandardButton::Ok | QMessageBox::StandardButton::Cancel,
-                    QMessageBox::StandardButton::Ok
-                );
-                if (button == QMessageBox::StandardButton::Ok) {
-                    auto accounts = APPLICATION->accounts();
-                    bool isDefault = accounts->defaultAccount() == m_accountToUse;
-                    bool msa = m_accountToUse->isMSA();
-                    accounts->removeAccount(accounts->index(accounts->findAccountByProfileId(m_accountToUse->profileId())));
-                    MinecraftAccountPtr newAccount = nullptr;
-                    if (msa) {
-                        if(BuildConfig.BUILD_PLATFORM == "osx64") {
-                            CustomMessageBox::selectable(
-                                    m_parentWidget,
-                                    tr("Microsoft Accounts not available"),
-                                    tr(
-                                            "Microsoft accounts are only usable on macOS 10.13 or newer, with fully updated MultiMC.\n\n"
-                                            "Please update both your operating system and MultiMC."
-                                    ),
-                                    QMessageBox::Warning
-                            )->exec();
-                            emitFailed(tr("Attempted to re-login to a Microsoft account on an unsupported platform"));
-                            return;
-                        }
-                        // MSALoginDialog has been removed
-                        newAccount = nullptr;
-                    } else {
-                        newAccount = LoginDialog::newAccount(
-                                m_parentWidget,
-                                tr("Please enter your Mojang account email and password to add your account.")
-                        );
-                    }
-                    if (newAccount) {
-                        accounts->addAccount(newAccount);
-                        if (isDefault) {
-                            accounts->setDefaultAccount(newAccount);
-                        }
-                        m_accountToUse = nullptr;
-                        decideAccount();
-                        continue;
-                    } else {
-                        emitFailed(tr("Account expired and re-login attempt failed"));
-                        return;
-                    }
-                } else {
-                    emitFailed(errorString);
-                    return;
-                }
+                // Account expired - just launch offline
+                m_session->wants_online = false;
+                m_session->MakeOffline(m_accountToUse->profileId());
+                launchInstance();
+                return;
             }
             case AccountState::Gone: {
                 auto errorString = tr("The account no longer exists on the servers. It may have been migrated, in which case please add the new account you migrated this one to.");

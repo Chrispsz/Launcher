@@ -13,7 +13,6 @@
 #include "ui/pages/instance/NotesPage.h"
 #include "ui/pages/instance/InstanceSettingsPage.h"
 #include "ui/pages/instance/OtherLogsPage.h"
-#include "ui/pages/instance/LegacyUpgradePage.h"
 #include "ui/pages/instance/WorldListPage.h"
 #include "ui/pages/instance/ServersPage.h"
 #include "ui/pages/instance/GameOptionsPage.h"
@@ -52,7 +51,7 @@ public:
         std::shared_ptr<LegacyInstance> legacy = std::dynamic_pointer_cast<LegacyInstance>(inst);
         if(legacy)
         {
-            values.append(new LegacyUpgradePage(legacy));
+            // LegacyUpgradePage removed in cleanup
             values.append(new NotesPage(legacy.get()));
             values.append(new WorldListPage(legacy, legacy->worldList()));
         }
