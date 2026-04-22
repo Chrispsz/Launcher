@@ -32,7 +32,6 @@ class LabeledToolButton;
 class QLabel;
 class MinecraftLauncher;
 class InstanceView;
-class KonamiCode;
 class InstanceTask;
 
 class MainWindow : public QMainWindow
@@ -207,9 +206,6 @@ private:
     QLabel *m_statusCenter = nullptr;
     QMenu *accountMenu = nullptr;
     QToolButton *accountMenuButton = nullptr;
-    KonamiCode * secretEventFilter = nullptr;
-
-
     InstancePtr m_selectedInstance;
     QString m_currentInstIcon;
 

@@ -2,6 +2,7 @@
 
 #include "ITheme.h"
 
+#include <QApplication>
 #include <QPalette>
 #include <QColor>
 

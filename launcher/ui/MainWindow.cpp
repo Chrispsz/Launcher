@@ -622,25 +622,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new MainWindow
         connect(q, SIGNAL(activated()), qApp, SLOT(quit()));
     }
 
-    // Konami Code
-    {
-        (this);
-            }
+    // KonamiCode has been removed
 
-    // Add the news label to the news toolbar.
-    {
-        
-    }
+    // News label / news toolbar setup has been removed
 
-
-    // UpdateChecker has been removed - updater functionality disabled
-    // BuildConfig.UPDATER_ENABLED has been removed
-
-    {
-        
-        
-        checker->checkForNotifications();
-    }
+    // UpdateChecker / notification checker has been removed
 
     setSelectedInstanceById(APPLICATION->settings()->get("SelectedInstance").toString());
 
@@ -953,7 +939,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *ev)
     {
         if (ev->type() == QEvent::KeyPress)
         {
-            secretEventFilter->input(ev);
             QKeyEvent *keyEvent = static_cast<QKeyEvent *>(ev);
             switch (keyEvent->key())
             {
@@ -980,26 +965,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *ev)
     return QMainWindow::eventFilter(obj, ev);
 }
 
-{
-    {
-        newsLabel->setText(tr("Loading news..."));
-        newsLabel->setEnabled(false);
-    }
-    else
-    {
-        if (entries.length() > 0)
-        {
-            newsLabel->setText(entries[0]->title);
-            newsLabel->setEnabled(true);
-        }
-        else
-        {
-            newsLabel->setText(tr("No news available."));
-            newsLabel->setEnabled(false);
-        }
-    }
-}
-
 void MainWindow::updateAvailable(/* GoUpdate::Status has been removed */)
 {
     // GoUpdate has been removed
@@ -1010,40 +975,6 @@ void MainWindow::updateNotAvailable()
     // UpdateDialog has been removed
     // UpdateDialog dlg(false, this);
     // dlg.exec();
-}
-
-QList<int> stringToIntList(const QString &string)
-{
-    QStringList split = string.split(',', QString::SkipEmptyParts);
-    QList<int> out;
-    for (int i = 0; i < split.size(); ++i)
-    {
-        out.append(split.at(i).toInt());
-    }
-    return out;
-}
-QString intListToString(const QList<int> &list)
-{
-    QStringList slist;
-    for (int i = 0; i < list.size(); ++i)
-    {
-        slist.append(QString::number(list.at(i)));
-    }
-    return slist.join(',');
-}
-{
-    QList<    for (auto it = entries.begin(); it != entries.end(); ++it)
-    {
-                if (!shownNotifications.contains(entry.id))
-        {
-            NotificationDialog dialog(entry, this);
-            if (dialog.exec() == NotificationDialog::DontShowAgain)
-            {
-                shownNotifications.append(entry.id);
-            }
-        }
-    }
-    APPLICATION->settings()->set("ShownNotifications", intListToString(shownNotifications));
 }
 
 void MainWindow::downloadUpdates(/* GoUpdate::Status has been removed */)
@@ -1427,14 +1358,7 @@ void MainWindow::on_actionMoreNews_triggered()
 
 void MainWindow::newsButtonClicked()
 {
-    if (entries.count() > 0)
-    {
-        DesktopServices::openUrl(QUrl(entries[0]->link));
-    }
-    else
-    {
-        DesktopServices::openUrl(QUrl("https://multimc.org/posts.html"));
-    }
+    DesktopServices::openUrl(QUrl("https://multimc.org/posts.html"));
 }
 
 void MainWindow::on_actionAbout_triggered()
