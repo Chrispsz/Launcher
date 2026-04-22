@@ -29,9 +29,7 @@
 #include <QPainter>
 
 #include "AuthProviders.h"
-#include "flows/Mojang.h"
 #include "flows/Local.h"
-#include "flows/Elyby.h"
 
 MinecraftAccount::MinecraftAccount(QObject* parent) : QObject(parent) {
     data.internalId = QUuid::createUuid().toString().remove(QRegExp("[{}-]"));

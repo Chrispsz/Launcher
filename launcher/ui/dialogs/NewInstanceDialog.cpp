@@ -34,7 +34,7 @@
 
 #include "ui/widgets/PageContainer.h"
 #include "ui/pages/modplatform/VanillaPage.h"
-#include "ui/pages/modplatform/atlauncher/AtlPage.h"
+// AtlPage has been removed
 #include "ui/pages/modplatform/ImportPage.h"
 #include "ui/pages/modplatform/modrinth/ModrinthPage.h"
 
@@ -128,7 +128,7 @@ QList<BasePage *> NewInstanceDialog::getPages()
         new VanillaPage(this),
         importPage,
         new ModrinthPage(this),
-        new AtlPage(this)
+        // AtlPage has been removed
         // TechnicPage, FTBAPage, and LegacyFTB::Page have been removed
     };
 }

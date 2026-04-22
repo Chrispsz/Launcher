@@ -24,10 +24,10 @@
 #include "net/NetJob.h"
 
 #include "ui/dialogs/ProgressDialog.h"
-#include "ui/dialogs/LoginDialog.h"
+// LoginDialog has been removed
 #include "ui/dialogs/LocalLoginDialog.h"
 #include "ui/dialogs/CustomMessageBox.h"
-#include "ui/dialogs/SkinUploadDialog.h"
+// SkinUploadDialog has been removed
 
 #include "tasks/Task.h"
 #include "minecraft/auth/AccountTask.h"
@@ -130,10 +130,8 @@ void AccountListPage::on_actionAddLocal_triggered()
 
 void AccountListPage::on_actionAddMojang_triggered()
 {
-    MinecraftAccountPtr account = LoginDialog::newAccount(
-        this,
-        tr("Please enter your account email and password to add your account.")
-    );
+    // LoginDialog has been removed
+    MinecraftAccountPtr account = nullptr;
 
     if (account)
     {
@@ -243,8 +241,9 @@ void AccountListPage::on_actionUploadSkin_triggered()
     {
         QModelIndex selected = selection.first();
         MinecraftAccountPtr account = selected.data(AccountList::PointerRole).value<MinecraftAccountPtr>();
-        SkinUploadDialog dialog(account, this);
-        dialog.exec();
+        // SkinUploadDialog has been removed
+        // SkinUploadDialog dialog(account, this);
+        // dialog.exec();
     }
 }
 

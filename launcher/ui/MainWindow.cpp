@@ -75,13 +75,9 @@
 #include "ui/dialogs/CustomMessageBox.h"
 #include "ui/dialogs/IconPickerDialog.h"
 #include "ui/dialogs/CopyInstanceDialog.h"
-#include "ui/dialogs/UpdateDialog.h"
 #include "ui/dialogs/EditAccountDialog.h"
 #include "ui/dialogs/CreateShortcutDialog.h"
 #include "ui/dialogs/ExportInstanceDialog.h"
-#include "ui/dialogs/ModrinthExportDialog.h"
-
-#include "UpdateController.h"
 
 #include "InstanceImportTask.h"
 #include "InstanceCopyTask.h"
@@ -780,8 +776,9 @@ void MainWindow::updateToolsMenu()
     connect(modrinthExport, &QAction::triggered, [this]()
     {
         if (m_selectedInstance) {
-            ModrinthExportDialog dlg(m_selectedInstance, this);
-            dlg.exec();
+            // ModrinthExportDialog has been removed
+            // ModrinthExportDialog dlg(m_selectedInstance, this);
+            // dlg.exec();
         }
     });
 
@@ -1017,8 +1014,9 @@ void MainWindow::updateAvailable(/* GoUpdate::Status has been removed */)
 
 void MainWindow::updateNotAvailable()
 {
-    UpdateDialog dlg(false, this);
-    dlg.exec();
+    // UpdateDialog has been removed
+    // UpdateDialog dlg(false, this);
+    // dlg.exec();
 }
 
 QList<int> stringToIntList(const QString &string)
