@@ -34,6 +34,10 @@ public:
     QString LIBRARY_BASE = "https://libraries.minecraft.net/";
     QString AUTH_BASE = "https://authserver.mojang.com/";
     QString FMLLIBS_BASE_URL = "https://files.minecraftforge.net/maven/";
+    QString TRANSLATIONS_BASE_URL = "https://meta.multimc.org/translations/";
+
+    bool UPDATER_ENABLED = false;
+    QString ANALYTICS_ID;
 
     QString printableVersionString() const;
 };

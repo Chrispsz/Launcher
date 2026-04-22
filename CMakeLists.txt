@@ -125,6 +125,11 @@ else()
     add_subdirectory(notsecrets)
 endif()
 
+# Set required BuildConfig variables
+set(Launcher_UPDATER_BASE "" CACHE STRING "Updater base URL (disabled)")
+set(Launcher_META_URL "https://meta.multimc.org/v1/" CACHE STRING "Meta URL")
+set(Launcher_VERSION_STRING "${Launcher_RELEASE_VERSION_NAME}" CACHE STRING "Version string")
+
 ####################################### Install layout #######################################
 
 # How to install the build results
