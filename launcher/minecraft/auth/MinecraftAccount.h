@@ -76,10 +76,6 @@ public: /* construction */
 
     static MinecraftAccountPtr createLocal(const QString &username);
 
-    static MinecraftAccountPtr createElyby(const QString &username);
-
-    static MinecraftAccountPtr createBlankMSA();
-
     static MinecraftAccountPtr loadFromJsonV2(const QJsonObject &json);
     static MinecraftAccountPtr loadFromJsonV3(const QJsonObject &json);
 
@@ -92,13 +88,7 @@ public: /* manipulation */
      * Attempt to login. Empty password means we use the token.
      * If the attempt fails because we already are performing some task, it returns false.
      */
-    shared_qobject_ptr<AccountTask> login(QString password);
-
-    shared_qobject_ptr<AccountTask> loginMSA();
-
     shared_qobject_ptr<AccountTask> loginLocal();
-
-    shared_qobject_ptr<AccountTask> loginElyby(QString password);
 
     shared_qobject_ptr<AccountTask> refresh();
 

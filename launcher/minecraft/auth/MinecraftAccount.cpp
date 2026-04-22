@@ -100,28 +100,6 @@ MinecraftAccountPtr MinecraftAccount::createLocal(const QString &username)
     return account;
 }
 
-MinecraftAccountPtr MinecraftAccount::createElyby(const QString &username)
-{
-    MinecraftAccountPtr account = new MinecraftAccount();
-    account->data.type = AccountType::Elyby;
-    account->data.yggdrasilToken.extra["userName"] = username;
-    account->data.yggdrasilToken.extra["clientToken"] = QUuid::createUuid().toString().remove(QRegExp("[{}-]"));
-    account->data.minecraftProfile.id = uuidFromUsername(username).toString().remove(QRegExp("[{}-]"));
-    account->data.minecraftProfile.name = username;
-    account->data.minecraftProfile.validity = Katabasis::Validity::Certain;
-    account->data.minecraftEntitlement.ownsMinecraft = true;
-    account->data.minecraftEntitlement.canPlayMinecraft = true;
-    return account;
-}
-
-MinecraftAccountPtr MinecraftAccount::createBlankMSA()
-{
-    MinecraftAccountPtr account(new MinecraftAccount());
-    account->data.type = AccountType::MSA;
-    account->setProvider(AuthProviders::lookup("MSA"));
-    return account;
-}
-
 
 QJsonObject MinecraftAccount::saveToJson() const
 {
@@ -145,40 +123,10 @@ QPixmap MinecraftAccount::getFace() const {
 }
 
 
-shared_qobject_ptr<AccountTask> MinecraftAccount::login(QString password) {
-    Q_ASSERT(m_currentTask.get() == nullptr);
-
-    m_currentTask.reset(new MojangLogin(&data, password));
-    connect(m_currentTask.get(), SIGNAL(succeeded()), SLOT(authSucceeded()));
-    connect(m_currentTask.get(), SIGNAL(failed(QString)), SLOT(authFailed(QString)));
-    emit activityChanged(true);
-    return m_currentTask;
-}
-
-shared_qobject_ptr<AccountTask> MinecraftAccount::loginMSA() {
-    Q_ASSERT(m_currentTask.get() == nullptr);
-
-    m_currentTask.reset(new MSAInteractive(&data));
-    connect(m_currentTask.get(), SIGNAL(succeeded()), SLOT(authSucceeded()));
-    connect(m_currentTask.get(), SIGNAL(failed(QString)), SLOT(authFailed(QString)));
-    emit activityChanged(true);
-    return m_currentTask;
-}
-
 shared_qobject_ptr<AccountTask> MinecraftAccount::loginLocal() {
     Q_ASSERT(m_currentTask.get() == nullptr);
 
     m_currentTask.reset(new LocalLogin(&data));
-    connect(m_currentTask.get(), SIGNAL(succeeded()), SLOT(authSucceeded()));
-    connect(m_currentTask.get(), SIGNAL(failed(QString)), SLOT(authFailed(QString)));
-    emit activityChanged(true);
-    return m_currentTask;
-}
-
-shared_qobject_ptr<AccountTask> MinecraftAccount::loginElyby(QString password) {
-    Q_ASSERT(m_currentTask.get() == nullptr);
-
-    m_currentTask.reset(new ElybyLogin(&data, password));
     connect(m_currentTask.get(), SIGNAL(succeeded()), SLOT(authSucceeded()));
     connect(m_currentTask.get(), SIGNAL(failed(QString)), SLOT(authFailed(QString)));
     emit activityChanged(true);
@@ -190,17 +138,8 @@ shared_qobject_ptr<AccountTask> MinecraftAccount::refresh() {
         return m_currentTask;
     }
 
-    if(data.type == AccountType::MSA) {
-        m_currentTask.reset(new MSASilent(&data));
-    }
-    else if (data.type == AccountType::Mojang) {
-        m_currentTask.reset(new MojangRefresh(&data));
-    }
-    else if (data.type == AccountType::Local) {
+    if (data.type == AccountType::Local) {
         m_currentTask.reset(new LocalRefresh(&data));
-    }
-    else if (data.type == AccountType::Elyby) {
-        m_currentTask.reset(new ElybyRefresh(&data));
     }
 
     connect(m_currentTask.get(), SIGNAL(succeeded()), SLOT(authSucceeded()));
