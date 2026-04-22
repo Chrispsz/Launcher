@@ -33,6 +33,7 @@ public:
     QString RESOURCE_BASE = "https://resources.download.minecraft.net/";
     QString LIBRARY_BASE = "https://libraries.minecraft.net/";
     QString AUTH_BASE = "https://authserver.mojang.com/";
+    QString FMLLIBS_BASE_URL = "https://files.minecraftforge.net/maven/";
 
     QString printableVersionString() const;
 };

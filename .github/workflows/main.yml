@@ -65,8 +65,8 @@ jobs:
         uses: actions/cache@main
         id: qt-cached
         with:
-          path: "C:/Qt"
-          key: ${{ runner.os }}-qt563-mingw492-v2
+          path: "D:/Qt"
+          key: ${{ runner.os }}-qt563-mingw492-v3
 
       - name: Cache Qt Installer
         uses: actions/cache@main
@@ -127,7 +127,7 @@ jobs:
         shell: cmd
         run: |
           for /f "tokens=*" %%n in ('powershell -NoLogo -Command "$(ls $pwd\cmake-*-windows-i386\bin).Fullname"') do @(set PATHCM=%%n)
-          set PATH=C:\Qt\5.6.3\mingw49_32\bin;C:\Qt\Tools\mingw492_32\bin;
+          set PATH=D:\Qt\5.6.3\mingw49_32\bin;D:\Qt\Tools\mingw492_32\bin;
           set PATH=%CD%\zlib;%CD%\zlib\bin;%CD%\zlib\lib;%CD%\zlib\include;%PATH%
           set PATH=%CD%\OpenSSL;%PATH%
           set PATH=%PATHCM%;%PATH%
@@ -137,9 +137,9 @@ jobs:
            -DCMAKE_C_COMPILER=gcc ^
            -DCMAKE_CXX_COMPILER=g++ ^
            -DCMAKE_BUILD_TYPE=Release ^
-           -DCMAKE_INSTALL_PREFIX:PATH="C:/LauncherMC" ^
-           -DCMAKE_PREFIX_PATH="C:\Qt\5.6.3\mingw49_32" ^
-           -DQt5_DIR="C:\Qt\5.6.3\mingw49_32" ^
+           -DCMAKE_INSTALL_PREFIX:PATH="D:/LauncherMC" ^
+           -DCMAKE_PREFIX_PATH="D:\Qt\5.6.3\mingw49_32" ^
+           -DQt5_DIR="D:\Qt\5.6.3\mingw49_32" ^
            -DLauncher_LAYOUT=win-bundle ^
            -DLauncher_BUILD_PLATFORM=win32 ^
            -DLauncher_EMBED_SECRETS=On ^
@@ -150,7 +150,7 @@ jobs:
         shell: cmd
         run: |
           for /f "tokens=*" %%n in ('powershell -NoLogo -Command "$(ls $pwd\cmake-*-windows-i386\bin).Fullname"') do @(set PATHCM=%%n)
-          set PATH=C:\Qt\5.6.3\mingw49_32\bin;C:\Qt\Tools\mingw492_32\bin;
+          set PATH=D:\Qt\5.6.3\mingw49_32\bin;D:\Qt\Tools\mingw492_32\bin;
           set PATH=%CD%\zlib;%CD%\zlib\bin;%PATH%
           set PATH=%CD%\OpenSSL;%PATH%
           set PATH=%PATHCM%;%PATH%
@@ -161,11 +161,11 @@ jobs:
       - name: Copy OpenSSL
         shell: cmd
         run: |
-          cp OpenSSL/ssleay32.dll C:/LauncherMC/LauncherMC/ssleay32.dll
-          cp OpenSSL/libeay32.dll C:/LauncherMC/LauncherMC/libeay32.dll
+          cp OpenSSL/ssleay32.dll D:/LauncherMC/LauncherMC/ssleay32.dll
+          cp OpenSSL/libeay32.dll D:/LauncherMC/LauncherMC/libeay32.dll
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@main
         with:
           name: LauncherMC-win32
-          path: "C:/LauncherMC"
+          path: "D:/LauncherMC"
