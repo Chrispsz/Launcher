@@ -54,7 +54,6 @@
 #include <java/JavaInstallList.h>
 #include <launch/LaunchTask.h>
 #include <minecraft/auth/AccountList.h>
-#include <SkinUtils.h>
 #include <BuildConfig.h>
 #include <net/NetJob.h>
 #include <net/Download.h>
