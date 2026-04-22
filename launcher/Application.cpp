@@ -15,8 +15,7 @@
 
 #include "ui/themes/ITheme.h"
 #include "ui/themes/SystemTheme.h"
-#include "ui/themes/DarkTheme.h"
-#include "ui/themes/BrightTheme.h"
+// DarkTheme.h and BrightTheme.h removed — themes are abstract (missing qtTheme() override)
 
 #include "ui/setupwizard/SetupWizard.h"
 #include "ui/setupwizard/LanguageWizardPage.h"
@@ -661,8 +660,8 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     m_settings->registerSetting("LastUsedGroupForNewInstance", QString());
 
     // ── CONSOLE ──
-    m_settings->registerSetting("ConsoleFont", resolvedDefaultMonospace);
-    m_settings->registerSetting("ConsoleFontSize", defaultSize);
+    m_settings->registerSetting("ConsoleFont", QString("monospace"));
+    m_settings->registerSetting("ConsoleFontSize", 10);
     m_settings->registerSetting("ConsoleMaxLines", 50000);
     m_settings->registerSetting("ConsoleOverflowStop", true);
 
@@ -836,10 +835,11 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         {
             m_themes.insert(std::make_pair(theme->id(), std::unique_ptr<ITheme>(theme)));
         };
-        auto darkTheme = new DarkTheme();
+        // DarkTheme and BrightTheme are abstract (missing qtTheme() override) — commented out
+        // auto darkTheme = new DarkTheme();
         insertTheme(new SystemTheme());
-        insertTheme(darkTheme);
-        insertTheme(new BrightTheme());
+        // insertTheme(darkTheme);
+        // insertTheme(new BrightTheme());
         qDebug() << "<> Widget themes initialized.";
     }
 
@@ -1026,7 +1026,7 @@ void Application::performMainStartupAction()
                 qDebug() << "   Launching with account" << m_profileToUse;
             }
 
-            launch(inst, !offline, nullptr, serverOrWorldToJoin, accountToUse, m_offlineName);
+            launch(inst, !offline, serverOrWorldToJoin, accountToUse, m_offlineName);
             return;
         }
     }
@@ -1135,7 +1135,6 @@ void Application::messageReceived(const QByteArray& message)
         launch(
             instance,
             !offline,
-            nullptr,
             quickPlayTarget,
             accountObject,
             offlineName
@@ -1147,20 +1146,21 @@ void Application::messageReceived(const QByteArray& message)
     }
 }
 
-{
-    if(!m_analytics)
-        return;
-    bool enabled = value.toBool();
-    if(enabled)
-    {
-        qDebug() << "Analytics enabled by user.";
-    }
-    else
-    {
-        qDebug() << "Analytics disabled by user.";
-    }
-    m_analytics->enable(enabled);
-}
+// Analytics setter removed — GAnalytics has been deleted
+// {
+//     if(!m_analytics)
+//         return;
+//     bool enabled = value.toBool();
+//     if(enabled)
+//     {
+//         qDebug() << "Analytics enabled by user.";
+//     }
+//     else
+//     {
+//         qDebug() << "Analytics disabled by user.";
+//     }
+//     m_analytics->enable(enabled);
+// }
 
 std::shared_ptr<TranslationsModel> Application::translations()
 {
@@ -1238,11 +1238,8 @@ bool Application::launch(
         MinecraftAccountPtr accountToUse,
         const QString& offlineName
 ) {
-    if(m_updateRunning)
-    {
-        qDebug() << "Cannot launch instances while an update is running. Please try again when updates are completed.";
-    }
-    else if(instance->canLaunch())
+    // m_updateRunning check removed — updater has been deleted
+    if(instance->canLaunch())
     {
         auto & extras = m_instanceExtras[instance->id()];
         auto & window = extras.window;
@@ -1311,7 +1308,7 @@ void Application::addRunningInstance()
     m_runningInstances ++;
     if(m_runningInstances == 1)
     {
-        emit updateAllowedChanged(false);
+        // emit updateAllowedChanged(false); — updater removed
     }
 }
 
@@ -1325,7 +1322,7 @@ void Application::subRunningInstance()
     m_runningInstances --;
     if(m_runningInstances == 0)
     {
-        emit updateAllowedChanged(true);
+        // emit updateAllowedChanged(true); — updater removed
     }
 }
 
@@ -1334,14 +1331,12 @@ bool Application::shouldExitNow() const
     return m_runningInstances == 0 && m_openWindows == 0;
 }
 
-bool Application::updatesAreAllowed()
-{
-    return m_runningInstances == 0;
-}
+// updatesAreAllowed() removed — updater has been deleted
 
-{
-    m_updateRunning = running;
-}
+// setUpdateRunning() removed — updater has been deleted
+// {
+//     m_updateRunning = running;
+// }
 
 
 void Application::controllerSucceeded()
@@ -1429,64 +1424,12 @@ MainWindow* Application::showMainWindow(bool minimized)
         }
 
         m_mainWindow->checkInstancePathForProblems();
-        connect(this, &Application::updateAllowedChanged, m_mainWindow, &MainWindow::updatesAllowedChanged);
+        // connect(this, &Application::updateAllowedChanged, m_mainWindow, &MainWindow::updatesAllowedChanged); — updater removed
         connect(m_mainWindow, &MainWindow::isClosing, this, &Application::on_windowClose);
         m_openWindows++;
     }
     // FIXME: move this somewhere else...
-    if(m_analytics)
-    {
-        auto windowSize = m_mainWindow->size();
-        auto sizeString = QString("%1x%2").arg(windowSize.width()).arg(windowSize.height());
-        qDebug() << "Viewport size" << sizeString;
-        m_analytics->setViewportSize(sizeString);
-        /*
-         * cm1 = java min heap [MB]
-         * cm2 = java max heap [MB]
-         * cm3 = system RAM [MB]
-         *
-         * cd1 = java version
-         * cd2 = java architecture
-         * cd3 = system architecture
-         * cd4 = CPU architecture
-         */
-        QVariantMap customValues;
-        int min = m_settings->get("MinMemAlloc").toInt();
-        int max = m_settings->get("MaxMemAlloc").toInt();
-        if(min < max)
-        {
-            customValues["cm1"] = min;
-            customValues["cm2"] = max;
-        }
-        else
-        {
-            customValues["cm1"] = max;
-            customValues["cm2"] = min;
-        }
-
-        constexpr uint64_t Mega = 1024ull * 1024ull;
-        int ramSize = int(Sys::getSystemRam() / Mega);
-        qDebug() << "RAM size is" << ramSize << "MB";
-        customValues["cm3"] = ramSize;
-
-        customValues["cd1"] = m_settings->get("JavaVersion");
-        customValues["cd2"] = m_settings->get("JavaArchitecture");
-        customValues["cd3"] = Sys::isSystem64bit() ? "64":"32";
-        customValues["cd4"] = Sys::isCPU64bit() ? "64":"32";
-        auto kernelInfo = Sys::getKernelInfo();
-        customValues["cd5"] = kernelInfo.kernelName;
-        customValues["cd6"] = kernelInfo.kernelVersion;
-        auto distInfo = Sys::getDistributionInfo();
-        if(!distInfo.distributionName.isEmpty())
-        {
-            customValues["cd7"] = distInfo.distributionName;
-        }
-        if(!distInfo.distributionVersion.isEmpty())
-        {
-            customValues["cd8"] = distInfo.distributionVersion;
-        }
-        m_analytics->sendScreenView("Main Window", customValues);
-    }
+    // Analytics block removed — GAnalytics has been deleted
     return m_mainWindow;
 }
 
@@ -1545,10 +1488,9 @@ void Application::on_windowClose()
     }
 }
 
-QString Application::msaClientId() const {
-    return Secrets::getMSAClientID('-');
-}
+// msaClientId() removed — not declared in header
 
+void Application::updateProxySettings(QString proxyTypeStr, QString addr, int port, QString user, QString password)
 {
     // Set the application proxy settings.
     if (proxyTypeStr == "SOCKS5")
