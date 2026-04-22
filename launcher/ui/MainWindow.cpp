@@ -319,12 +319,6 @@ public:
         helpMenu = new QMenu(MainWindow);
         helpMenu->setToolTipsVisible(true);
 
-        }
-
-        }
-
-        }
-
         actionAbout = TranslatedAction(MainWindow);
         actionAbout->setObjectName(QStringLiteral("actionAbout"));
         actionAbout->setIcon(APPLICATION->getThemedIcon("about"));
