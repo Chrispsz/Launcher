@@ -52,6 +52,12 @@ jobs:
       - name: ccache stats
         run: ccache --show-stats
 
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@main
+        with:
+          name: LauncherMC-linux64
+          path: "build/LauncherMC"
+
   build-windows:
     name: build-windows
     runs-on: windows-2022
