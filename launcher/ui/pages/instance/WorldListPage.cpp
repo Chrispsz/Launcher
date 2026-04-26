@@ -366,7 +366,7 @@ void WorldListPage::joinSelectedWorld(bool online)
     auto world = (World *) worldVariant.value<void *>();
     auto name = world->folderName();
 
-    APPLICATION->launch(m_inst, online, nullptr, std::make_shared<QuickPlayTarget>(QuickPlayTarget::parseSingleplayer(name)));
+    APPLICATION->launch(m_inst, online, std::make_shared<QuickPlayTarget>(QuickPlayTarget::parseSingleplayer(name)), nullptr);
 }
 
 void WorldListPage::on_actionJoin_triggered()
