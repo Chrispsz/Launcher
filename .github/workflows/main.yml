@@ -178,8 +178,8 @@ jobs:
       - name: Copy OpenSSL
         shell: cmd
         run: |
-          copy OpenSSL\ssleay32.dll D:\LauncherMC\LauncherMC\ssleay32.dll
-          copy OpenSSL\libeay32.dll D:\LauncherMC\LauncherMC\libeay32.dll
+          copy OpenSSL\ssleay32.dll D:\LauncherMC\ssleay32.dll
+          copy OpenSSL\libeay32.dll D:\LauncherMC\libeay32.dll
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@main
