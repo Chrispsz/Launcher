@@ -31,6 +31,7 @@
 #include <QFileDialog>
 #include <QValidator>
 #include <QDialogButtonBox>
+#include <QTimer>
 
 #include "ui/widgets/PageContainer.h"
 #include "ui/pages/modplatform/VanillaPage.h"
