@@ -161,21 +161,27 @@ jobs:
       - name: Install
         shell: cmd
         run: |
-          mkdir -p D:/LauncherMC/LauncherMC
-          cp build/LauncherMC.exe D:/LauncherMC/LauncherMC/LauncherMC.exe
-          xcopy /E /I /Y D:\Qt\5.6.3\mingw49_32\bin\Qt5*.dll D:/LauncherMC/LauncherMC/
-          xcopy /E /I /Y D:\Qt\5.6.3\mingw49_32\bin\icu*.dll D:/LauncherMC/LauncherMC/
-          xcopy /E /I /Y D:\Qt\Tools\mingw492_32\bin\libgcc_s_dw2-1.dll D:/LauncherMC/LauncherMC/
-          xcopy /E /I /Y D:\Qt\Tools\mingw492_32\bin\libstdc++-6.dll D:/LauncherMC/LauncherMC/
-          xcopy /E /I /Y D:\Qt\Tools\mingw492_32\bin\libwinpthread-1.dll D:/LauncherMC/LauncherMC/
-          xcopy /E /I /Y D:\Qt\5.6.3\mingw49_32\plugins\platforms D:/LauncherMC/LauncherMC/platforms/
-          xcopy /E /I /Y D:\Qt\5.6.3\mingw49_32\plugins\imageformats D:/LauncherMC/LauncherMC/imageformats/
+          mkdir D:\LauncherMC\LauncherMC
+          copy build\LauncherMC.exe D:\LauncherMC\LauncherMC\LauncherMC.exe
+          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Core.dll D:\LauncherMC\LauncherMC\
+          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Gui.dll D:\LauncherMC\LauncherMC\
+          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Widgets.dll D:\LauncherMC\LauncherMC\
+          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Network.dll D:\LauncherMC\LauncherMC\
+          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Xml.dll D:\LauncherMC\LauncherMC\
+          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Svg.dll D:\LauncherMC\LauncherMC\
+          copy D:\Qt\Tools\mingw492_32\bin\libgcc_s_dw2-1.dll D:\LauncherMC\LauncherMC\
+          copy D:\Qt\Tools\mingw492_32\bin\libstdc++-6.dll D:\LauncherMC\LauncherMC\
+          copy D:\Qt\Tools\mingw492_32\bin\libwinpthread-1.dll D:\LauncherMC\LauncherMC\
+          mkdir D:\LauncherMC\LauncherMC\platforms
+          copy D:\Qt\5.6.3\mingw49_32\plugins\platforms\qwindows.dll D:\LauncherMC\LauncherMC\platforms\
+          mkdir D:\LauncherMC\LauncherMC\imageformats
+          copy D:\Qt\5.6.3\mingw49_32\plugins\imageformats\qsvg.dll D:\LauncherMC\LauncherMC\imageformats\
 
       - name: Copy OpenSSL
         shell: cmd
         run: |
-          cp OpenSSL/ssleay32.dll D:/LauncherMC/LauncherMC/ssleay32.dll
-          cp OpenSSL/libeay32.dll D:/LauncherMC/LauncherMC/libeay32.dll
+          copy OpenSSL\ssleay32.dll D:\LauncherMC\LauncherMC\ssleay32.dll
+          copy OpenSSL\libeay32.dll D:\LauncherMC\LauncherMC\libeay32.dll
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@main
