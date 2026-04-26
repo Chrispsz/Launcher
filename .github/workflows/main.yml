@@ -158,6 +158,17 @@ jobs:
           cd build
           mingw32-make -j%NUMBER_OF_PROCESSORS%
 
+      - name: Install
+        shell: cmd
+        run: |
+          for /f "tokens=*" %%n in ('powershell -NoLogo -Command "$(ls $pwd\cmake-*-windows-i386\bin).Fullname"') do @(set PATHCM=%%n)
+          set PATH=D:\Qt\5.6.3\mingw49_32\bin;D:\Qt\Tools\mingw492_32\bin;
+          set PATH=%CD%\zlib;%CD%\zlib\bin;%PATH%
+          set PATH=%CD%\OpenSSL;%PATH%
+          set PATH=%PATHCM%;%PATH%
+          cd build
+          cmake --install .
+
       - name: Copy OpenSSL
         shell: cmd
         run: |
