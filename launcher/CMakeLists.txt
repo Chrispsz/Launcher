@@ -606,6 +606,8 @@ SET(LAUNCHER_SOURCES
     ui/dialogs/ExportInstanceDialog.h
     ui/dialogs/IconPickerDialog.cpp
     ui/dialogs/IconPickerDialog.h
+    ui/dialogs/LocalLoginDialog.cpp
+    ui/dialogs/LocalLoginDialog.h
     ui/dialogs/NewComponentDialog.cpp
     ui/dialogs/NewComponentDialog.h
     ui/dialogs/NewInstanceDialog.cpp
@@ -691,6 +693,7 @@ qt5_wrap_ui(LAUNCHER_UI
     ui/widgets/CustomCommands.ui
     ui/widgets/MCModInfoFrame.ui
     ui/dialogs/CopyInstanceDialog.ui
+    ui/dialogs/LocalLoginDialog.ui
     ui/dialogs/ProgressDialog.ui
     ui/dialogs/NewInstanceDialog.ui
     ui/dialogs/NewComponentDialog.ui
