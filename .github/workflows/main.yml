@@ -161,13 +161,15 @@ jobs:
       - name: Install
         shell: cmd
         run: |
-          for /f "tokens=*" %%n in ('powershell -NoLogo -Command "$(ls $pwd\cmake-*-windows-i386\bin).Fullname"') do @(set PATHCM=%%n)
-          set PATH=D:\Qt\5.6.3\mingw49_32\bin;D:\Qt\Tools\mingw492_32\bin;
-          set PATH=%CD%\zlib;%CD%\zlib\bin;%PATH%
-          set PATH=%CD%\OpenSSL;%PATH%
-          set PATH=%PATHCM%;%PATH%
-          cd build
-          cmake --install .
+          mkdir -p D:/LauncherMC/LauncherMC
+          cp build/LauncherMC.exe D:/LauncherMC/LauncherMC/LauncherMC.exe
+          xcopy /E /I /Y D:\Qt\5.6.3\mingw49_32\bin\Qt5*.dll D:/LauncherMC/LauncherMC/
+          xcopy /E /I /Y D:\Qt\5.6.3\mingw49_32\bin\icu*.dll D:/LauncherMC/LauncherMC/
+          xcopy /E /I /Y D:\Qt\Tools\mingw492_32\bin\libgcc_s_dw2-1.dll D:/LauncherMC/LauncherMC/
+          xcopy /E /I /Y D:\Qt\Tools\mingw492_32\bin\libstdc++-6.dll D:/LauncherMC/LauncherMC/
+          xcopy /E /I /Y D:\Qt\Tools\mingw492_32\bin\libwinpthread-1.dll D:/LauncherMC/LauncherMC/
+          xcopy /E /I /Y D:\Qt\5.6.3\mingw49_32\plugins\platforms D:/LauncherMC/LauncherMC/platforms/
+          xcopy /E /I /Y D:\Qt\5.6.3\mingw49_32\plugins\imageformats D:/LauncherMC/LauncherMC/imageformats/
 
       - name: Copy OpenSSL
         shell: cmd
