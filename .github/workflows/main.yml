@@ -117,8 +117,8 @@ jobs:
         run: |
           mkdir zlib
           cd zlib
-          curl -sL -o zlib.zip https://downloads.sourceforge.net/project/gnuwin32/zlib/1.2.3/zlib-1.2.3-bin.zip
-          curl -sL -o zliblibs.zip https://downloads.sourceforge.net/project/gnuwin32/zlib/1.2.3/zlib-1.2.3-lib.zip
+          curl -sL -o zlib.zip https://sourceforge.net/projects/gnuwin32/files/zlib/1.2.3/zlib-1.2.3-bin.zip/download
+          curl -sL -o zliblibs.zip https://sourceforge.net/projects/gnuwin32/files/zlib/1.2.3/zlib-1.2.3-lib.zip/download
           unzip -q zlib.zip
           unzip -q zliblibs.zip
 
