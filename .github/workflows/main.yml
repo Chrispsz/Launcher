@@ -167,21 +167,13 @@ jobs:
       - name: Install
         shell: cmd
         run: |
-          mkdir D:\LauncherMC\LauncherMC
-          copy build\LauncherMC.exe D:\LauncherMC\LauncherMC\LauncherMC.exe
-          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Core.dll D:\LauncherMC\LauncherMC\
-          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Gui.dll D:\LauncherMC\LauncherMC\
-          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Widgets.dll D:\LauncherMC\LauncherMC\
-          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Network.dll D:\LauncherMC\LauncherMC\
-          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Xml.dll D:\LauncherMC\LauncherMC\
-          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Svg.dll D:\LauncherMC\LauncherMC\
-          copy D:\Qt\Tools\mingw492_32\bin\libgcc_s_dw2-1.dll D:\LauncherMC\LauncherMC\
-          copy D:\Qt\Tools\mingw492_32\bin\libstdc++-6.dll D:\LauncherMC\LauncherMC\
-          copy D:\Qt\Tools\mingw492_32\bin\libwinpthread-1.dll D:\LauncherMC\LauncherMC\
-          mkdir D:\LauncherMC\LauncherMC\platforms
-          copy D:\Qt\5.6.3\mingw49_32\plugins\platforms\qwindows.dll D:\LauncherMC\LauncherMC\platforms\
-          mkdir D:\LauncherMC\LauncherMC\imageformats
-          copy D:\Qt\5.6.3\mingw49_32\plugins\imageformats\qsvg.dll D:\LauncherMC\LauncherMC\imageformats\
+          for /f "tokens=*" %%n in ('powershell -NoLogo -Command "$(ls $pwd\cmake-*-windows-i386\bin).Fullname"') do @(set PATHCM=%%n)
+          set PATH=D:\Qt\5.6.3\mingw49_32\bin;D:\Qt\Tools\mingw492_32\bin;
+          set PATH=%CD%\zlib;%CD%\zlib\bin;%PATH%
+          set PATH=%CD%\OpenSSL;%PATH%
+          set PATH=%PATHCM%;%PATH%
+          cd build
+          cmake --install .
 
       - name: Copy OpenSSL
         shell: cmd
