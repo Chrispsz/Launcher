@@ -129,7 +129,7 @@ jobs:
           done
 
           # Collect transitive dependencies of xcb libs
-          for so in bin/libxcb*.so* bin/libX11*.so* bin/libXext*.so* bin/libXi*.so* bin/libXrender*.so* bin/libXcursor*.so* bin/libGL*.so* bin/libEGL*.so* 2>/dev/null; do
+          for so in bin/libxcb*.so* bin/libX11*.so* bin/libXext*.so* bin/libXi*.so* bin/libXrender*.so* bin/libXcursor*.so* bin/libGL*.so* bin/libEGL*.so*; do
             [ -f "$so" ] || continue
             ldd "$so" 2>/dev/null | grep "=>" | awk '{print $3}' | while read lib; do
               if [ -n "$lib" ] && [ -f "$lib" ]; then
