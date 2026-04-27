@@ -29,7 +29,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq libgl1-mesa-dev qttools5-dev g++
+          sudo apt-get install -y -qq libgl1-mesa-dev qttools5-dev qttools5-dev-tools g++ libxcb-xinerama0 libxcb-cursor0
 
       - name: Build
         run: |
@@ -49,6 +49,115 @@ jobs:
           cd build
           make -j$(nproc)
 
+      - name: Install
+        run: |
+          cd build
+          cmake --install . --prefix ../AppDir
+
+      - name: Package Dependencies
+        run: |
+          cd AppDir
+          # Collect all shared library dependencies
+          BINS=$(find bin -type f -executable -o -name "*.so*")
+          for bin in $BINS; do
+            ldd "$bin" 2>/dev/null | grep "=>" | awk '{print $3}' | while read lib; do
+              if [ -n "$lib" ] && [ -f "$lib" ]; then
+                basename_lib=$(basename "$lib")
+                # Skip system libraries that are always available
+                case "$basename_lib" in
+                  linux-vdso.so*|ld-linux-x86-64.so*|libc.so*|libm.so*|libdl.so*|libpthread.so*|librt.so*) continue ;;
+                  libstdc++.so*|libgcc_s.so*) continue ;;
+                esac
+                # Check if it's a Qt or custom library
+                if echo "$lib" | grep -qE "(Qt5|Launcher_)"; then
+                  if [ ! -f "bin/$basename_lib" ]; then
+                    cp -L "$lib" "bin/$basename_lib"
+                    echo "Copied: $basename_lib"
+                  fi
+                fi
+              fi
+            done
+          done
+
+          # Copy Qt plugins
+          QT_PLUGINS=$(qmake -query QT_INSTALL_PLUGINS)
+          mkdir -p bin/plugins/platforms
+          mkdir -p bin/plugins/imageformats
+          mkdir -p bin/plugins/iconengines
+          mkdir -p bin/plugins/platforminputcontexts
+
+          # Platform plugins
+          cp "$QT_PLUGINS/platforms/libqxcb.so" bin/plugins/platforms/ 2>/dev/null
+          # Image format plugins
+          cp "$QT_PLUGINS/imageformats/libqgif.so" bin/plugins/imageformats/ 2>/dev/null
+          cp "$QT_PLUGINS/imageformats/libqico.so" bin/plugins/imageformats/ 2>/dev/null
+          cp "$QT_PLUGINS/imageformats/libqjpeg.so" bin/plugins/imageformats/ 2>/dev/null
+          cp "$QT_PLUGINS/imageformats/libqsvg.so" bin/plugins/imageformats/ 2>/dev/null
+          # Icon engine plugins
+          cp "$QT_PLUGINS/iconengines/libqsvgicon.so" bin/plugins/iconengines/ 2>/dev/null
+          # Input context plugins
+          cp "$QT_PLUGINS/platforminputcontexts/libqibusplatforminputcontextplugin.so" bin/plugins/platforminputcontexts/ 2>/dev/null
+          cp "$QT_PLUGINS/platforminputcontexts/libfcitxplatforminputcontextplugin.so" bin/plugins/platforminputcontexts/ 2>/dev/null
+
+          # Collect dependencies of plugins too
+          for plugin in $(find bin/plugins -name "*.so" 2>/dev/null); do
+            ldd "$plugin" 2>/dev/null | grep "=>" | awk '{print $3}' | while read lib; do
+              if [ -n "$lib" ] && [ -f "$lib" ]; then
+                basename_lib=$(basename "$lib")
+                case "$basename_lib" in
+                  linux-vdso.so*|ld-linux-x86-64.so*|libc.so*|libm.so*|libdl.so*|libpthread.so*|librt.so*) continue ;;
+                  libstdc++.so*|libgcc_s.so*) continue ;;
+                esac
+                if echo "$lib" | grep -qE "(Qt5|Launcher_)"; then
+                  if [ ! -f "bin/$basename_lib" ]; then
+                    cp -L "$lib" "bin/$basename_lib"
+                  fi
+                fi
+              fi
+            done
+          done
+
+          # Also copy xcb-related libs that Qt needs on Linux
+          for lib in $(ldd bin/LauncherMC 2>/dev/null | grep -E "libxcb|libX11|libXext|libXi|libXrender|libXcursor|libGL|libEGL" | awk '{print $3}'); do
+            if [ -n "$lib" ] && [ -f "$lib" ]; then
+              basename_lib=$(basename "$lib")
+              if [ ! -f "bin/$basename_lib" ]; then
+                cp -L "$lib" "bin/$basename_lib"
+              fi
+            fi
+          done
+
+          # Collect transitive dependencies of xcb libs
+          for so in bin/libxcb*.so* bin/libX11*.so* bin/libXext*.so* bin/libXi*.so* bin/libXrender*.so* bin/libXcursor*.so* bin/libGL*.so* bin/libEGL*.so* 2>/dev/null; do
+            [ -f "$so" ] || continue
+            ldd "$so" 2>/dev/null | grep "=>" | awk '{print $3}' | while read lib; do
+              if [ -n "$lib" ] && [ -f "$lib" ]; then
+                basename_lib=$(basename "$lib")
+                case "$basename_lib" in
+                  linux-vdso.so*|ld-linux-x86-64.so*|libc.so*|libm.so*|libdl.so*|libpthread.so*|librt.so*|libstdc++.so*|libgcc_s.so*) continue ;;
+                esac
+                if [ ! -f "bin/$basename_lib" ]; then
+                  cp -L "$lib" "bin/$basename_lib"
+                fi
+              fi
+            done
+          done
+
+          # Create qt.conf to point to our bundled plugins
+          echo "[Paths]" > bin/qt.conf
+          echo "Plugins=plugins" >> bin/qt.conf
+
+          # Create launcher script
+          cat > LauncherMC << 'EOF'
+          #!/bin/bash
+          SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+          export LD_LIBRARY_PATH="$SCRIPT_DIR/bin:$SCRIPT_DIR/bin/plugins/platforms${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          export QT_PLUGIN_PATH="$SCRIPT_DIR/bin/plugins"
+          export QT_QPA_PLATFORM_PLUGIN_PATH="$SCRIPT_DIR/bin/plugins/platforms"
+          exec "$SCRIPT_DIR/bin/LauncherMC" "$@"
+          EOF
+          chmod +x LauncherMC
+
       - name: ccache stats
         run: ccache --show-stats
 
@@ -56,7 +165,7 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: LauncherMC-linux64
-          path: "build/LauncherMC"
+          path: AppDir/
 
   build-windows:
     name: build-windows
@@ -180,6 +289,36 @@ jobs:
         run: |
           copy OpenSSL\ssleay32.dll D:\LauncherMC\ssleay32.dll
           copy OpenSSL\libeay32.dll D:\LauncherMC\libeay32.dll
+
+      - name: Copy Qt DLLs and Plugins
+        shell: cmd
+        run: |
+          set PATH=D:\Qt\5.6.3\mingw49_32\bin;D:\Qt\Tools\mingw492_32\bin;%PATH%
+          for /f "tokens=*" %%n in ('powershell -NoLogo -Command "$(ls $pwd\cmake-*-windows-i386\bin).Fullname"') do @(set PATHCM=%%n)
+          set PATH=%PATHCM%;%PATH%
+          set DEST=D:\LauncherMC
+          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Core.dll %DEST%\
+          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Gui.dll %DEST%\
+          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Widgets.dll %DEST%\
+          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Network.dll %DEST%\
+          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Xml.dll %DEST%\
+          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Concurrent.dll %DEST%\
+          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Svg.dll %DEST%\
+          copy D:\Qt\5.6.3\mingw49_32\bin\libgcc_s_dw2-1.dll %DEST%\
+          copy D:\Qt\5.6.3\mingw49_32\bin\libstdc++-6.dll %DEST%\
+          copy D:\Qt\5.6.3\mingw49_32\bin\libwinpthread-1.dll %DEST%\
+          copy D:\Qt\Tools\mingw492_32\bin\libgcc_s_dw2-1.dll %DEST%\
+          copy D:\Qt\Tools\mingw492_32\bin\libstdc++-6.dll %DEST%\
+          copy D:\Qt\Tools\mingw492_32\bin\libwinpthread-1.dll %DEST%\
+          mkdir %DEST%\platforms
+          copy D:\Qt\5.6.3\mingw49_32\plugins\platforms\qwindows.dll %DEST%\platforms\
+          mkdir %DEST%\imageformats
+          copy D:\Qt\5.6.3\mingw49_32\plugins\imageformats\qgif.dll %DEST%\imageformats\
+          copy D:\Qt\5.6.3\mingw49_32\plugins\imageformats\qico.dll %DEST%\imageformats\
+          copy D:\Qt\5.6.3\mingw49_32\plugins\imageformats\qjpeg.dll %DEST%\imageformats\
+          copy D:\Qt\5.6.3\mingw49_32\plugins\imageformats\qsvg.dll %DEST%\imageformats\
+          mkdir %DEST%\iconengines
+          copy D:\Qt\5.6.3\mingw49_32\plugins\iconengines\qsvgicon.dll %DEST%\iconengines\
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@main
