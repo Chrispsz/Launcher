@@ -17,6 +17,8 @@
 #include <QString>
 #include <QDir>
 #include <QStringList>
+#include <QProcess>
+#include <QFileInfo>
 
 #include <settings/Setting.h>
 
@@ -369,10 +371,12 @@ QList<QString> JavaUtils::FindJavaPaths()
 #elif defined(Q_OS_LINUX)
 QList<QString> JavaUtils::FindJavaPaths()
 {
-    qDebug() << "Linux Java detection incomplete - defaulting to \"java\"";
+    qDebug() << "Linux Java detection: scanning known locations";
 
     QList<QString> javas;
+    // Always add "java" (from PATH) as the first fallback
     javas.append(this->GetDefaultJava()->path);
+
     auto scanJavaDir = [&](const QString & dirPath)
     {
         QDir dir(dirPath);
@@ -396,6 +400,49 @@ QList<QString> JavaUtils::FindJavaPaths()
             javas.append(FS::PathCombine(prefix, "bin/java"));
         }
     };
+
+    // Use 'which java' to find system java
+    QProcess whichProc;
+    whichProc.start("which", QStringList{"java"});
+    if (whichProc.waitForFinished(3000))
+    {
+        QString whichJava = QString::fromLocal8Bit(whichProc.readAllStandardOutput()).trimmed();
+        if (!whichJava.isEmpty() && !javas.contains(whichJava))
+        {
+            javas.prepend(whichJava);
+            qDebug() << "Found system java via 'which':" << whichJava;
+            // Also try to find the real path (resolves symlinks)
+            QFileInfo realInfo(whichJava);
+            if (realInfo.isSymLink())
+            {
+                QString realPath = realInfo.symLinkTarget();
+                if (!realPath.isEmpty() && !javas.contains(realPath))
+                {
+                    javas.prepend(realPath);
+                }
+            }
+        }
+    }
+
+    // Check /etc/alternatives/java (Debian/Ubuntu/Fedora common)
+    QFileInfo altJava("/etc/alternatives/java");
+    if (altJava.exists())
+    {
+        QString altPath = altJava.absoluteFilePath();
+        if (!javas.contains(altPath))
+        {
+            javas.append(altPath);
+        }
+    }
+
+    // Use JAVA_HOME if set
+    QString javaHome = QProcessEnvironment::systemEnvironment().value("JAVA_HOME");
+    if (!javaHome.isEmpty())
+    {
+        javas.append(FS::PathCombine(javaHome, "bin/java"));
+        javas.append(FS::PathCombine(javaHome, "jre/bin/java"));
+    }
+
     // oracle RPMs
     scanJavaDir("/usr/java");
     // general locations used by distro packaging
@@ -407,7 +454,26 @@ QList<QString> JavaUtils::FindJavaPaths()
     // manually installed JDKs in /opt
     scanJavaDir("/opt/jdk");
     scanJavaDir("/opt/jdks");
-    return javas;
+    // Snap installations (Ubuntu/other snap-enabled distros)
+    scanJavaDir("/snap/jdk");
+    // Flatpak
+    scanJavaDir("/var/lib/flatpak/exports/bin");
+    // Arch Linux
+    scanJavaDir("/usr/lib/jvm/default");
+    scanJavaDir("/usr/lib/jvm/default-runtime");
+
+    // Deduplicate
+    QList<QString> unique;
+    for (const QString &j : javas)
+    {
+        if (!unique.contains(j))
+        {
+            unique.append(j);
+        }
+    }
+
+    qDebug() << "Probing" << unique.size() << "Java candidates";
+    return unique;
 }
 #else
 QList<QString> JavaUtils::FindJavaPaths()

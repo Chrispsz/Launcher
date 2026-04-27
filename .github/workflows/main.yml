@@ -57,21 +57,36 @@ jobs:
       - name: Package Dependencies
         run: |
           cd AppDir
-          # Function to recursively collect all non-system .so deps of a binary
+          # Function to collect ONLY Qt and direct launcher deps (no system libs)
           collect_deps() {
             local target="$1"
             local deps=$(ldd "$target" 2>/dev/null | grep "=>" | awk '{print $3}')
             for lib in $deps; do
               [ -z "$lib" ] || [ ! -f "$lib" ] && continue
               local base=$(basename "$lib")
-              # Skip core system libs
+              # Skip all system libs — they are already on the user's machine.
+              # Only keep Qt5, quazip, nbt++, and direct launcher deps.
               case "$base" in
-                linux-vdso.so*|ld-linux-x86-64.so*|libc.so*|libm.so*|libdl.so*|libpthread.so*|librt.so*|libstdc++.so*|libgcc_s.so*) continue ;;
+                linux-vdso.so*|ld-linux*) continue ;;
+                libc.so*|libm.so*|libdl.so*|libpthread.so*|librt.so*) continue ;;
+                libstdc++.so*|libgcc_s.so*) continue ;;
+                libz.so*|libbz2.so*|liblzma.so*|libzstd.so*) continue ;;
+                # X11 / display system — always present on desktop Linux
+                libX11*|libXext*|libXrender*|libXcursor*|libXfixes*|libXi*|libXinerama*|libXrandr*|libXxf86vm*|libxkbcommon*|libxcb*|libICE*|libSM*|libEGL*|libGL*|libGLX*|libOSMesa*|libdrm*|libgbm*|libwayland*|libinput*) continue ;;
+                # Font / text rendering — always present
+                libfreetype*|libfontconfig*|libharfbuzz*|libexpat*|libpng*|libjpeg*|libgif*|libtiff*|libwebp*) continue ;;
+                # ICU — huge (34MB), always present on desktop distros
+                libicu*) continue ;;
+                # System infrastructure — always present
+                libsystemd*|libdbus*|libglib*|libgio*|libgmodule*|libgobject*|libgthread*|libpcre*|libpcre2*|libgcrypt*|libgpg-error*|libuuid*|libblkid*|libmount*|libselinux*|libaudit*) continue ;;
+                # Crypto / auth — always present
+                libssl*|libcrypto*|libkrb5*|libk5crypto*|libcom_err*|libkeyutils*|libresolv*|libnsl*|libtirpc*) continue ;;
+                # D-Bus / threading
+                libgcc_s.so*|libpthread.so*|libattr*|libcap*) continue ;;
               esac
               if [ ! -f "bin/$base" ]; then
                 cp -L "$lib" "bin/$base"
                 echo "Copied: $base"
-                # Recurse into this lib's deps too
                 collect_deps "bin/$base"
               fi
             done
@@ -121,6 +136,10 @@ jobs:
           exec "$SCRIPT_DIR/bin/LauncherMC" "$@"
           EOF
           chmod +x LauncherMC
+
+          echo "=== Package contents ==="
+          du -sh bin/
+          ls -la bin/
 
       - name: ccache stats
         run: ccache --show-stats

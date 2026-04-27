@@ -14,6 +14,28 @@ JavaChecker::JavaChecker(QObject *parent) : QObject(parent)
 {
 }
 
+JavaChecker::~JavaChecker()
+{
+    killProcess();
+}
+
+void JavaChecker::killProcess()
+{
+    killTimer.stop();
+    if (process)
+    {
+        // Disconnect all signals first to avoid double-emit or use-after-free
+        process->disconnect();
+        if (process->state() != QProcess::NotRunning)
+        {
+            process->kill();
+            // Wait synchronously for the process to die (max 2s)
+            process->waitForFinished(2000);
+        }
+        process.reset();
+    }
+}
+
 void JavaChecker::performCheck()
 {
     QString checkerJar = FS::PathCombine(APPLICATION->getJarsPath(), "JavaCheck.jar");
@@ -169,6 +191,14 @@ void JavaChecker::timeout()
     if(process)
     {
         qDebug() << "Java checker has been killed by timeout.";
+        process->disconnect();
         process->kill();
+        process->waitForFinished(1000);
+        process.reset();
+        // Emit result as errored
+        JavaCheckResult result;
+        result.path = m_path;
+        result.id = m_id;
+        emit checkFinished(result);
     }
 }

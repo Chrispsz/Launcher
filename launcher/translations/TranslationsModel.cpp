@@ -189,7 +189,7 @@ void readIndex(const QString & path, QMap<QString, Language>& languages)
     }
     catch (const Exception &e)
     {
-        qCritical() << "Translations Download Failed: index file not readable";
+        qWarning() << "Translations index not found (expected on first run):" << path;
         return;
     }
 
@@ -322,11 +322,11 @@ void TranslationsModel::reloadLocalFiles()
         return a.key.compare(b.key) < 0;
     });
 
-    // LAUNCHERMC: Filtrar apenas pt_BR
+    // LAUNCHERMC: Filtrar apenas pt_BR e en_US (en_US é necessário como fallback)
     d->m_languages.erase(
         std::remove_if(d->m_languages.begin(), d->m_languages.end(),
             [](const Language &l) {
-                return l.key != "pt_BR";
+                return l.key != "pt_BR" && l.key != "en_US";
             }),
         d->m_languages.end()
     );
@@ -673,6 +673,6 @@ void TranslationsModel::dlGood()
 
 void TranslationsModel::indexFailed(QString reason)
 {
-    qCritical() << "Translations Index Download Failed:" << reason;
+    qWarning() << "Translations Index Download Failed:" << reason << "(non-critical, using bundled language)";
     d->m_index_job.reset();
 }

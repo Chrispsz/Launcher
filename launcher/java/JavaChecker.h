@@ -35,6 +35,7 @@ class JavaChecker : public QObject
     Q_OBJECT
 public:
     explicit JavaChecker(QObject *parent = 0);
+    ~JavaChecker();
     void performCheck();
 
     QString m_path;
@@ -47,6 +48,7 @@ public:
 signals:
     void checkFinished(JavaCheckResult result);
 private:
+    void killProcess();
     QProcessPtr process;
     QTimer killTimer;
     QString m_stdout;
