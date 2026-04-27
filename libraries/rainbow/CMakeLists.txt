@@ -8,8 +8,11 @@ set(RAINBOW_SOURCES
 src/rainbow.cpp
 )
 
-add_definitions(-DRAINBOW_LIBRARY)
+# LAUNCHERMC: Use RAINBOW_STATIC since this is a static library.
+# Without this, consumers on Windows get Q_DECL_IMPORT (dllimport) symbols
+# that the linker cannot resolve because there is no DLL.
 add_library(Launcher_rainbow STATIC ${RAINBOW_SOURCES})
+target_compile_definitions(Launcher_rainbow PUBLIC RAINBOW_STATIC)
 target_include_directories(Launcher_rainbow PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 target_link_libraries(Launcher_rainbow Qt5::Core Qt5::Gui)
