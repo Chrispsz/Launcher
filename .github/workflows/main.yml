@@ -71,8 +71,12 @@ jobs:
                 libc.so*|libm.so*|libdl.so*|libpthread.so*|librt.so*) continue ;;
                 libstdc++.so*|libgcc_s.so*) continue ;;
                 libz.so*|libbz2.so*|liblzma.so*|libzstd.so*) continue ;;
-                # X11 / display system — always present on desktop Linux
-                libX11*|libXext*|libXrender*|libXcursor*|libXfixes*|libXi*|libXinerama*|libXrandr*|libXxf86vm*|libxkbcommon*|libxcb*|libICE*|libSM*|libEGL*|libGL*|libGLX*|libOSMesa*|libdrm*|libgbm*|libwayland*|libinput*) continue ;;
+                # X11 core — present on all desktop Linux
+                libX11*|libXext*|libXrender*|libXcursor*|libXfixes*|libXi*|libXrandr*|libXxf86vm*|libICE*|libSM*|libEGL*|libGL*|libGLX*|libOSMesa*|libdrm*|libgbm*|libwayland*|libinput*) continue ;;
+                # NOTE: libxcb*, libxkbcommon*, libXinerama are NOT skipped —
+                # Qt platform plugin (qxcb) needs specific xcb sub-libraries
+                # (icccm, image, keysyms, render-util, xinerama, xkb, xinput)
+                # that may differ across distros.
                 # Font / text rendering — always present
                 libfreetype*|libfontconfig*|libharfbuzz*|libexpat*|libpng*|libjpeg*|libgif*|libtiff*|libwebp*) continue ;;
                 # NOTE: ICU is NOT skipped — Qt5 depends on it for Unicode/text
