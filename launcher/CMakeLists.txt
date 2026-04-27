@@ -764,6 +764,18 @@ install(TARGETS ${Launcher_Name}
     RUNTIME DESTINATION ${BINARY_DEST_DIR} COMPONENT Runtime
 )
 
+# LAUNCHERMC: Install bundled pt_BR translation
+install(
+    FILES ${CMAKE_CURRENT_SOURCE_DIR}/translations/mmc_pt_BR.qm
+    DESTINATION ${BINARY_DEST_DIR}/translations
+    COMPONENT Runtime
+)
+install(
+    FILES ${CMAKE_CURRENT_SOURCE_DIR}/translations/index_v2.json
+    DESTINATION ${BINARY_DEST_DIR}/translations
+    COMPONENT Runtime
+)
+
 #### The bundle mess! ####
 # Bundle utilities are used to complete the portable packages - they add all the libraries that would otherwise be missing on the target system.
 # NOTE: it seems that this absolutely has to be here, and nowhere else.

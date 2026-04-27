@@ -1,0 +1,14 @@
+{
+    "file_type": "MMC-TRANSLATION-INDEX",
+    "version": 2,
+    "languages": {
+        "pt_BR": {
+            "file": "19429257f8a44da1cec4c31b56504a09c365ff91.class",
+            "sha1": "19429257f8a44da1cec4c31b56504a09c365ff91",
+            "size": 151245,
+            "translated": 1093,
+            "untranslated": 528,
+            "fuzzy": 40
+        }
+    }
+}

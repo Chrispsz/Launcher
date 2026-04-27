@@ -70,8 +70,15 @@ bool JavaWizardPage::validatePage()
         {
             settings->set("JavaPath", m_java_widget->javaPath());
         }
+        [[fallthrough]];
         case JavaSettingsWidget::ValidationStatus::JavaBad:
         {
+            // Save JavaPath even if validation failed — user may want to fix it later
+            QString path = m_java_widget->javaPath();
+            if (!path.isEmpty())
+            {
+                settings->set("JavaPath", path);
+            }
             // Memory
             auto s = APPLICATION->settings();
             s->set("MinMemAlloc", m_java_widget->minHeapSize());

@@ -28,7 +28,6 @@ struct JavaCheckResult
     } validity = Validity::Errored;
 };
 
-typedef shared_qobject_ptr<QProcess> QProcessPtr;
 typedef shared_qobject_ptr<JavaChecker> JavaCheckerPtr;
 class JavaChecker : public QObject
 {
@@ -49,7 +48,11 @@ signals:
     void checkFinished(JavaCheckResult result);
 private:
     void killProcess();
-    QProcessPtr process;
+    // Raw pointer — shared_qobject_ptr uses deleteLater() which cannot
+    // synchronously kill QProcess in a destructor or timeout.
+    // We need immediate destruction to prevent
+    // "QProcess: Destroyed while process is still running" warnings.
+    QProcess *m_process = nullptr;
     QTimer killTimer;
     QString m_stdout;
     QString m_stderr;
