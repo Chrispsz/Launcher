@@ -786,8 +786,12 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     // initialize network access and proxy setup
     {
         m_network = new QNetworkAccessManager();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0)
         m_network->setRedirectPolicy(QNetworkRequest::NoLessSafeRedirectPolicy);
+#endif
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
         m_network->setTransferTimeout(120000); // 2 minute global timeout
+#endif
         QString proxyTypeStr = settings()->get("ProxyType").toString();
         QString addr = settings()->get("ProxyAddr").toString();
         int port = settings()->get("ProxyPort").value<qint16>();
