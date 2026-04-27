@@ -28,6 +28,8 @@
 
 #include "ApplicationMessage.h"
 
+#include <iostream>
+
 #include <QAccessible>
 #include <QDir>
 #include <QFileInfo>

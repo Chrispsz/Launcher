@@ -307,7 +307,9 @@ QString RemoveInvalidFilenameChars(QString string, QChar replaceWith)
     // LAUNCHERMC: Use QSet for O(1) character lookup instead of O(m) QString::contains
     static QSet<QChar> badChars;
     if (badChars.isEmpty()) {
-        badChars = QSet<QChar>(badFilenameChars.begin(), badFilenameChars.end());
+        for (int i = 0; i < badFilenameChars.length(); i++) {
+            badChars.insert(badFilenameChars[i]);
+        }
     }
     for (int i = 0; i < string.length(); i++)
     {
