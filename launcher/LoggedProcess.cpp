@@ -9,9 +9,9 @@ LoggedProcess::LoggedProcess(QObject *parent) : QProcess(parent)
     // QProcess has a strange interface... let's map a lot of those into a few.
     connect(this, &QProcess::readyReadStandardOutput, this, &LoggedProcess::on_stdOut);
     connect(this, &QProcess::readyReadStandardError, this, &LoggedProcess::on_stdErr);
-    // LAUNCHERMC: Using QOverload for Qt 5.6 compatibility (errorOccurred added in 5.15)
-    connect(this, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &LoggedProcess::on_exit);
-    connect(this, QOverload<QProcess::ProcessError>::of(&QProcess::error), this, &LoggedProcess::on_error);
+    // LAUNCHERMC: Using SIGNAL/SLOT for overloaded signals (Qt 5.6 compat - QOverload added in 5.7)
+    connect(this, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(on_exit(int,QProcess::ExitStatus)));
+    connect(this, SIGNAL(error(QProcess::ProcessError)), this, SLOT(on_error(QProcess::ProcessError)));
     connect(this, &QProcess::stateChanged, this, &LoggedProcess::on_stateChange);
 }
 

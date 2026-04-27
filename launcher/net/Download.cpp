@@ -101,10 +101,10 @@ void Download::startImpl()
     QNetworkReply *rep = m_network->get(request);
 
     m_reply.reset(rep);
-    // LAUNCHERMC: Using QOverload for Qt 5.6 compatibility (errorOccurred added in 5.15)
+    // LAUNCHERMC: Using function pointer for non-overloaded, SIGNAL/SLOT for overloaded (Qt 5.6 compat)
     connect(rep, &QNetworkReply::downloadProgress, this, &Download::downloadProgress);
     connect(rep, &QNetworkReply::finished, this, &Download::downloadFinished);
-    connect(rep, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), this, &Download::downloadError);
+    connect(rep, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(downloadError(QNetworkReply::NetworkError)));
     connect(rep, &QNetworkReply::sslErrors, this, &Download::sslErrors);
     connect(rep, &QNetworkReply::readyRead, this, &Download::downloadReadyRead);
 }
