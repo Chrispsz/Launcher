@@ -75,8 +75,8 @@ jobs:
                 libX11*|libXext*|libXrender*|libXcursor*|libXfixes*|libXi*|libXinerama*|libXrandr*|libXxf86vm*|libxkbcommon*|libxcb*|libICE*|libSM*|libEGL*|libGL*|libGLX*|libOSMesa*|libdrm*|libgbm*|libwayland*|libinput*) continue ;;
                 # Font / text rendering — always present
                 libfreetype*|libfontconfig*|libharfbuzz*|libexpat*|libpng*|libjpeg*|libgif*|libtiff*|libwebp*) continue ;;
-                # ICU — huge (34MB), always present on desktop distros
-                libicu*) continue ;;
+                # NOTE: ICU is NOT skipped — Qt5 depends on it for Unicode/text
+                # and versions differ across distros. It MUST be bundled.
                 # System infrastructure — always present
                 libsystemd*|libdbus*|libglib*|libgio*|libgmodule*|libgobject*|libgthread*|libpcre*|libpcre2*|libgcrypt*|libgpg-error*|libuuid*|libblkid*|libmount*|libselinux*|libaudit*) continue ;;
                 # Crypto / auth — always present
