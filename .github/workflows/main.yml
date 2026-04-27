@@ -57,26 +57,32 @@ jobs:
       - name: Package Dependencies
         run: |
           cd AppDir
-          # Collect all shared library dependencies (only ELF files)
-          BINS=$(find bin -type f \( -executable -o -name "*.so*" \) -exec file {} \; | grep -i "ELF" | cut -d: -f1)
-          for bin in $BINS; do
-            ldd "$bin" 2>/dev/null | grep "=>" | awk '{print $3}' | while read lib; do
-              if [ -n "$lib" ] && [ -f "$lib" ]; then
-                basename_lib=$(basename "$lib")
-                # Skip system libraries that are always available
-                case "$basename_lib" in
-                  linux-vdso.so*|ld-linux-x86-64.so*|libc.so*|libm.so*|libdl.so*|libpthread.so*|librt.so*) continue ;;
-                  libstdc++.so*|libgcc_s.so*) continue ;;
-                esac
-                # Check if it's a Qt or custom library
-                if echo "$lib" | grep -qE "(Qt5|Launcher_)"; then
-                  if [ ! -f "bin/$basename_lib" ]; then
-                    cp -L "$lib" "bin/$basename_lib"
-                    echo "Copied: $basename_lib"
-                  fi
-                fi
+          # Function to recursively collect all non-system .so deps of a binary
+          collect_deps() {
+            local target="$1"
+            local deps=$(ldd "$target" 2>/dev/null | grep "=>" | awk '{print $3}')
+            for lib in $deps; do
+              [ -z "$lib" ] || [ ! -f "$lib" ] && continue
+              local base=$(basename "$lib")
+              # Skip core system libs
+              case "$base" in
+                linux-vdso.so*|ld-linux-x86-64.so*|libc.so*|libm.so*|libdl.so*|libpthread.so*|librt.so*|libstdc++.so*|libgcc_s.so*) continue ;;
+              esac
+              if [ ! -f "bin/$base" ]; then
+                cp -L "$lib" "bin/$base"
+                echo "Copied: $base"
+                # Recurse into this lib's deps too
+                collect_deps "bin/$base"
               fi
             done
+          }
+
+          # Collect deps for the main executable
+          collect_deps "bin/LauncherMC"
+
+          # Collect deps for all bundled .so files
+          for so in bin/*.so*; do
+            [ -f "$so" ] && collect_deps "$so"
           done
 
           # Copy Qt plugins
@@ -87,61 +93,18 @@ jobs:
           mkdir -p bin/plugins/iconengines
           mkdir -p bin/plugins/platforminputcontexts
 
-          # Platform plugins
           [ -f "$QT_PLUGINS/platforms/libqxcb.so" ] && cp "$QT_PLUGINS/platforms/libqxcb.so" bin/plugins/platforms/
-          # Image format plugins
           [ -f "$QT_PLUGINS/imageformats/libqgif.so" ] && cp "$QT_PLUGINS/imageformats/libqgif.so" bin/plugins/imageformats/
           [ -f "$QT_PLUGINS/imageformats/libqico.so" ] && cp "$QT_PLUGINS/imageformats/libqico.so" bin/plugins/imageformats/
           [ -f "$QT_PLUGINS/imageformats/libqjpeg.so" ] && cp "$QT_PLUGINS/imageformats/libqjpeg.so" bin/plugins/imageformats/
           [ -f "$QT_PLUGINS/imageformats/libqsvg.so" ] && cp "$QT_PLUGINS/imageformats/libqsvg.so" bin/plugins/imageformats/
-          # Icon engine plugins
           [ -f "$QT_PLUGINS/iconengines/libqsvgicon.so" ] && cp "$QT_PLUGINS/iconengines/libqsvgicon.so" bin/plugins/iconengines/
-          # Input context plugins
           [ -f "$QT_PLUGINS/platforminputcontexts/libqibusplatforminputcontextplugin.so" ] && cp "$QT_PLUGINS/platforminputcontexts/libqibusplatforminputcontextplugin.so" bin/plugins/platforminputcontexts/
           [ -f "$QT_PLUGINS/platforminputcontexts/libfcitxplatforminputcontextplugin.so" ] && cp "$QT_PLUGINS/platforminputcontexts/libfcitxplatforminputcontextplugin.so" bin/plugins/platforminputcontexts/
 
-          # Collect dependencies of plugins too
-          for plugin in $(find bin/plugins -name "*.so" 2>/dev/null); do
-            ldd "$plugin" 2>/dev/null | grep "=>" | awk '{print $3}' | while read lib; do
-              if [ -n "$lib" ] && [ -f "$lib" ]; then
-                basename_lib=$(basename "$lib")
-                case "$basename_lib" in
-                  linux-vdso.so*|ld-linux-x86-64.so*|libc.so*|libm.so*|libdl.so*|libpthread.so*|librt.so*) continue ;;
-                  libstdc++.so*|libgcc_s.so*) continue ;;
-                esac
-                if echo "$lib" | grep -qE "(Qt5|Launcher_)"; then
-                  if [ ! -f "bin/$basename_lib" ]; then
-                    cp -L "$lib" "bin/$basename_lib"
-                  fi
-                fi
-              fi
-            done
-          done
-
-          # Also copy xcb-related libs that Qt needs on Linux
-          for lib in $(ldd bin/LauncherMC 2>/dev/null | grep -E "libxcb|libX11|libXext|libXi|libXrender|libXcursor|libGL|libEGL" | awk '{print $3}'); do
-            if [ -n "$lib" ] && [ -f "$lib" ]; then
-              basename_lib=$(basename "$lib")
-              if [ ! -f "bin/$basename_lib" ]; then
-                cp -L "$lib" "bin/$basename_lib"
-              fi
-            fi
-          done
-
-          # Collect transitive dependencies of xcb libs
-          for so in bin/libxcb*.so* bin/libX11*.so* bin/libXext*.so* bin/libXi*.so* bin/libXrender*.so* bin/libXcursor*.so* bin/libGL*.so* bin/libEGL*.so*; do
-            [ -f "$so" ] || continue
-            ldd "$so" 2>/dev/null | grep "=>" | awk '{print $3}' | while read lib; do
-              if [ -n "$lib" ] && [ -f "$lib" ]; then
-                basename_lib=$(basename "$lib")
-                case "$basename_lib" in
-                  linux-vdso.so*|ld-linux-x86-64.so*|libc.so*|libm.so*|libdl.so*|libpthread.so*|librt.so*|libstdc++.so*|libgcc_s.so*) continue ;;
-                esac
-                if [ ! -f "bin/$basename_lib" ]; then
-                  cp -L "$lib" "bin/$basename_lib"
-                fi
-              fi
-            done
+          # Collect deps for all plugin .so files
+          for plugin in bin/plugins/**/*.so bin/plugins/*.so; do
+            [ -f "$plugin" ] && collect_deps "$plugin"
           done
 
           # Create qt.conf to point to our bundled plugins
@@ -152,7 +115,7 @@ jobs:
           cat > LauncherMC << 'EOF'
           #!/bin/bash
           SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
-          export LD_LIBRARY_PATH="$SCRIPT_DIR/bin:$SCRIPT_DIR/bin/plugins/platforms${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          export LD_LIBRARY_PATH="$SCRIPT_DIR/bin${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
           export QT_PLUGIN_PATH="$SCRIPT_DIR/bin/plugins"
           export QT_QPA_PLATFORM_PLUGIN_PATH="$SCRIPT_DIR/bin/plugins/platforms"
           exec "$SCRIPT_DIR/bin/LauncherMC" "$@"
