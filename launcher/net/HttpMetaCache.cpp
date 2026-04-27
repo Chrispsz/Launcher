@@ -97,9 +97,16 @@ MetaEntryPtr HttpMetaCache::resolveEntry(QString base, QString resource_path, QS
     {
         QFile input(real_path);
         input.open(QIODevice::ReadOnly);
-        QString md5sum = QCryptographicHash::hash(input.readAll(), QCryptographicHash::Md5)
-                             .toHex()
-                             .constData();
+        QCryptographicHash hash(QCryptographicHash::Md5);
+        char buf[65536];
+        while (true)
+        {
+            qint64 bytesRead = input.read(buf, sizeof(buf));
+            if (bytesRead <= 0)
+                break;
+            hash.addData(buf, bytesRead);
+        }
+        QString md5sum = hash.result().toHex().constData();
         if (entry->md5sum != md5sum)
         {
             selected_base.entry_list.remove(resource_path);

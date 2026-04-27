@@ -40,6 +40,7 @@
 #include <QStringList>
 #include <QDebug>
 #include <QStyleFactory>
+#include <QTimer>
 
 #include "InstanceList.h"
 
@@ -788,6 +789,8 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     // initialize network access and proxy setup
     {
         m_network = new QNetworkAccessManager();
+        m_network->setRedirectPolicy(QNetworkRequest::NoLessSafeRedirectPolicy);
+        m_network->setTransferTimeout(120000); // 2 minute global timeout
         QString proxyTypeStr = settings()->get("ProxyType").toString();
         QString addr = settings()->get("ProxyAddr").toString();
         int port = settings()->get("ProxyPort").value<qint16>();
@@ -883,7 +886,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         qDebug() << "Loading accounts...";
         m_accounts->setListFilePath("accounts.json", true);
         m_accounts->loadList();
-        m_accounts->fillQueue();
+        QTimer::singleShot(3000, m_accounts.get(), &AccountList::fillQueue);
         qDebug() << "<> Accounts loaded.";
     }
 

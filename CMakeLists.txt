@@ -116,8 +116,8 @@ find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Concurrent REQUIRED)
 find_package(Qt5Network REQUIRED)
-find_package(Qt5Test REQUIRED)
-find_package(Qt5Xml REQUIRED)
+# LAUNCHERMC: Removed find_package(Qt5Test) — already found in cmake/UnitTest.cmake
+# LAUNCHERMC: Removed find_package(Qt5Xml) — unused module
 
 # The Qt5 cmake files don't provide its install paths, so ask qmake.
 include(QMakeQuery)
@@ -239,7 +239,7 @@ endif()
 include(ExternalProject)
 set_directory_properties(PROPERTIES EP_BASE External)
 
-option(NBT_BUILD_SHARED "Build NBT shared library" ON)
+option(NBT_BUILD_SHARED "Build NBT shared library" OFF)
 option(NBT_USE_ZLIB "Build NBT library with zlib support" OFF)
 option(NBT_BUILD_TESTS "Build NBT library tests" OFF) #FIXME: fix unit tests.
 set(NBT_NAME Launcher_nbt++)
@@ -251,7 +251,8 @@ add_subdirectory(libraries/systeminfo) # system information library
 add_subdirectory(libraries/hoedown) # markdown parser
 add_subdirectory(libraries/launcher) # java based launcher part for Minecraft
 add_subdirectory(libraries/javacheck) # java compatibility checker
-add_subdirectory(libraries/xz-embedded) # xz compression
+# LAUNCHERMC: xz-embedded compiled but never linked — disabled
+# add_subdirectory(libraries/xz-embedded) # xz compression
 add_subdirectory(libraries/quazip) # zip manipulation library
 add_subdirectory(libraries/rainbow) # Qt extension for colors
 add_subdirectory(libraries/iconfix) # fork of Qt's QIcon loader

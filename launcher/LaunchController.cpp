@@ -10,10 +10,6 @@
 
 #include <QLineEdit>
 #include <QInputDialog>
-#include <QStringList>
-#include <QHostInfo>
-#include <QList>
-#include <QHostAddress>
 #include <QPushButton>
 
 #include "BuildConfig.h"
@@ -274,28 +270,6 @@ void LaunchController::launchInstance()
     QString online_mode;
     if(m_session->wants_online) {
         online_mode = "online";
-
-        // Prepend Server Status
-        QStringList servers = {"authserver.mojang.com", "session.minecraft.net", "textures.minecraft.net", "api.mojang.com"};
-        QString resolved_servers = "";
-        QHostInfo host_info;
-
-        for(QString server : servers) {
-            host_info = QHostInfo::fromName(server);
-            resolved_servers = resolved_servers + server + " resolves to:\n    [";
-            if(!host_info.addresses().isEmpty()) {
-                for(QHostAddress address : host_info.addresses()) {
-                    resolved_servers = resolved_servers + address.toString();
-                    if(!host_info.addresses().endsWith(address)) {
-                        resolved_servers = resolved_servers + ", ";
-                    }
-                }
-            } else {
-                resolved_servers = resolved_servers + "N/A";
-            }
-            resolved_servers = resolved_servers + "]\n\n";
-        }
-        m_launcher->prependStep(new TextPrint(m_launcher.get(), resolved_servers, MessageLevel::Launcher));
     } else {
         online_mode = "offline";
     }

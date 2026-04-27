@@ -22,6 +22,7 @@
 #include "MMCZip.h"
 #include "FileSystem.h"
 #include <QDir>
+#include <QFileInfo>
 
 #ifdef major
     #undef major
@@ -67,6 +68,12 @@ static bool unzipNatives(QString source, QString targetFolder, bool applyJnilibH
             name = replaceSuffix(name, ".jnilib", ".dylib");
         }
         QString absFilePath = directory.absoluteFilePath(name);
+        // Skip re-extraction if file already exists and has non-zero size
+        QFileInfo existingFile(absFilePath);
+        if (existingFile.exists() && existingFile.size() > 0)
+        {
+            continue;
+        }
         if (!JlCompress::extractFile(&zip, "", absFilePath))
         {
             return false;
@@ -114,5 +121,8 @@ void ExtractNatives::finalize()
     auto instance = m_parent->instance();
     QString target_dir = FS::PathCombine(instance->instanceRoot(), "natives/");
     QDir dir(target_dir);
-    dir.removeRecursively();
+    // NOTE: Do not delete the natives folder after game exits.
+    // Keeping the extracted natives avoids re-extraction on every launch,
+    // significantly reducing startup time. Files are only re-extracted if missing.
+    // dir.removeRecursively();
 }

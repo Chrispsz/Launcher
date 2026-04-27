@@ -22,7 +22,7 @@ elseif (UNIX)
 endif()
 
 add_library(systeminfo STATIC ${systeminfo_SOURCES})
-target_link_libraries(systeminfo Qt5::Core Qt5::Gui Qt5::Network)
+target_link_libraries(systeminfo Qt5::Core)
 target_include_directories(systeminfo PUBLIC ${systeminfo_INCLUDE_DIRS})
 
 include (UnitTest)

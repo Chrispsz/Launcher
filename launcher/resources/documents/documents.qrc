@@ -1,6 +1,6 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
-    <qresource prefix="/documents">
+    <qresource prefix="/documents" compression="9" threshold="200">
         <file>../../../COPYING.md</file>
     </qresource>
 </RCC>

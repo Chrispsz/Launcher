@@ -31,7 +31,9 @@ void AssetUpdateTask::executeTask()
 
     auto metacache = APPLICATION->metacache();
     auto entry = metacache->resolveEntry("asset_indexes", localPath);
-    entry->setStale(true);
+    // Staleness is handled by the meta cache via ETag/If-Modified-Since headers.
+    // Forcing stale on every launch causes unnecessary network checks.
+    // entry->setStale(true);
     auto hexSha1 = assets->sha1.toLatin1();
     qDebug() << "Asset index SHA1:" << hexSha1;
     auto dl = Net::Download::makeCached(indexUrl, entry);

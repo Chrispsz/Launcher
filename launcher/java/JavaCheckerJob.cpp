@@ -26,6 +26,12 @@ void JavaCheckerJob::partFinished(JavaCheckResult result)
 
     javaresults.replace(result.id, result);
 
+    // Start the next checker if there are more waiting
+    if (num_finished < javacheckers.size())
+    {
+        javacheckers[num_finished]->performCheck();
+    }
+
     if (num_finished == javacheckers.size())
     {
         emitSucceeded();
@@ -35,9 +41,11 @@ void JavaCheckerJob::partFinished(JavaCheckResult result)
 void JavaCheckerJob::executeTask()
 {
     qDebug() << m_job_name.toLocal8Bit() << " started.";
-    for (auto iter : javacheckers)
+    int toStart = qMin(4, javacheckers.size());
+    for (int i = 0; i < toStart; i++)
     {
         javaresults.append(JavaCheckResult());
+        auto iter = javacheckers[i];
         connect(iter.get(), SIGNAL(checkFinished(JavaCheckResult)), SLOT(partFinished(JavaCheckResult)));
         iter->performCheck();
     }

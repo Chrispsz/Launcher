@@ -1,6 +1,6 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
-    <qresource prefix="/backgrounds">
+    <qresource prefix="/backgrounds" compression="9" threshold="200">
         <file alias="kitteh">catbgrnd2.png</file>
         <file alias="catmas">catmas.png</file>
         <file alias="cattiversary">cattiversary.png</file>

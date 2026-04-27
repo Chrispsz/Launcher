@@ -32,4 +32,5 @@ protected:
 
 private:
     QCollator m_naturalSort;
+    mutable QString m_cachedSortMode;
 };
