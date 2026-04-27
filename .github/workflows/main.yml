@@ -88,17 +88,17 @@ jobs:
           mkdir -p bin/plugins/platforminputcontexts
 
           # Platform plugins
-          cp "$QT_PLUGINS/platforms/libqxcb.so" bin/plugins/platforms/ 2>/dev/null
+          cp "$QT_PLUGINS/platforms/libqxcb.so" bin/plugins/platforms/ 2>/dev/null || true
           # Image format plugins
-          cp "$QT_PLUGINS/imageformats/libqgif.so" bin/plugins/imageformats/ 2>/dev/null
-          cp "$QT_PLUGINS/imageformats/libqico.so" bin/plugins/imageformats/ 2>/dev/null
-          cp "$QT_PLUGINS/imageformats/libqjpeg.so" bin/plugins/imageformats/ 2>/dev/null
-          cp "$QT_PLUGINS/imageformats/libqsvg.so" bin/plugins/imageformats/ 2>/dev/null
+          cp "$QT_PLUGINS/imageformats/libqgif.so" bin/plugins/imageformats/ 2>/dev/null || true
+          cp "$QT_PLUGINS/imageformats/libqico.so" bin/plugins/imageformats/ 2>/dev/null || true
+          cp "$QT_PLUGINS/imageformats/libqjpeg.so" bin/plugins/imageformats/ 2>/dev/null || true
+          cp "$QT_PLUGINS/imageformats/libqsvg.so" bin/plugins/imageformats/ 2>/dev/null || true
           # Icon engine plugins
-          cp "$QT_PLUGINS/iconengines/libqsvgicon.so" bin/plugins/iconengines/ 2>/dev/null
+          cp "$QT_PLUGINS/iconengines/libqsvgicon.so" bin/plugins/iconengines/ 2>/dev/null || true
           # Input context plugins
-          cp "$QT_PLUGINS/platforminputcontexts/libqibusplatforminputcontextplugin.so" bin/plugins/platforminputcontexts/ 2>/dev/null
-          cp "$QT_PLUGINS/platforminputcontexts/libfcitxplatforminputcontextplugin.so" bin/plugins/platforminputcontexts/ 2>/dev/null
+          cp "$QT_PLUGINS/platforminputcontexts/libqibusplatforminputcontextplugin.so" bin/plugins/platforminputcontexts/ 2>/dev/null || true
+          cp "$QT_PLUGINS/platforminputcontexts/libfcitxplatforminputcontextplugin.so" bin/plugins/platforminputcontexts/ 2>/dev/null || true
 
           # Collect dependencies of plugins too
           for plugin in $(find bin/plugins -name "*.so" 2>/dev/null); do
