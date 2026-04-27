@@ -50,7 +50,8 @@ public:
 
     void checkInstancePathForProblems();
 
-    void updatesAllowedChanged(bool allowed);
+    // LAUNCHERMC: updatesAllowedChanged removed (updater disabled)
+    // void updatesAllowedChanged(bool allowed);
 
     void droppedURLs(QList<QUrl> urls);
 signals:
@@ -94,7 +95,8 @@ private slots:
 
     void on_actionViewCentralModsFolder_triggered();
 
-    void checkForUpdates();
+    // LAUNCHERMC: checkForUpdates removed (updater disabled)
+    // void checkForUpdates();
 
     void on_actionSettings_triggered();
 
@@ -102,13 +104,15 @@ private slots:
 
     void on_actionManageAccounts_triggered();
 
-    void on_actionReportBug_triggered();
+    // LAUNCHERMC: on_actionReportBug_triggered removed
+    // void on_actionReportBug_triggered();
 
     void on_actionPatreon_triggered();
 
     void on_actionMoreNews_triggered();
 
-    void newsButtonClicked();
+    // LAUNCHERMC: newsButtonClicked removed (no news feature)
+    // void newsButtonClicked();
 
     void on_actionLaunchInstance_triggered();
 
@@ -201,7 +205,7 @@ private:
     // these are managed by Qt's memory management model!
     InstanceView *view = nullptr;
     InstanceProxyModel *proxymodel = nullptr;
-    QToolButton *newsLabel = nullptr;
+    // LAUNCHERMC: newsLabel removed (no news feature)
     QLabel *m_statusLeft = nullptr;
     QLabel *m_statusCenter = nullptr;
     QMenu *accountMenu = nullptr;

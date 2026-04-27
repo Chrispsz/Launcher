@@ -86,7 +86,7 @@ struct Language
             file_sha1 == other.file_sha1 &&
             translated == other.translated &&
             fuzzy == other.fuzzy &&
-            total == other.fuzzy &&
+            total == other.total &&
             localFileType == other.localFileType
         );
     }
@@ -322,11 +322,11 @@ void TranslationsModel::reloadLocalFiles()
         return a.key.compare(b.key) < 0;
     });
 
-    // LAUNCHERMC: Filtrar apenas pt_BR e en_US
+    // LAUNCHERMC: Filtrar apenas pt_BR
     d->m_languages.erase(
         std::remove_if(d->m_languages.begin(), d->m_languages.end(),
             [](const Language &l) {
-                return l.key != "pt_BR" && l.key != "en_US";
+                return l.key != "pt_BR";
             }),
         d->m_languages.end()
     );

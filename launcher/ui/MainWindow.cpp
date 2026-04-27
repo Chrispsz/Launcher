@@ -231,7 +231,7 @@ public:
 
     TranslatedToolbar mainToolBar;
     TranslatedToolbar instanceToolBar;
-    TranslatedToolbar newsToolBar;
+    // LAUNCHERMC: newsToolBar removed (was empty)
     QVector<TranslatedToolbar *> all_toolbars;
     bool m_kill = false;
 
@@ -366,21 +366,7 @@ public:
         MainWindow->setStatusBar(statusBar);
     }
 
-    void createNewsToolbar(QMainWindow *MainWindow)
-    {
-        newsToolBar = TranslatedToolbar(MainWindow);
-        newsToolBar->setObjectName(QStringLiteral("newsToolBar"));
-        newsToolBar->setMovable(false);
-        newsToolBar->setAllowedAreas(Qt::BottomToolBarArea);
-        newsToolBar->setIconSize(QSize(16, 16));
-        newsToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-        newsToolBar->setFloatable(false);
-        newsToolBar->setWindowTitle(QT_TRANSLATE_NOOP("MainWindow", "News Toolbar"));
-
-
-        all_toolbars.append(&newsToolBar);
-        MainWindow->addToolBar(Qt::BottomToolBarArea, newsToolBar);
-    }
+    // LAUNCHERMC: News toolbar removed (was empty, no news feature)
 
     void createInstanceToolbar(QMainWindow *MainWindow)
     {
@@ -573,7 +559,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
 
         createStatusBar(MainWindow);
-        createNewsToolbar(MainWindow);
+        // LAUNCHERMC: News toolbar removed
         createInstanceToolbar(MainWindow);
 
         retranslateUi(MainWindow);
@@ -814,12 +800,9 @@ void MainWindow::showInstanceContextMenu(const QPoint &pos)
             actions.append(actionDeleteGroup);
         }
     }
-    QMenu myMenu;
+    // LAUNCHERMC: Pass parent to fix QAction memory management
+    QMenu myMenu(this);
     myMenu.addActions(actions);
-    /*
-    if (onInstance)
-        myMenu.setEnabled(m_selectedInstance->canLaunch());
-    */
     myMenu.exec(view->mapToGlobal(pos));
 }
 
@@ -969,11 +952,7 @@ void MainWindow::repopulateAccountsMenu()
     accountMenu->addAction(ui->actionManageAccounts);
 }
 
-void MainWindow::updatesAllowedChanged(bool allowed)
-{
-    Q_UNUSED(allowed)
-    // BuildConfig.UPDATER_ENABLED has been removed
-}
+// LAUNCHERMC: updatesAllowedChanged removed (updater disabled)
 
 /*
  * Assumes the sender is a QAction
@@ -1376,10 +1355,7 @@ void MainWindow::on_actionConfig_Folder_triggered()
     }
 }
 
-void MainWindow::checkForUpdates()
-{
-    // UpdateChecker has been removed - BuildConfig.UPDATER_ENABLED has been removed
-}
+// LAUNCHERMC: checkForUpdates removed (updater disabled)
 
 void MainWindow::on_actionSettings_triggered()
 {
@@ -1432,9 +1408,7 @@ void MainWindow::on_actionManageAccounts_triggered()
     APPLICATION->ShowGlobalSettings(this, "accounts");
 }
 
-void MainWindow::on_actionReportBug_triggered()
-{
-}
+// LAUNCHERMC: on_actionReportBug_triggered removed
 
 void MainWindow::on_actionPatreon_triggered()
 {
@@ -1446,10 +1420,7 @@ void MainWindow::on_actionMoreNews_triggered()
     DesktopServices::openUrl(QUrl("https://multimc.org/posts.html"));
 }
 
-void MainWindow::newsButtonClicked()
-{
-    DesktopServices::openUrl(QUrl("https://multimc.org/posts.html"));
-}
+// LAUNCHERMC: newsButtonClicked removed (no news feature)
 
 void MainWindow::on_actionAbout_triggered()
 {

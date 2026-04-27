@@ -104,10 +104,15 @@ void appDebugOutput(QtMsgType type, const QMessageLogContext &context, const QSt
 
     QString out = format.arg(buf).arg(levels[type]).arg(msg);
 
+    // LAUNCHERMC: Buffered write — flush only on warnings/errors/critical
     APPLICATION->logFile->write(out.toUtf8());
-    APPLICATION->logFile->flush();
+    if (type >= QtWarningMsg) {
+        APPLICATION->logFile->flush();
+    }
     QTextStream(stderr) << out.toLocal8Bit();
-    fflush(stderr);
+    if (type >= QtWarningMsg) {
+        fflush(stderr);
+    }
 }
 
 QString getIdealPlatform(QString currentPlatform) {
@@ -663,7 +668,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     // ── CONSOLE ──
     m_settings->registerSetting("ConsoleFont", QString("monospace"));
     m_settings->registerSetting("ConsoleFontSize", 10);
-    m_settings->registerSetting("ConsoleMaxLines", 50000);
+    m_settings->registerSetting("ConsoleMaxLines", 10000);
     m_settings->registerSetting("ConsoleOverflowStop", true);
 
     // ── INSTÂNCIAS ──
@@ -904,8 +909,8 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         qDebug() << "<> Cache initialized.";
     }
 
-    // now we have network, download translation updates
-    m_translations->downloadIndex();
+    // LAUNCHERMC: Translation download disabled — pt_BR is the only language
+    // m_translations->downloadIndex();
 
 
 
@@ -1211,10 +1216,19 @@ void Application::setIconTheme(const QString& name)
 
 QIcon Application::getThemedIcon(const QString& name)
 {
+    // LAUNCHERMC: Icon cache to avoid redundant lookups
+    static QCache<QString, QIcon> iconCache(128);
+    if (auto *cached = iconCache.object(name))
+        return *cached;
+
+    QIcon icon;
     if(name == "logo") {
-        return QIcon(":/logo.svg");
+        icon = QIcon(":/logo.svg");
+    } else {
+        icon = XdgIcon::fromTheme(name);
     }
-    return XdgIcon::fromTheme(name);
+    iconCache.insert(name, new QIcon(icon));
+    return icon;
 }
 
 bool Application::openJsonEditor(const QString &filename)
