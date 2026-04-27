@@ -60,6 +60,8 @@ set(CMAKE_CXX_FLAGS " -Wall -pedantic -Wno-deprecated-declarations -D_GLIBCXX_US
 set(CMAKE_CXX_FLAGS_RELEASE " -O3 -DNDEBUG -DQT_NO_DEBUG_OUTPUT -D_FORTIFY_SOURCE=2 ${CMAKE_CXX_FLAGS_RELEASE}")
 
 # LAUNCHERMC: Enable Link-Time Optimization
+# CMP0069 required for check_ipo_supported on CMake 3.30+
+cmake_policy(SET CMP0069 NEW)
 include(CheckIPOSupported)
 check_ipo_supported(RESULT ipo_supported OUTPUT ipo_error)
 if(ipo_supported)
