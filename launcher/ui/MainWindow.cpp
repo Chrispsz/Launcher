@@ -628,6 +628,96 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new MainWindow
 
     // UpdateChecker / notification checker has been removed
 
+    // Create the instance list widget
+    {
+        view = new InstanceView(ui->centralWidget);
+
+        view->setSelectionMode(QAbstractItemView::SingleSelection);
+        view->setItemDelegate(new ListViewDelegate(this));
+        view->setFrameShape(QFrame::NoFrame);
+        view->setAttribute(Qt::WA_MacShowFocusRect, false);
+
+        view->installEventFilter(this);
+        view->setContextMenuPolicy(Qt::CustomContextMenu);
+        connect(view, &QWidget::customContextMenuRequested, this, &MainWindow::showInstanceContextMenu);
+        connect(view, &InstanceView::droppedURLs, this, &MainWindow::droppedURLs, Qt::QueuedConnection);
+
+        proxymodel = new InstanceProxyModel(this);
+        proxymodel->setSourceModel(APPLICATION->instances().get());
+        proxymodel->sort(0);
+        connect(proxymodel, &InstanceProxyModel::dataChanged, this, &MainWindow::instanceDataChanged);
+
+        view->setModel(proxymodel);
+        view->setSourceOfGroupCollapseStatus([](const QString & groupName)->bool {
+            return APPLICATION->instances()->isGroupCollapsed(groupName);
+        });
+        connect(view, &InstanceView::groupStateChanged, APPLICATION->instances().get(), &InstanceList::on_GroupStateChanged);
+        ui->horizontalLayout->addWidget(view);
+    }
+
+    // start instance when double-clicked
+    connect(view, &InstanceView::activated, this, &MainWindow::instanceActivated);
+
+    // track the selection -- update the instance toolbar
+    connect(view->selectionModel(), &QItemSelectionModel::currentChanged, this, &MainWindow::instanceChanged);
+
+    // track icon changes and update the toolbar!
+    connect(APPLICATION->icons().get(), &IconList::iconUpdated, this, &MainWindow::iconUpdated);
+
+    // model reset -> selection is invalid. All the instance pointers are wrong.
+    connect(APPLICATION->instances().get(), &InstanceList::dataIsInvalid, this, &MainWindow::selectionBad);
+
+    // handle newly added instances
+    connect(APPLICATION->instances().get(), &InstanceList::instanceSelectRequest, this, &MainWindow::instanceSelectRequest);
+
+    // When the global settings page closes, we want to know about it and update our state
+    connect(APPLICATION, &Application::globalSettingsClosed, this, &MainWindow::globalSettingsClosed);
+
+    m_statusLeft = new QLabel(tr("No instance selected"), this);
+    m_statusCenter = new QLabel(tr("Total playtime: 0s"), this);
+    statusBar()->addPermanentWidget(m_statusLeft, 1);
+    statusBar()->addPermanentWidget(m_statusCenter, 0);
+
+    // Add "manage accounts" button, right align
+    QWidget *spacer = new QWidget();
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->mainToolBar->addWidget(spacer);
+
+    accountMenu = new QMenu(this);
+
+    repopulateAccountsMenu();
+
+    accountMenuButton = new QToolButton(this);
+    accountMenuButton->setMenu(accountMenu);
+    accountMenuButton->setPopupMode(QToolButton::InstantPopup);
+    accountMenuButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    accountMenuButton->setIcon(APPLICATION->getThemedIcon("noaccount"));
+
+    QWidgetAction *accountMenuButtonAction = new QWidgetAction(this);
+    accountMenuButtonAction->setDefaultWidget(accountMenuButton);
+
+    ui->mainToolBar->addAction(accountMenuButtonAction);
+
+    // Update the menu when the active account changes.
+    connect(
+        APPLICATION->accounts().get(),
+        &AccountList::defaultAccountChanged,
+        [this] {
+            defaultAccountChanged();
+        }
+    );
+    connect(
+        APPLICATION->accounts().get(),
+        &AccountList::listChanged,
+        [this]
+        {
+            repopulateAccountsMenu();
+        }
+    );
+
+    // Show initial account
+    defaultAccountChanged();
+
     setSelectedInstanceById(APPLICATION->settings()->get("SelectedInstance").toString());
 
     // removing this looks stupid

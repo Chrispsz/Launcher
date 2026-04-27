@@ -15,7 +15,8 @@
 
 #include "ui/themes/ITheme.h"
 #include "ui/themes/SystemTheme.h"
-// DarkTheme.h and BrightTheme.h removed — themes are abstract (missing qtTheme() override)
+#include "ui/themes/DarkTheme.h"
+#include "ui/themes/BrightTheme.h"
 
 #include "ui/setupwizard/SetupWizard.h"
 #include "ui/setupwizard/LanguageWizardPage.h"
@@ -835,11 +836,11 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         {
             m_themes.insert(std::make_pair(theme->id(), std::unique_ptr<ITheme>(theme)));
         };
-        // DarkTheme and BrightTheme are abstract (missing qtTheme() override) — commented out
-        // auto darkTheme = new DarkTheme();
+        // DarkTheme and BrightTheme are now usable (qtTheme() added to FusionTheme)
+        auto darkTheme = new DarkTheme();
         insertTheme(new SystemTheme());
-        // insertTheme(darkTheme);
-        // insertTheme(new BrightTheme());
+        insertTheme(darkTheme);
+        insertTheme(new BrightTheme());
         qDebug() << "<> Widget themes initialized.";
     }
 

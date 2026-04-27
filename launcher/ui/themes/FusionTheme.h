@@ -11,6 +11,11 @@ class FusionTheme : public ITheme
 public:
     virtual ~FusionTheme() {}
 
+    QString qtTheme() override
+    {
+        return "Fusion";
+    }
+
     void apply(bool initial) override
     {
         qApp->setStyle("Fusion");
