@@ -480,11 +480,6 @@ SET(LAUNCHER_SOURCES
     resources/backgrounds/backgrounds.qrc
     resources/multimc/multimc.qrc
     resources/pe_dark/pe_dark.qrc
-    resources/pe_light/pe_light.qrc
-    resources/pe_colored/pe_colored.qrc
-    resources/pe_blue/pe_blue.qrc
-    resources/OSX/OSX.qrc
-    resources/iOS/iOS.qrc
     resources/flat/flat.qrc
     resources/documents/documents.qrc
     ../${Launcher_Branding_LogoQRC}
@@ -709,11 +704,6 @@ qt5_add_resources(LAUNCHER_RESOURCES
     resources/backgrounds/backgrounds.qrc
     resources/multimc/multimc.qrc
     resources/pe_dark/pe_dark.qrc
-    resources/pe_light/pe_light.qrc
-    resources/pe_colored/pe_colored.qrc
-    resources/pe_blue/pe_blue.qrc
-    resources/OSX/OSX.qrc
-    resources/iOS/iOS.qrc
     resources/flat/flat.qrc
     resources/documents/documents.qrc
     ../${Launcher_Branding_LogoQRC}
@@ -739,7 +729,6 @@ target_link_libraries(Launcher_logic
 )
 target_link_libraries(Launcher_logic
     Qt5::Core
-    Qt5::Xml
     Qt5::Network
     Qt5::Concurrent
     Qt5::Gui

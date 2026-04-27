@@ -19,6 +19,7 @@
 #include <QAbstractListModel>
 #include <QSet>
 #include <QList>
+#include <QHash>
 
 #include "BaseInstance.h"
 
@@ -180,4 +181,7 @@ private:
     QSet<InstanceId> instanceSet;
     bool m_groupsLoaded = false;
     bool m_instancesProbed = false;
+
+    // LAUNCHERMC: O(1) instance lookups via hash map
+    QHash<QString, int> m_instanceIdIndex;
 };

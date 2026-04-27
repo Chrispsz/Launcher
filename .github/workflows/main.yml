@@ -265,7 +265,6 @@ jobs:
           copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Gui.dll %DEST%\
           copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Widgets.dll %DEST%\
           copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Network.dll %DEST%\
-          copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Xml.dll %DEST%\
           copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Concurrent.dll %DEST%\
           copy D:\Qt\5.6.3\mingw49_32\bin\Qt5Svg.dll %DEST%\
           copy D:\Qt\5.6.3\mingw49_32\bin\libgcc_s_dw2-1.dll %DEST%\

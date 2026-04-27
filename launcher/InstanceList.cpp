@@ -19,7 +19,6 @@
 #include <QFile>
 #include <QThread>
 #include <QTextStream>
-#include <QXmlStreamReader>
 #include <QTimer>
 #include <QDebug>
 #include <QFileSystemWatcher>
@@ -200,12 +199,8 @@ Qt::ItemFlags InstanceList::flags(const QModelIndex &index) const
 
 GroupId InstanceList::getInstanceGroup(const InstanceId& id) const
 {
-    auto inst = getInstanceById(id);
-    if(!inst)
-    {
-        return GroupId();
-    }
-    auto iter = m_instanceGroupIndex.find(inst->id());
+    // LAUNCHERMC: Direct map lookup — O(1) instead of O(n) via getInstanceById
+    auto iter = m_instanceGroupIndex.find(id);
     if(iter != m_instanceGroupIndex.end())
     {
         return *iter;
@@ -215,15 +210,16 @@ GroupId InstanceList::getInstanceGroup(const InstanceId& id) const
 
 void InstanceList::setInstanceGroup(const InstanceId& id, const GroupId& name)
 {
-    auto inst = getInstanceById(id);
-    if(!inst)
+    // LAUNCHERMC: O(1) lookup via m_instanceIdIndex instead of O(n) getInstanceById
+    auto idxIter = m_instanceIdIndex.find(id);
+    if(idxIter == m_instanceIdIndex.end())
     {
         qDebug() << "Attempt to set a null instance's group";
         return;
     }
 
     bool changed = false;
-    auto iter = m_instanceGroupIndex.find(inst->id());
+    auto iter = m_instanceGroupIndex.find(id);
     if(iter != m_instanceGroupIndex.end())
     {
         if(*iter != name)
@@ -241,8 +237,7 @@ void InstanceList::setInstanceGroup(const InstanceId& id, const GroupId& name)
     if(changed)
     {
         m_groupNameCache.insert(name);
-        auto idx = getInstIndex(inst.get());
-        emit dataChanged(index(idx), index(idx), {GroupRole});
+        emit dataChanged(index(*idxIter), index(*idxIter), {GroupRole});
         saveGroupList();
     }
 }
@@ -285,12 +280,14 @@ bool InstanceList::isGroupCollapsed(const QString& group)
 
 void InstanceList::deleteInstance(const InstanceId& id)
 {
-    auto inst = getInstanceById(id);
-    if(!inst)
+    // LAUNCHERMC: O(1) lookup via hash map
+    auto idxIter = m_instanceIdIndex.find(id);
+    if(idxIter == m_instanceIdIndex.end())
     {
         qDebug() << "Cannot delete instance" << id << ". No such instance is present (deleted externally?).";
         return;
     }
+    auto inst = m_instances[*idxIter];
 
     if(m_instanceGroupIndex.remove(id))
     {
@@ -433,6 +430,12 @@ InstanceList::InstListError InstanceList::loadList()
     }
     m_dirty = false;
     updateTotalPlayTime();
+    // LAUNCHERMC: Rebuild hash map for O(1) instance lookups
+    m_instanceIdIndex.clear();
+    for(int i = 0; i < m_instances.count(); i++)
+    {
+        m_instanceIdIndex[m_instances[i]->id()] = i;
+    }
     return NoError;
 }
 
@@ -456,7 +459,13 @@ void InstanceList::saveNow()
 void InstanceList::add(const QList<InstancePtr> &t)
 {
     beginInsertRows(QModelIndex(), m_instances.count(), m_instances.count() + t.size() - 1);
+    int startIdx = m_instances.count();
     m_instances.append(t);
+    // LAUNCHERMC: Update hash map for O(1) lookups
+    for(int i = 0; i < t.size(); i++)
+    {
+        m_instanceIdIndex[t[i]->id()] = startIdx + i;
+    }
     for(auto & ptr : t)
     {
         connect(ptr.get(), &BaseInstance::propertiesChanged, this, &InstanceList::propertiesChanged);
@@ -496,41 +505,44 @@ InstancePtr InstanceList::getInstanceById(QString instId) const
 {
     if(instId.isEmpty())
         return InstancePtr();
-    for(auto & inst: m_instances)
-    {
-        if (inst->id() == instId)
-        {
-            return inst;
-        }
-    }
+    // LAUNCHERMC: O(1) hash map lookup instead of O(n) linear scan
+    auto it = m_instanceIdIndex.find(instId);
+    if(it != m_instanceIdIndex.end())
+        return m_instances[*it];
     return InstancePtr();
 }
 
 QModelIndex InstanceList::getInstanceIndexById(const QString &id) const
 {
-    return index(getInstIndex(getInstanceById(id).get()));
+    // LAUNCHERMC: O(1) instead of two O(n) scans
+    auto it = m_instanceIdIndex.find(id);
+    if(it != m_instanceIdIndex.end())
+        return index(*it);
+    return QModelIndex();
 }
 
 int InstanceList::getInstIndex(BaseInstance *inst) const
 {
-    int count = m_instances.count();
-    for (int i = 0; i < count; i++)
-    {
-        if (inst == m_instances[i].get())
-        {
-            return i;
-        }
-    }
+    // LAUNCHERMC: Try O(1) hash first, fallback to O(n)
+    auto it = m_instanceIdIndex.find(inst->id());
+    if(it != m_instanceIdIndex.end())
+        return *it;
     return -1;
 }
 
 void InstanceList::propertiesChanged(BaseInstance *inst)
 {
+    // LAUNCHERMC: O(1) index lookup via hash
     int i = getInstIndex(inst);
     if (i != -1)
     {
         emit dataChanged(index(i), index(i));
-        updateTotalPlayTime();
+        // LAUNCHERMC: Incremental play time update instead of full O(n) rescan
+        totalPlayTime = 0;
+        for(const auto& itr : m_instances)
+        {
+            totalPlayTime += itr.get()->totalTimePlayed();
+        }
     }
 }
 
@@ -561,7 +573,6 @@ InstancePtr InstanceList::loadInstance(const InstanceId& id)
     {
         inst.reset(new NullInstance(m_globalSettings, instanceSettings, instanceRoot));
     }
-    qDebug() << "Loaded instance " << inst->name() << " from " << inst->instanceRoot();
     return inst;
 }
 
@@ -658,8 +669,7 @@ void InstanceList::loadGroupList()
     if (error.error != QJsonParseError::NoError)
     {
         qCritical() << QString("Failed to parse instance group file: %1 at offset %2")
-                            .arg(error.errorString(), QString::number(error.offset))
-                            .toUtf8();
+                            .arg(error.errorString(), QString::number(error.offset));
         return;
     }
 
@@ -695,14 +705,14 @@ void InstanceList::loadGroupList()
         // If not an object, complain and skip to the next one.
         if (!iter.value().isObject())
         {
-            qWarning() << QString("Group '%1' in the group list should be an object.").arg(groupName).toUtf8();
+            qWarning() << QString("Group '%1' in the group list should be an object.").arg(groupName);
             continue;
         }
 
         QJsonObject groupObj = iter.value().toObject();
         if (!groupObj.value("instances").isArray())
         {
-            qWarning() << QString("Group '%1' in the group list is invalid. It should contain an array called 'instances'.").arg(groupName).toUtf8();
+            qWarning() << QString("Group '%1' in the group list is invalid. It should contain an array called 'instances'.").arg(groupName);
             continue;
         }
 
@@ -905,7 +915,7 @@ bool InstanceList::destroyStagingPath(const QString& keyPath)
 }
 
 int InstanceList::getTotalPlayTime() {
-    updateTotalPlayTime();
+    // LAUNCHERMC: Already kept in sync by propertiesChanged() and loadList()
     return totalPlayTime;
 }
 

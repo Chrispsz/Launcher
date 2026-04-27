@@ -436,7 +436,7 @@ bool AccountList::loadList()
     // TODO: We should probably report this error to the user.
     if (!file.open(QIODevice::ReadOnly))
     {
-        qCritical() << QString("Failed to read the account list file (%1).").arg(m_listFilePath).toUtf8();
+        qCritical() << QString("Failed to read the account list file (%1).").arg(m_listFilePath);
         return false;
     }
 
@@ -605,7 +605,7 @@ bool AccountList::saveList()
     // TODO: We should probably report this error to the user.
     if (!file.open(QIODevice::WriteOnly))
     {
-        qCritical() << QString("Failed to read the account list file (%1).").arg(m_listFilePath).toUtf8();
+        qCritical() << QString("Failed to read the account list file (%1).").arg(m_listFilePath);
         return false;
     }
 

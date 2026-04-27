@@ -10,6 +10,7 @@
 #include <QUrl>
 #include <QStandardPaths>
 #include <QTextStream>
+#include <QSet>
 
 #if defined Q_OS_WIN32
     #include <windows.h>
@@ -303,9 +304,14 @@ QString badFilenameChars = "\"\\/?<>:;*|!+\r\n";
 
 QString RemoveInvalidFilenameChars(QString string, QChar replaceWith)
 {
+    // LAUNCHERMC: Use QSet for O(1) character lookup instead of O(m) QString::contains
+    static QSet<QChar> badChars;
+    if (badChars.isEmpty()) {
+        badChars = QSet<QChar>(badFilenameChars.begin(), badFilenameChars.end());
+    }
     for (int i = 0; i < string.length(); i++)
     {
-        if (badFilenameChars.contains(string[i]))
+        if (badChars.contains(string[i]))
         {
             string[i] = replaceWith;
         }

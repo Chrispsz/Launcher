@@ -9,8 +9,9 @@ LoggedProcess::LoggedProcess(QObject *parent) : QProcess(parent)
     // QProcess has a strange interface... let's map a lot of those into a few.
     connect(this, &QProcess::readyReadStandardOutput, this, &LoggedProcess::on_stdOut);
     connect(this, &QProcess::readyReadStandardError, this, &LoggedProcess::on_stdErr);
-    connect(this, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(on_exit(int,QProcess::ExitStatus)));
-    connect(this, SIGNAL(error(QProcess::ProcessError)), this, SLOT(on_error(QProcess::ProcessError)));
+    // LAUNCHERMC: Using QOverload for Qt 5.6 compatibility (errorOccurred added in 5.15)
+    connect(this, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &LoggedProcess::on_exit);
+    connect(this, QOverload<QProcess::ProcessError>::of(&QProcess::error), this, &LoggedProcess::on_error);
     connect(this, &QProcess::stateChanged, this, &LoggedProcess::on_stateChange);
 }
 
@@ -24,11 +25,19 @@ LoggedProcess::~LoggedProcess()
 
 QStringList reprocess(const QByteArray & data, QString & leftover)
 {
-    QString str = leftover + QString::fromLocal8Bit(data);
+    // LAUNCHERMC: Use QByteArray directly, avoid full QString copy + split
+    QByteArray combined = leftover.toLocal8Bit() + data;
+    combined.replace('\r', "");
 
-    str.remove('\r');
-    QStringList lines = str.split("\n");
-    leftover = lines.takeLast();
+    QList<QByteArray> rawLines = combined.split('\n');
+    // Last element is always incomplete (after the last \n)
+    leftover = QString::fromLocal8Bit(rawLines.takeLast());
+
+    QStringList lines;
+    lines.reserve(rawLines.size());
+    for (const auto &rawLine : rawLines) {
+        lines.append(QString::fromLocal8Bit(rawLine));
+    }
     return lines;
 }
 

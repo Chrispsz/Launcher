@@ -15,8 +15,8 @@
 
 Modrinth::ModrinthDocument::ModrinthDocument(const QString &markdown, QObject* parent) : QTextDocument(parent) {
     HoeDown hoedown;
-    // 100 MiB
-    QPixmapCache::setCacheLimit(102400);
+    // LAUNCHERMC: Reduced from 100MB to 50MB — too aggressive for low-RAM systems
+    QPixmapCache::setCacheLimit(51200);
     setHtml(hoedown.process(markdown.toUtf8()));
 }
 

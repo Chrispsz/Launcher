@@ -56,7 +56,8 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_C_STANDARD 11)
 include(GenerateExportHeader)
 set(CMAKE_CXX_FLAGS " -Wall -pedantic -Wno-deprecated-declarations -D_GLIBCXX_USE_CXX11_ABI=0 -fstack-protector-strong --param=ssp-buffer-size=4 ${CMAKE_CXX_FLAGS}")
-set(CMAKE_CXX_FLAGS_RELEASE " -O3 -DNDEBUG -D_FORTIFY_SOURCE=2 ${CMAKE_CXX_FLAGS_RELEASE}")
+# LAUNCHERMC: QT_NO_DEBUG_OUTPUT eliminates all qDebug() calls in release builds
+set(CMAKE_CXX_FLAGS_RELEASE " -O3 -DNDEBUG -DQT_NO_DEBUG_OUTPUT -D_FORTIFY_SOURCE=2 ${CMAKE_CXX_FLAGS_RELEASE}")
 
 # LAUNCHERMC: Enable Link-Time Optimization
 include(CheckIPOSupported)

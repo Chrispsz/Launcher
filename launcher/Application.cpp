@@ -28,8 +28,6 @@
 
 #include "ApplicationMessage.h"
 
-#include <iostream>
-
 #include <QAccessible>
 #include <QDir>
 #include <QFileInfo>
@@ -94,23 +92,20 @@ namespace {
 void appDebugOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     const char *levels = "DWCFIS";
-    const QString format("%1 %2 %3\n");
 
+    // LAUNCHERMC: Removed unused QString foo, optimized string formatting
     qint64 msecstotal = APPLICATION->timeSinceStart();
     qint64 seconds = msecstotal / 1000;
     qint64 msecs = msecstotal % 1000;
-    QString foo;
     char buf[1025] = {0};
-    ::snprintf(buf, 1024, "%5lld.%03lld", seconds, msecs);
+    ::snprintf(buf, 1024, "%5lld.%03lld %c %s\n", seconds, msecs, levels[type], msg.toUtf8().constData());
 
-    QString out = format.arg(buf).arg(levels[type]).arg(msg);
-
-    // LAUNCHERMC: Buffered write — flush only on warnings/errors/critical
-    APPLICATION->logFile->write(out.toUtf8());
+    // LAUNCHERMC: Single encoding conversion, buffered write — flush only on warnings/errors/critical
+    APPLICATION->logFile->write(buf, qstrlen(buf));
     if (type >= QtWarningMsg) {
         APPLICATION->logFile->flush();
     }
-    QTextStream(stderr) << out.toLocal8Bit();
+    fwrite(buf, 1, qstrlen(buf), stderr);
     if (type >= QtWarningMsg) {
         fflush(stderr);
     }
