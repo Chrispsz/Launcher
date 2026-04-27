@@ -57,8 +57,8 @@ jobs:
       - name: Package Dependencies
         run: |
           cd AppDir
-          # Collect all shared library dependencies
-          BINS=$(find bin -type f -executable -o -name "*.so*")
+          # Collect all shared library dependencies (only ELF files)
+          BINS=$(find bin -type f \( -executable -o -name "*.so*" \) -exec file {} \; | grep -i "ELF" | cut -d: -f1)
           for bin in $BINS; do
             ldd "$bin" 2>/dev/null | grep "=>" | awk '{print $3}' | while read lib; do
               if [ -n "$lib" ] && [ -f "$lib" ]; then
