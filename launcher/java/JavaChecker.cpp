@@ -109,6 +109,9 @@ void JavaChecker::stderrReady()
 
 void JavaChecker::finished(int exitcode, QProcess::ExitStatus status)
 {
+    if (m_finished) return;
+    m_finished = true;
+
     killTimer.stop();
 
     if (!m_process) return;
@@ -131,7 +134,7 @@ void JavaChecker::finished(int exitcode, QProcess::ExitStatus status)
     bool success = true;
 
     QMap<QString, QString> results;
-    QStringList lines = m_stdout.split("\n", QString::SkipEmptyParts);
+    QStringList lines = m_stdout.split("\n", Qt::SkipEmptyParts);
     for(QString line : lines)
     {
         line = line.trimmed();
@@ -139,7 +142,7 @@ void JavaChecker::finished(int exitcode, QProcess::ExitStatus status)
             continue;
         }
 
-        auto parts = line.split('=', QString::SkipEmptyParts);
+        auto parts = line.split('=', Qt::SkipEmptyParts);
         if(parts.size() != 2 || parts[0].isEmpty() || parts[1].isEmpty())
         {
             continue;
@@ -160,7 +163,7 @@ void JavaChecker::finished(int exitcode, QProcess::ExitStatus status)
     auto os_arch = results["os.arch"];
     auto java_version = results["java.version"];
     auto java_vendor = results["java.vendor"];
-    bool is_64 = os_arch == "x86_64" || os_arch == "amd64";
+    bool is_64 = os_arch == "x86_64" || os_arch == "amd64" || os_arch == "aarch64" || os_arch == "arm64";
 
     result.validity = JavaCheckResult::Validity::Valid;
     result.is_64bit = is_64;
@@ -174,28 +177,49 @@ void JavaChecker::finished(int exitcode, QProcess::ExitStatus status)
 
 void JavaChecker::error(QProcess::ProcessError err)
 {
+    if (m_finished) return;
+
+    // For FailedToStart, process is already dead — just report
     if(err == QProcess::FailedToStart)
     {
         qDebug() << "Java checker has failed to start.";
+        m_finished = true;
         killTimer.stop();
         JavaCheckResult result;
         result.path = m_path;
         result.id = m_id;
-
         emit checkFinished(result);
         return;
     }
+
+    // For other errors (Crashed, WriteError, ReadError):
+    // Crashed also triggers finished(CrashExit) which handles it via m_finished guard.
+    // WriteError/ReadError may NOT trigger finished(), so we handle them here.
+    qDebug() << "Java checker process error:" << err << "for path:" << m_path;
+    m_finished = true;
+    killProcess();
+    JavaCheckResult result;
+    result.path = m_path;
+    result.id = m_id;
+    result.validity = JavaCheckResult::Validity::Errored;
+    result.errorLog = QString("Process error: %1").arg(err);
+    emit checkFinished(result);
 }
 
 void JavaChecker::timeout()
 {
+    if (m_finished) return;
+
     if(m_process)
     {
-        qDebug() << "Java checker killed by timeout.";
+        m_finished = true;
+        qDebug() << "Java checker killed by timeout for path:" << m_path;
         killProcess();
         JavaCheckResult result;
         result.path = m_path;
         result.id = m_id;
+        result.validity = JavaCheckResult::Validity::Errored;
+        result.errorLog = "Java checker timed out (15s)";
         emit checkFinished(result);
     }
 }

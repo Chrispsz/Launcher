@@ -56,6 +56,7 @@ private:
     QTimer killTimer;
     QString m_stdout;
     QString m_stderr;
+    bool m_finished = false;
 public
 slots:
     void timeout();

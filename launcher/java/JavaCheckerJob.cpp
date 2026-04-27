@@ -17,6 +17,20 @@
 
 #include <QDebug>
 
+JavaCheckerJob::~JavaCheckerJob()
+{
+    // Properly clean up all checkers to prevent
+    // "QProcess: Destroyed while process is still running" warnings
+    for (auto &checker : javacheckers)
+    {
+        if (checker)
+        {
+            disconnect(checker.get(), nullptr, this, nullptr);
+        }
+    }
+    javacheckers.clear();
+}
+
 void JavaCheckerJob::partFinished(JavaCheckResult result)
 {
     num_finished++;
