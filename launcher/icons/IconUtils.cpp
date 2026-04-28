@@ -2,6 +2,8 @@
 
 #include "FileSystem.h"
 #include <QDirIterator>
+#include <QDebug>
+#include <QTextStream>
 
 #include <array>
 
