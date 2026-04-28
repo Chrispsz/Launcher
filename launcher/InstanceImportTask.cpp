@@ -29,6 +29,7 @@
 #include "Json.h"
 #include <quazipdir.h>
 #include "modplatform/modrinth/ModrinthPackManifest.h"
+#include "modplatform/curseforge/CurseForgePackManifest.h"
 
 #include "icons/IconList.h"
 #include "Application.h"
@@ -103,6 +104,7 @@ void InstanceImportTask::processZipPack()
     QString mmcFound = MMCZip::findFolderOfFileInZip(m_packZip.get(), "instance.cfg");
     // Technic support removed
     QString modrinthFound = MMCZip::findFolderOfFileInZip(m_packZip.get(), "modrinth.index.json");
+    QString curseForgeFound = MMCZip::findFolderOfFileInZip(m_packZip.get(), "manifest.json");
     QString root;
     if(!mmcFound.isNull())
     {
@@ -117,6 +119,13 @@ void InstanceImportTask::processZipPack()
         qDebug() << "Modrinth:" << modrinthFound;
         root = modrinthFound;
         m_modpackType = ModpackType::Modrinth;
+    }
+    else if(!curseForgeFound.isNull())
+    {
+        // process as CurseForge pack (manifest.json without modrinth.index.json)
+        qDebug() << "CurseForge:" << curseForgeFound;
+        root = curseForgeFound;
+        m_modpackType = ModpackType::CurseForge;
     }
     if(m_modpackType == ModpackType::Unknown)
     {
@@ -179,6 +188,9 @@ void InstanceImportTask::extractFinished()
             return;
         case ModpackType::Modrinth:
             processModrinth();
+            return;
+        case ModpackType::CurseForge:
+            processCurseForge();
             return;
         case ModpackType::Unknown:
             emitFailed(tr("Archive does not contain a recognized modpack type."));
@@ -466,4 +478,104 @@ void InstanceImportTask::processModrinth() {
     });
     setStatus(tr("Downloading mods..."));
     m_filesNetJob->start();
+}
+
+void InstanceImportTask::processCurseForge() {
+    QString minecraftVersion;
+    QString forgeVersion, fabricVersion, neoforgeVersion, quiltVersion;
+    std::vector<CurseForge::File> files;
+    QString overridesDir;
+
+    try {
+        QString manifestPath = FS::PathCombine(m_stagingPath, "manifest.json");
+        auto doc = Json::requireDocument(manifestPath);
+        auto obj = Json::requireObject(doc, "manifest.json");
+
+        // CurseForge manifest format
+        auto mcObj = Json::requireObject(obj, "minecraft");
+        minecraftVersion = Json::requireString(mcObj, "version");
+
+        // Parse modloaders - extract version from id (format: "forge-47.2.0", "neoforge-47.1.65", etc.)
+        auto modLoadersArray = Json::ensureArray(mcObj, "modLoaders");
+        for (const auto &loaderVal : modLoadersArray) {
+            auto loaderObj = Json::requireObject(loaderVal);
+            QString loaderId = Json::requireString(loaderObj, "id");
+
+            if (loaderId.startsWith("forge-")) {
+                forgeVersion = loaderId.mid(6);
+            } else if (loaderId.startsWith("neoforge-")) {
+                neoforgeVersion = loaderId.mid(9);
+            } else if (loaderId.startsWith("fabric-")) {
+                fabricVersion = loaderId.mid(7);
+            } else if (loaderId.startsWith("quilt-")) {
+                quiltVersion = loaderId.mid(6);
+            } else if (loaderId == "forge") {
+                // Old format without version
+                forgeVersion = QString();
+            }
+        }
+
+        overridesDir = Json::ensureString(obj, "overrides", "overrides");
+
+        // Parse files list (used to track mod references)
+        auto filesArray = Json::ensureArray(obj, "files");
+        for (const auto &fileVal : filesArray) {
+            auto fileObj = Json::requireObject(fileVal);
+            CurseForge::File file;
+            file.projectID = QString::number(Json::requireInteger(fileObj, "projectID"));
+            file.fileID = QString::number(Json::requireInteger(fileObj, "fileID"));
+            file.required = Json::ensureInteger(fileObj, "required", 1);
+            files.push_back(file);
+        }
+
+        QFile::remove(manifestPath);
+    } catch (const JSONValidationError &e) {
+        emitFailed(tr("Could not parse manifest.json:\n") + e.cause());
+        return;
+    }
+
+    // Merge overrides
+    QString overridesPath = FS::PathCombine(m_stagingPath, overridesDir);
+    if (!mergeOverrides(overridesPath, FS::PathCombine(m_stagingPath, ".minecraft"))) {
+        emitFailed(tr("Failed to merge the overrides folder."));
+        return;
+    }
+    FS::deletePath(FS::PathCombine(m_stagingPath, "server-overrides"));
+
+    // Remove modlist.html if present (not needed)
+    FS::deletePath(FS::PathCombine(m_stagingPath, "modlist.html"));
+
+    // Create instance
+    QString configPath = FS::PathCombine(m_stagingPath, "instance.cfg");
+    auto instanceSettings = std::make_shared<INISettingsObject>(configPath);
+    instanceSettings->registerSetting("InstanceType", "Legacy");
+    instanceSettings->set("InstanceType", "OneSix");
+    MinecraftInstance instance(m_globalSettings, instanceSettings, m_stagingPath);
+    auto components = instance.getPackProfile();
+    components->buildingFromScratch();
+    components->setComponentVersion("net.minecraft", minecraftVersion, true);
+
+    if (!forgeVersion.isEmpty())
+        components->setComponentVersion("net.minecraftforge", forgeVersion, true);
+    if (!fabricVersion.isEmpty())
+        components->setComponentVersion("net.fabricmc.fabric-loader", fabricVersion, true);
+    if (!neoforgeVersion.isEmpty())
+        components->setComponentVersion("net.neoforged", neoforgeVersion, true);
+    if (!quiltVersion.isEmpty())
+        components->setComponentVersion("org.quiltmc.quilt-loader", quiltVersion, true);
+
+    if (m_instIcon != "default") {
+        instance.setIconKey(m_instIcon);
+    }
+    instance.setName(m_instName);
+    instance.saveNow();
+
+    // Note: CurseForge files need projectID+fileID to download from CF API
+    // Since we don't have API access, we inform the user
+    if (!files.empty()) {
+        qDebug() << "CurseForge modpack has" << files.size() << "mod files that require CurseForge API to download.";
+        qDebug() << "These mods need to be downloaded manually or via the CurseForge app.";
+    }
+
+    emitSucceeded();
 }

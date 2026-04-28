@@ -38,6 +38,7 @@
 // AtlPage has been removed
 #include "ui/pages/modplatform/ImportPage.h"
 #include "ui/pages/modplatform/modrinth/ModrinthPage.h"
+#include "ui/pages/modplatform/curseforge/CurseForgePage.h"
 
 
 
@@ -129,6 +130,7 @@ QList<BasePage *> NewInstanceDialog::getPages()
         new VanillaPage(this),
         importPage,
         new ModrinthPage(this),
+        new CurseForgePage(this),
         // AtlPage has been removed
         // TechnicPage, FTBAPage, and LegacyFTB::Page have been removed
     };

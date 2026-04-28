@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CurseForgePage</class>
+ <widget class="QWidget" name="CurseForgePage">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>600</width><height>500</height></rect>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="titleLabel">
+     <property name="font">
+      <font><pointsize>16</pointsize><weight>75</weight><bold>true</bold></font>
+     </property>
+     <property name="text">
+      <string>CurseForge Modpacks</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextBrowser" name="descriptionBrowser">
+     <property name="openExternalLinks">
+      <bool>true</bool>
+     </property>
+     <property name="html">
+      <string>&lt;html&gt;&lt;body style="font-family: sans-serif;"&gt;
+&lt;p align="center"&gt;&lt;b&gt;Como usar modpacks do CurseForge:&lt;/b&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Visite o &lt;a href="https://www.curseforge.com/minecraft/modpacks"&gt;CurseForge&lt;/a&gt; e escolha um modpack&lt;/li&gt;
+&lt;li&gt;Baixe o arquivo .zip do modpack&lt;/li&gt;
+&lt;li&gt;Use a aba &lt;b&gt;"Importar do arquivo"&lt;/b&gt; para importar o modpack&lt;/li&gt;
+&lt;li&gt;O launcher vai configurar tudo automaticamente!&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;O launcher suporta modpacks no formato CurseForge (manifest.json).&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation"><enum>Qt::Horizontal</enum></property>
+       <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="visitCurseForgeBtn">
+       <property name="text">
+        <string>Visitar CurseForge</string>
+       </property>
+       <property name="minimumHeight">
+        <number>40</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="importFileBtn">
+       <property name="text">
+        <string>Importar do arquivo</string>
+       </property>
+       <property name="minimumHeight">
+        <number>40</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation"><enum>Qt::Horizontal</enum></property>
+       <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

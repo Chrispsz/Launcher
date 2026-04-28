@@ -22,6 +22,7 @@
 #include <QFutureWatcher>
 #include "settings/SettingsObject.h"
 #include "QObjectPtr.h"
+#include "modplatform/curseforge/CurseForgePackManifest.h"
 
 #include <nonstd/optional>
 
@@ -41,6 +42,7 @@ private:
     void processZipPack();
     void processMultiMC();
     void processModrinth();
+    void processCurseForge();
 
 private slots:
     void downloadSucceeded();
@@ -61,5 +63,6 @@ private: /* data */
         Unknown,
         MultiMC,
         Modrinth,
+        CurseForge,
     } m_modpackType = ModpackType::Unknown;
 };
