@@ -21,6 +21,7 @@
 #include <QKeyEvent>
 #include <QAbstractItemModel>
 #include <QMenu>
+#include <QAction>
 #include <QSortFilterProxyModel>
 
 #include "Application.h"
@@ -146,13 +147,15 @@ ModFolderPage::ModFolderPage(
     ui->setupUi(this);
     ui->actionsToolbar->insertSpacer(ui->actionView_configs);
 
-    auto actionBrowseMods = ui->actionsToolbar->addAction(APPLICATION->getThemedIcon("modrinth"), tr("Buscar mods"));
+    auto actionBrowseMods = new QAction(APPLICATION->getThemedIcon("modrinth"), tr("Buscar mods"), this);
     actionBrowseMods->setToolTip(tr("Buscar mods no Modrinth"));
     connect(actionBrowseMods, &QAction::triggered, this, &ModFolderPage::on_actionBrowseMods_triggered);
+    ui->actionsToolbar->addAction(actionBrowseMods);
 
-    auto actionBrowseCurseForge = ui->actionsToolbar->addAction(APPLICATION->getThemedIcon("flame"), tr("CurseForge"));
+    auto actionBrowseCurseForge = new QAction(APPLICATION->getThemedIcon("flame"), tr("CurseForge"), this);
     actionBrowseCurseForge->setToolTip(tr("Buscar mods no CurseForge"));
     connect(actionBrowseCurseForge, &QAction::triggered, this, &ModFolderPage::on_actionBrowseCurseForge_triggered);
+    ui->actionsToolbar->addAction(actionBrowseCurseForge);
 
     m_inst = inst;
     on_RunningState_changed(m_inst && m_inst->isRunning());
