@@ -61,13 +61,56 @@ QVariant ModrinthModBrowserNS::ModListModel::data(const QModelIndex& index, int 
 
 bool ModrinthModBrowserNS::ModListModel::canFetchMore(const QModelIndex& parent) const
 {
-    return m_canFetchMore;
+    return m_searchState == CanFetchMore;
 }
 
 void ModrinthModBrowserNS::ModListModel::fetchMore(const QModelIndex& parent)
 {
-    if (parent.isValid() || !m_canFetchMore || m_searchInProgress)
+    if (parent.isValid())
         return;
+    // Guard: QListView must never trigger the initial search — that's search()'s job.
+    if (m_nextSearchOffset == 0) {
+        return;
+    }
+    if (m_searchState != CanFetchMore)
+        return;
+
+    performPaginatedSearch();
+}
+
+void ModrinthModBrowserNS::ModListModel::search(const QString& term, const QString& gameVersion, const QString& loader)
+{
+    m_searchGeneration++;
+
+    // Abort in-flight search
+    if (m_searchJob) {
+        m_searchJob->abort();
+        m_searchState = ResetRequested;
+        return;
+    }
+    if (m_versionsJob) {
+        m_versionsJob->abort();
+        m_versionsJob.reset();
+    }
+
+    beginResetModel();
+    m_mods.clear();
+    m_versions.clear();
+    m_nextSearchOffset = 0;
+    m_searchState = None;
+    m_searchTerm = term;
+    m_gameVersion = gameVersion;
+    m_loader = loader;
+    m_searchResponse.clear();
+    endResetModel();
+
+    // Start initial search directly (NOT through fetchMore)
+    performPaginatedSearch();
+}
+
+void ModrinthModBrowserNS::ModListModel::performPaginatedSearch()
+{
+    int gen = m_searchGeneration;
 
     // Build search URL with pagination
     QString facets;
@@ -85,100 +128,24 @@ void ModrinthModBrowserNS::ModListModel::fetchMore(const QModelIndex& parent)
         "https://api.modrinth.com/v2/search?facets=%1&query=%2&limit=25&offset=%3&index=relevance"
     ).arg(QString(QUrl::toPercentEncoding(facets)))
      .arg(QString(QUrl::toPercentEncoding(m_searchTerm)))
-     .arg(m_offset);
+     .arg(m_nextSearchOffset);
 
-    m_searchJob = new NetJob("Modrinth::ModSearch", APPLICATION->network());
+    m_searchResponse.clear();
+    m_searchJob = NetJob::Ptr(new NetJob("Modrinth::ModSearch", APPLICATION->network()));
     m_searchJob->addNetAction(Net::Download::makeByteArray(QUrl(searchUrl), &m_searchResponse));
-    m_searchInProgress = true;
-
-    QObject::connect(m_searchJob.get(), &NetJob::succeeded, this, &ModListModel::onSearchFinished);
-    QObject::connect(m_searchJob.get(), &NetJob::failed, this, &ModListModel::onSearchFailed);
     m_searchJob->start();
+
+    QObject::connect(m_searchJob.get(), &NetJob::succeeded, this, [this, gen]() {
+        if (gen == m_searchGeneration) onSearchSucceeded();
+    });
+    QObject::connect(m_searchJob.get(), &NetJob::failed, this, [this, gen]() {
+        if (gen == m_searchGeneration) onSearchFailed();
+    });
 }
 
-void ModrinthModBrowserNS::ModListModel::search(const QString& term, const QString& gameVersion, const QString& loader)
-{
-    // Abort in-flight search
-    if (m_searchJob) {
-        m_searchJob->abort();
-        m_searchJob.reset();
-    }
-    if (m_versionsJob) {
-        m_versionsJob->abort();
-        m_versionsJob.reset();
-    }
-
-    beginResetModel();
-    m_mods.clear();
-    m_versions.clear();
-    m_offset = 0;
-    m_canFetchMore = false;
-    m_searchInProgress = false;
-    m_searchTerm = term;
-    m_gameVersion = gameVersion;
-    m_loader = loader;
-    endResetModel();
-
-    // Trigger initial fetch
-    fetchMore(QModelIndex());
-}
-
-void ModrinthModBrowserNS::ModListModel::getVersions(const QString& projectId, const QString& gameVersion, const QString& loader)
-{
-    if (m_versionsJob) {
-        m_versionsJob->abort();
-        m_versionsJob.reset();
-    }
-
-    m_versions.clear();
-    m_versionsResponse.clear();
-
-    // Build version list URL with optional filters
-    QString versionsUrl = QString("https://api.modrinth.com/v2/project/%1/version").arg(projectId);
-
-    QStringList queryParts;
-    if (!gameVersion.isEmpty()) {
-        queryParts << QString("game_versions=[\"%1\"]").arg(gameVersion);
-    }
-    if (!loader.isEmpty()) {
-        queryParts << QString("loaders=[\"%1\"]").arg(loader);
-    }
-    if (!queryParts.isEmpty()) {
-        versionsUrl += "?" + queryParts.join("&");
-    }
-
-    m_versionsJob = new NetJob("Modrinth::ModVersions", APPLICATION->network());
-    m_versionsJob->addNetAction(Net::Download::makeByteArray(QUrl(versionsUrl), &m_versionsResponse));
-
-    QObject::connect(m_versionsJob.get(), &NetJob::succeeded, this, &ModListModel::onVersionsFinished);
-    QObject::connect(m_versionsJob.get(), &NetJob::failed, this, &ModListModel::onVersionsFailed);
-    m_versionsJob->start();
-}
-
-void ModrinthModBrowserNS::ModListModel::reset()
-{
-    if (m_searchJob) {
-        m_searchJob->abort();
-        m_searchJob.reset();
-    }
-    if (m_versionsJob) {
-        m_versionsJob->abort();
-        m_versionsJob.reset();
-    }
-
-    beginResetModel();
-    m_mods.clear();
-    m_versions.clear();
-    m_offset = 0;
-    m_canFetchMore = false;
-    m_searchInProgress = false;
-    endResetModel();
-}
-
-void ModrinthModBrowserNS::ModListModel::onSearchFinished()
+void ModrinthModBrowserNS::ModListModel::onSearchSucceeded()
 {
     m_searchJob.reset();
-    m_searchInProgress = false;
 
     QJsonParseError parse_error;
     QJsonDocument doc = QJsonDocument::fromJson(m_searchResponse, &parse_error);
@@ -186,6 +153,7 @@ void ModrinthModBrowserNS::ModListModel::onSearchFinished()
         qWarning() << "Erro ao analisar resposta JSON do Modrinth em" << parse_error.offset
                    << "razão:" << parse_error.errorString();
         emit errorOccurred(tr("Erro ao analisar resposta da busca."));
+        m_searchState = Finished;
         return;
     }
 
@@ -216,14 +184,16 @@ void ModrinthModBrowserNS::ModListModel::onSearchFinished()
     } catch (const JSONValidationError& e) {
         qWarning() << "Erro ao analisar resposta do Modrinth:" << e.cause();
         emit errorOccurred(tr("Erro ao analisar resposta da busca."));
+        m_searchState = Finished;
         return;
     }
 
-    if ((totalHits - m_offset) <= 25)
-        m_canFetchMore = false;
+    // Pagination: same proven pattern as CurseForgeModel
+    if ((totalHits - m_nextSearchOffset) <= 25)
+        m_searchState = Finished;
     else {
-        m_offset += 25;
-        m_canFetchMore = true;
+        m_nextSearchOffset += 25;
+        m_searchState = CanFetchMore;
     }
 
     beginInsertRows(QModelIndex(), m_mods.size(), m_mods.size() + newMods.size() - 1);
@@ -237,12 +207,76 @@ void ModrinthModBrowserNS::ModListModel::onSearchFinished()
 void ModrinthModBrowserNS::ModListModel::onSearchFailed()
 {
     m_searchJob.reset();
-    m_searchInProgress = false;
-    m_canFetchMore = false;
+
+    // If a reset was requested while a search was in-flight, restart now
+    if (m_searchState == ResetRequested) {
+        beginResetModel();
+        m_mods.clear();
+        m_versions.clear();
+        m_nextSearchOffset = 0;
+        endResetModel();
+
+        m_searchState = None;
+        performPaginatedSearch();
+        return;
+    }
+
+    m_searchState = Finished;
     emit errorOccurred(tr("Falha na busca. Verifique sua conexão com a internet."));
 }
 
-void ModrinthModBrowserNS::ModListModel::onVersionsFinished()
+void ModrinthModBrowserNS::ModListModel::getVersions(const QString& projectId, const QString& gameVersion, const QString& loader)
+{
+    if (m_versionsJob) {
+        m_versionsJob->abort();
+        m_versionsJob.reset();
+    }
+
+    m_versions.clear();
+    m_versionsResponse.clear();
+
+    // Build version list URL with optional filters
+    QString versionsUrl = QString("https://api.modrinth.com/v2/project/%1/version").arg(projectId);
+
+    QStringList queryParts;
+    if (!gameVersion.isEmpty()) {
+        queryParts << QString("game_versions=[\"%1\"]").arg(gameVersion);
+    }
+    if (!loader.isEmpty()) {
+        queryParts << QString("loaders=[\"%1\"]").arg(loader);
+    }
+    if (!queryParts.isEmpty()) {
+        versionsUrl += "?" + queryParts.join("&");
+    }
+
+    m_versionsJob = NetJob::Ptr(new NetJob("Modrinth::ModVersions", APPLICATION->network()));
+    m_versionsJob->addNetAction(Net::Download::makeByteArray(QUrl(versionsUrl), &m_versionsResponse));
+    m_versionsJob->start();
+
+    QObject::connect(m_versionsJob.get(), &NetJob::succeeded, this, &ModListModel::onVersionsSucceeded);
+    QObject::connect(m_versionsJob.get(), &NetJob::failed, this, &ModListModel::onVersionsFailed);
+}
+
+void ModrinthModBrowserNS::ModListModel::reset()
+{
+    if (m_searchJob) {
+        m_searchJob->abort();
+        m_searchJob.reset();
+    }
+    if (m_versionsJob) {
+        m_versionsJob->abort();
+        m_versionsJob.reset();
+    }
+
+    beginResetModel();
+    m_mods.clear();
+    m_versions.clear();
+    m_nextSearchOffset = 0;
+    m_searchState = Finished;
+    endResetModel();
+}
+
+void ModrinthModBrowserNS::ModListModel::onVersionsSucceeded()
 {
     m_versionsJob.reset();
 
@@ -388,6 +422,10 @@ ModrinthModBrowser::ModrinthModBrowser(BaseInstance* instance, std::shared_ptr<M
 
     auto mcInst = dynamic_cast<MinecraftInstance*>(instance);
 
+    // Block signals during initialization to prevent spurious triggerSearch() calls
+    ui->loaderComboBox->blockSignals(true);
+    ui->versionComboBox->blockSignals(true);
+
     // Populate game version combo
     if (mcInst) {
         QString gameVer = detectGameVersion(mcInst);
@@ -414,6 +452,10 @@ ModrinthModBrowser::ModrinthModBrowser(BaseInstance* instance, std::shared_ptr<M
             }
         }
     }
+
+    // Unblock signals after initialization
+    ui->loaderComboBox->blockSignals(false);
+    ui->versionComboBox->blockSignals(false);
 
     // Set up mod list view
     ui->modListView->setModel(m_model);
@@ -591,23 +633,23 @@ void ModrinthModBrowser::onDownloadClicked()
     ui->statusLabel->setText(tr("Baixando '%1'...").arg(version.fileName));
 
     // Use Net::Download::makeFile to download the mod file
-    m_downloadJob = new NetJob("Modrinth::DownloadMod", APPLICATION->network());
+    m_downloadJob = NetJob::Ptr(new NetJob("Modrinth::DownloadMod", APPLICATION->network()));
     m_downloadJob->addNetAction(Net::Download::makeFile(QUrl(version.downloadUrl), targetPath));
 
-    connect(m_downloadJob.get(), &NetJob::succeeded, this, [this]() {
+    QObject::connect(m_downloadJob.get(), &NetJob::succeeded, this, [this]() {
         m_downloadJob.reset();
         ui->statusLabel->setText(tr("Download concluído!"));
         ui->downloadButton->setEnabled(true);
         m_modModel->update();
     });
 
-    connect(m_downloadJob.get(), &NetJob::failed, this, [this](const QString& reason) {
+    QObject::connect(m_downloadJob.get(), &NetJob::failed, this, [this](const QString& reason) {
         m_downloadJob.reset();
         ui->statusLabel->setText(tr("Falha no download: %1").arg(reason));
         ui->downloadButton->setEnabled(true);
     });
 
-    connect(m_downloadJob.get(), &NetJob::progress, this, [this](qint64 current, qint64 total) {
+    QObject::connect(m_downloadJob.get(), &NetJob::progress, this, [this](qint64 current, qint64 total) {
         if (total > 0) {
             double percent = (current * 100.0) / total;
             ui->statusLabel->setText(tr("Baixando... %1%").arg(QString::number(percent, 'f', 1)));

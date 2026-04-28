@@ -63,14 +63,56 @@ QVariant CurseForgeModBrowserNS::ModListModel::data(const QModelIndex& index, in
 
 bool CurseForgeModBrowserNS::ModListModel::canFetchMore(const QModelIndex& parent) const
 {
-    return m_canFetchMore;
+    return m_searchState == CanFetchMore;
 }
 
 void CurseForgeModBrowserNS::ModListModel::fetchMore(const QModelIndex& parent)
 {
-    if (parent.isValid() || !m_canFetchMore || m_searchInProgress)
+    if (parent.isValid())
+        return;
+    // Guard: QListView must never trigger the initial search — that's search()'s job.
+    if (m_nextSearchOffset == 0) {
+        return;
+    }
+    if (m_searchState != CanFetchMore)
         return;
 
+    performPaginatedSearch();
+}
+
+void CurseForgeModBrowserNS::ModListModel::search(const QString& term, const QString& gameVersion, const QString& loader)
+{
+    m_searchGeneration++;
+
+    // Abort in-flight search
+    if (m_searchJob) {
+        m_searchJob->abort();
+        m_searchState = ResetRequested;
+        // onSearchFailed will restart the search after abort completes
+        return;
+    }
+    if (m_versionsJob) {
+        m_versionsJob->abort();
+        m_versionsJob.reset();
+    }
+
+    beginResetModel();
+    m_mods.clear();
+    m_versions.clear();
+    m_nextSearchOffset = 0;
+    m_searchState = None;
+    m_searchTerm = term;
+    m_gameVersion = gameVersion;
+    m_loader = loader;
+    m_searchResponse.clear();
+    endResetModel();
+
+    // Start initial search directly (NOT through fetchMore)
+    performPaginatedSearch();
+}
+
+void CurseForgeModBrowserNS::ModListModel::performPaginatedSearch()
+{
     QString apiKey = CurseForge::getApiKey();
     int gen = m_searchGeneration;
 
@@ -79,7 +121,7 @@ void CurseForgeModBrowserNS::ModListModel::fetchMore(const QModelIndex& parent)
         QString(QUrl::toPercentEncoding(m_searchTerm)),
         CurseForge::CLASS_ID_MODS,
         static_cast<int>(CurseForge::SortFieldId::Popularity),
-        "desc", 25, m_offset
+        "desc", 25, m_nextSearchOffset
     ).toString();
 
     // Append game version filter
@@ -100,50 +142,116 @@ void CurseForgeModBrowserNS::ModListModel::fetchMore(const QModelIndex& parent)
     }
 
     m_searchResponse.clear();
-    m_searchJob = new NetJob("CurseForge::ModSearch", APPLICATION->network());
+    m_searchJob = NetJob::Ptr(new NetJob("CurseForge::ModSearch", APPLICATION->network()));
     auto dl = Net::Download::makeByteArray(QUrl(searchUrl), &m_searchResponse);
     CurseForge::addApiKeyHeader(dl.get(), apiKey);
     m_searchJob->addNetAction(dl);
-    m_searchInProgress = true;
+    m_searchJob->start();
 
     QObject::connect(m_searchJob.get(), &NetJob::succeeded, this, [this, gen]() {
-        if (gen == m_searchGeneration) onSearchFinished();
+        if (gen == m_searchGeneration) onSearchSucceeded();
     });
     QObject::connect(m_searchJob.get(), &NetJob::failed, this, [this, gen]() {
         if (gen == m_searchGeneration) onSearchFailed();
     });
-    m_searchJob->start();
 }
 
-void CurseForgeModBrowserNS::ModListModel::search(const QString& term, const QString& gameVersion, const QString& loader)
+void CurseForgeModBrowserNS::ModListModel::onSearchSucceeded()
 {
-    // Abort in-flight search
-    if (m_searchJob) {
-        m_searchJob->abort();
-        m_searchJob.reset();
+    m_searchJob.reset();
+
+    QJsonParseError parse_error;
+    QJsonDocument doc = QJsonDocument::fromJson(m_searchResponse, &parse_error);
+    if (parse_error.error != QJsonParseError::NoError) {
+        qWarning() << "Erro ao analisar resposta JSON do CurseForge em" << parse_error.offset
+                   << "razão:" << parse_error.errorString();
+        emit errorOccurred(tr("Erro ao analisar resposta da busca."));
+        m_searchState = Finished;
+        return;
     }
-    if (m_versionsJob) {
-        m_versionsJob->abort();
-        m_versionsJob.reset();
+
+    QVector<ModInfo> newMods;
+    int totalCount = 0;
+
+    try {
+        auto obj = Json::requireObject(doc);
+        auto data = Json::requireArray(obj, "data");
+
+        // Use requireObject to fail loudly if pagination is missing
+        auto pagination = Json::requireObject(obj, "pagination");
+        totalCount = Json::requireInteger(pagination, "totalCount");
+
+        for (auto modRaw : data) {
+            auto modObj = modRaw.toObject();
+            ModInfo mod;
+            try {
+                mod.id = Json::requireInteger(modObj, "id");
+                mod.name = Json::requireString(modObj, "name");
+                mod.description = Json::ensureString(modObj, "summary", "");
+                mod.downloadCount = modObj["downloadCount"].toVariant().toULongLong();
+
+                // Extract author from authors array
+                auto authors = modObj["authors"].toArray();
+                if (!authors.isEmpty()) {
+                    mod.author = Json::ensureString(authors[0].toObject(), "name", "Desconhecido");
+                } else {
+                    mod.author = "Desconhecido";
+                }
+
+                // Extract logo URL from nested logo object
+                auto logoObj = Json::ensureObject(modObj, "logo", {});
+                if (!logoObj.isEmpty()) {
+                    mod.iconUrl = Json::ensureUrl(logoObj, "thumbnailUrl", QUrl());
+                }
+
+                newMods.append(mod);
+            } catch (const JSONValidationError& e) {
+                qWarning() << "Erro ao carregar mod do CurseForge:" << e.cause();
+                continue;
+            }
+        }
+    } catch (const JSONValidationError& e) {
+        qWarning() << "Erro ao analisar resposta do CurseForge:" << e.cause();
+        emit errorOccurred(tr("Erro ao analisar resposta da busca."));
+        m_searchState = Finished;
+        return;
     }
 
-    m_searchGeneration++;
+    // Pagination: same proven pattern as CurseForgeModel
+    if ((totalCount - m_nextSearchOffset) <= 25)
+        m_searchState = Finished;
+    else {
+        m_nextSearchOffset += 25;
+        m_searchState = CanFetchMore;
+    }
 
-    beginResetModel();
-    m_mods.clear();
-    m_versions.clear();
-    m_offset = 0;
-    m_totalCount = 0;
-    m_canFetchMore = true;
-    m_searchInProgress = false;
-    m_searchTerm = term;
-    m_gameVersion = gameVersion;
-    m_loader = loader;
-    m_searchResponse.clear();
-    endResetModel();
+    beginInsertRows(QModelIndex(), m_mods.size(), m_mods.size() + newMods.size() - 1);
+    for (const auto& item : newMods)
+        m_mods.append(item);
+    endInsertRows();
 
-    // Trigger initial fetch
-    fetchMore(QModelIndex());
+    emit searchFinished();
+}
+
+void CurseForgeModBrowserNS::ModListModel::onSearchFailed()
+{
+    m_searchJob.reset();
+
+    // If a reset was requested while a search was in-flight, restart now
+    if (m_searchState == ResetRequested) {
+        beginResetModel();
+        m_mods.clear();
+        m_versions.clear();
+        m_nextSearchOffset = 0;
+        endResetModel();
+
+        m_searchState = None;
+        performPaginatedSearch();
+        return;
+    }
+
+    m_searchState = Finished;
+    emit errorOccurred(tr("Falha na busca. Verifique sua conexão com a internet e a chave de API."));
 }
 
 void CurseForgeModBrowserNS::ModListModel::getVersions(int modId, const QString& gameVersion, const QString& loader)
@@ -166,13 +274,13 @@ void CurseForgeModBrowserNS::ModListModel::getVersions(int modId, const QString&
         "%1/mods/%2/files?gameVersion=%3&pageSize=50"
     ).arg(CurseForge::API_BASE).arg(modId).arg(gameVersion);
 
-    m_versionsJob = new NetJob("CurseForge::ModVersions", APPLICATION->network());
+    m_versionsJob = NetJob::Ptr(new NetJob("CurseForge::ModVersions", APPLICATION->network()));
     auto dl = Net::Download::makeByteArray(QUrl(versionsUrl), &m_versionsResponse);
     CurseForge::addApiKeyHeader(dl.get(), apiKey);
     m_versionsJob->addNetAction(dl);
 
     QObject::connect(m_versionsJob.get(), &NetJob::succeeded, this, [this, gen]() {
-        if (gen == m_versionsGeneration) onVersionsFinished();
+        if (gen == m_versionsGeneration) onVersionsSucceeded();
     });
     QObject::connect(m_versionsJob.get(), &NetJob::failed, this, [this, gen]() {
         if (gen == m_versionsGeneration) onVersionsFailed();
@@ -194,98 +302,12 @@ void CurseForgeModBrowserNS::ModListModel::reset()
     beginResetModel();
     m_mods.clear();
     m_versions.clear();
-    m_offset = 0;
-    m_totalCount = 0;
-    m_canFetchMore = false;
-    m_searchInProgress = false;
+    m_nextSearchOffset = 0;
+    m_searchState = Finished;
     endResetModel();
 }
 
-void CurseForgeModBrowserNS::ModListModel::onSearchFinished()
-{
-    m_searchJob.reset();
-    m_searchInProgress = false;
-
-    QJsonParseError parse_error;
-    QJsonDocument doc = QJsonDocument::fromJson(m_searchResponse, &parse_error);
-    if (parse_error.error != QJsonParseError::NoError) {
-        qWarning() << "Erro ao analisar resposta JSON do CurseForge em" << parse_error.offset
-                   << "razão:" << parse_error.errorString();
-        emit errorOccurred(tr("Erro ao analisar resposta da busca."));
-        return;
-    }
-
-    QVector<ModInfo> newMods;
-    int totalCount = 0;
-
-    try {
-        auto obj = Json::requireObject(doc);
-        auto data = Json::requireArray(obj, "data");
-
-        auto pagination = obj["pagination"].toObject();
-        totalCount = Json::ensureInteger(pagination, "totalCount", 0);
-
-        for (auto modRaw : data) {
-            auto modObj = modRaw.toObject();
-            ModInfo mod;
-            try {
-                mod.id = Json::requireInteger(modObj, "id");
-                mod.name = Json::requireString(modObj, "name");
-                mod.description = Json::ensureString(modObj, "summary", "");
-                mod.downloadCount = modObj["downloadCount"].toVariant().toULongLong();
-
-                // Extract author from authors array
-                auto authors = modObj["authors"].toArray();
-                if (!authors.isEmpty()) {
-                    mod.author = Json::ensureString(authors[0].toObject(), "name", "Desconhecido");
-                } else {
-                    mod.author = "Desconhecido";
-                }
-
-                // Extract logo URL
-                auto logo = modObj["logo"].toObject();
-                if (!logo.isEmpty()) {
-                    mod.iconUrl = QUrl(Json::ensureString(logo, "thumbnailUrl", ""));
-                }
-
-                newMods.append(mod);
-            } catch (const JSONValidationError& e) {
-                qWarning() << "Erro ao carregar mod do CurseForge:" << e.cause();
-                continue;
-            }
-        }
-    } catch (const JSONValidationError& e) {
-        qWarning() << "Erro ao analisar resposta do CurseForge:" << e.cause();
-        emit errorOccurred(tr("Erro ao analisar resposta da busca."));
-        return;
-    }
-
-    m_totalCount = totalCount;
-
-    if ((m_offset + 25) >= totalCount)
-        m_canFetchMore = false;
-    else {
-        m_offset += 25;
-        m_canFetchMore = true;
-    }
-
-    beginInsertRows(QModelIndex(), m_mods.size(), m_mods.size() + newMods.size() - 1);
-    for (const auto& item : newMods)
-        m_mods.append(item);
-    endInsertRows();
-
-    emit searchFinished();
-}
-
-void CurseForgeModBrowserNS::ModListModel::onSearchFailed()
-{
-    m_searchJob.reset();
-    m_searchInProgress = false;
-    m_canFetchMore = false;
-    emit errorOccurred(tr("Falha na busca. Verifique sua conexão com a internet e a chave de API."));
-}
-
-void CurseForgeModBrowserNS::ModListModel::onVersionsFinished()
+void CurseForgeModBrowserNS::ModListModel::onVersionsSucceeded()
 {
     m_versionsJob.reset();
 
@@ -314,7 +336,6 @@ void CurseForgeModBrowserNS::ModListModel::onVersionsFinished()
                 // Extract game version from gameVersions array
                 auto gameVersions = verObj["gameVersions"].toArray();
                 if (!gameVersions.isEmpty()) {
-                    // First element is usually the Minecraft version
                     vi.gameVersion = gameVersions[0].toString();
                 }
 
@@ -396,11 +417,6 @@ void CurseForgeModBrowserNS::ModListModel::requestLogo(int id, const QUrl& url)
     m_loadingLogos.append(id);
 }
 
-QString CurseForgeModBrowserNS::ModListModel::getApiKey() const
-{
-    return CurseForge::getApiKey();
-}
-
 // ─── CurseForgeModBrowser ────────────────────────────────────────────────────
 
 static QString detectLoader(MinecraftInstance* inst)
@@ -440,6 +456,10 @@ CurseForgeModBrowser::CurseForgeModBrowser(BaseInstance* instance, std::shared_p
 
     auto mcInst = dynamic_cast<MinecraftInstance*>(instance);
 
+    // Block signals during initialization to prevent spurious triggerSearch() calls
+    ui->loaderComboBox->blockSignals(true);
+    ui->versionComboBox->blockSignals(true);
+
     // Populate game version combo
     if (mcInst) {
         QString gameVer = detectGameVersion(mcInst);
@@ -466,6 +486,10 @@ CurseForgeModBrowser::CurseForgeModBrowser(BaseInstance* instance, std::shared_p
             }
         }
     }
+
+    // Unblock signals after initialization
+    ui->loaderComboBox->blockSignals(false);
+    ui->versionComboBox->blockSignals(false);
 
     // Set up mod list view
     ui->modListView->setModel(m_model);
@@ -640,23 +664,23 @@ void CurseForgeModBrowser::onDownloadClicked()
     ui->statusLabel->setText(tr("Baixando '%1'...").arg(version.fileName));
 
     // Use Net::Download::makeFile to download the mod file
-    m_downloadJob = new NetJob("CurseForge::DownloadMod", APPLICATION->network());
+    m_downloadJob = NetJob::Ptr(new NetJob("CurseForge::DownloadMod", APPLICATION->network()));
     m_downloadJob->addNetAction(Net::Download::makeFile(QUrl(version.downloadUrl), targetPath));
 
-    connect(m_downloadJob.get(), &NetJob::succeeded, this, [this]() {
+    QObject::connect(m_downloadJob.get(), &NetJob::succeeded, this, [this]() {
         m_downloadJob.reset();
         ui->statusLabel->setText(tr("Download concluído!"));
         ui->downloadButton->setEnabled(true);
         m_modModel->update();
     });
 
-    connect(m_downloadJob.get(), &NetJob::failed, this, [this](const QString& reason) {
+    QObject::connect(m_downloadJob.get(), &NetJob::failed, this, [this](const QString& reason) {
         m_downloadJob.reset();
         ui->statusLabel->setText(tr("Falha no download: %1").arg(reason));
         ui->downloadButton->setEnabled(true);
     });
 
-    connect(m_downloadJob.get(), &NetJob::progress, this, [this](qint64 current, qint64 total) {
+    QObject::connect(m_downloadJob.get(), &NetJob::progress, this, [this](qint64 current, qint64 total) {
         if (total > 0) {
             double percent = (current * 100.0) / total;
             ui->statusLabel->setText(tr("Baixando... %1%").arg(QString::number(percent, 'f', 1)));

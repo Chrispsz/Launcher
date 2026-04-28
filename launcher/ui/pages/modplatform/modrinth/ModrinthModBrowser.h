@@ -59,12 +59,13 @@ signals:
     void errorOccurred(const QString& message);
 
 private slots:
-    void onSearchFinished();
+    void onSearchSucceeded();
     void onSearchFailed();
-    void onVersionsFinished();
+    void onVersionsSucceeded();
     void onVersionsFailed();
 
 private:
+    void performPaginatedSearch();
     void requestLogo(const QString& id, const QUrl& url);
 
     QVector<ModInfo> m_mods;
@@ -77,9 +78,16 @@ private:
     QString m_searchTerm;
     QString m_gameVersion;
     QString m_loader;
-    int m_offset = 0;
-    bool m_canFetchMore = false;
-    bool m_searchInProgress = false;
+    int m_nextSearchOffset = 0;
+    int m_searchGeneration = 0;
+
+    // Proven state machine — same pattern as CurseForgeModel
+    enum SearchState {
+        None,
+        CanFetchMore,
+        ResetRequested,
+        Finished
+    } m_searchState = None;
 
     NetJob::Ptr m_searchJob;
     QByteArray m_searchResponse;

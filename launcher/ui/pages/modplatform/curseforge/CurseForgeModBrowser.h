@@ -59,14 +59,14 @@ signals:
     void errorOccurred(const QString& message);
 
 private slots:
-    void onSearchFinished();
+    void onSearchSucceeded();
     void onSearchFailed();
-    void onVersionsFinished();
+    void onVersionsSucceeded();
     void onVersionsFailed();
 
 private:
+    void performPaginatedSearch();
     void requestLogo(int id, const QUrl& url);
-    QString getApiKey() const;
 
     QVector<ModInfo> m_mods;
     QMap<int, QIcon> m_logoMap;
@@ -78,12 +78,17 @@ private:
     QString m_searchTerm;
     QString m_gameVersion;
     QString m_loader;
-    int m_offset = 0;
-    int m_totalCount = 0;
-    bool m_canFetchMore = false;
-    bool m_searchInProgress = false;
+    int m_nextSearchOffset = 0;
     int m_searchGeneration = 0;
     int m_versionsGeneration = 0;
+
+    // Proven state machine from CurseForgeModel (modpack browser)
+    enum SearchState {
+        None,
+        CanFetchMore,
+        ResetRequested,
+        Finished
+    } m_searchState = None;
 
     NetJob::Ptr m_searchJob;
     QByteArray m_searchResponse;
