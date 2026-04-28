@@ -74,6 +74,9 @@ void ModrinthModBrowserNS::ModListModel::fetchMore(const QModelIndex& parent)
     }
     if (m_searchState != CanFetchMore)
         return;
+    // Guard: don't start a new search if one is already in progress
+    if (m_searchJob)
+        return;
 
     performPaginatedSearch();
 }
@@ -110,6 +113,10 @@ void ModrinthModBrowserNS::ModListModel::search(const QString& term, const QStri
 
 void ModrinthModBrowserNS::ModListModel::performPaginatedSearch()
 {
+    // Set state to None while searching — prevents canFetchMore() from returning true
+    // and QListView from calling fetchMore() again while a search is in progress.
+    m_searchState = None;
+
     int gen = m_searchGeneration;
 
     // Build search URL with pagination
