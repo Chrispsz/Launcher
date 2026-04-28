@@ -89,6 +89,8 @@ private:
 
 } // namespace ModrinthModBrowserNS
 
+Q_DECLARE_METATYPE(ModrinthModBrowserNS::ModInfo)
+
 class ModrinthModBrowser : public QDialog
 {
     Q_OBJECT

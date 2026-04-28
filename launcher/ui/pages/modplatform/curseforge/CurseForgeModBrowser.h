@@ -91,6 +91,8 @@ private:
 
 } // namespace CurseForgeModBrowserNS
 
+Q_DECLARE_METATYPE(CurseForgeModBrowserNS::ModInfo)
+
 class CurseForgeModBrowser : public QDialog
 {
     Q_OBJECT
