@@ -863,6 +863,8 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         m_metacache->addBase("general", QDir("cache").absolutePath());
         // ATLauncher/FTB/Technic cache bases removed
         m_metacache->addBase("ModrinthPacks", QDir("cache/ModrinthPacks").absolutePath());
+        m_metacache->addBase("CurseForgePacks", QDir("cache/CurseForgePacks").absolutePath());
+        m_metacache->addBase("CurseForgeMods", QDir("cache/CurseForgeMods").absolutePath());
         m_metacache->addBase("root", QDir::currentPath());
         m_metacache->addBase("translations", QDir("translations").absolutePath());
         m_metacache->addBase("icons", QDir("cache/icons").absolutePath());

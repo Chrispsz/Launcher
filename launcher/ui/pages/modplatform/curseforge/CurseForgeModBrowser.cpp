@@ -320,7 +320,7 @@ void CurseForgeModBrowserNS::ModListModel::onVersionsFailed()
 
 void CurseForgeModBrowserNS::ModListModel::requestLogo(int id, const QUrl& url)
 {
-    if (m_loadingLogos.contains(id) || m_failedLogos.contains(id) || url.isEmpty())
+    if (m_loadingLogos.contains(id) || m_failedLogos.contains(id) || !url.isValid() || url.scheme().isEmpty())
         return;
 
     MetaEntryPtr entry = APPLICATION->metacache()->resolveEntry(

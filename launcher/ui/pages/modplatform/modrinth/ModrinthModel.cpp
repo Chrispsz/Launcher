@@ -232,6 +232,12 @@ void Modrinth::ListModel::requestLogo(const QString &logo, const QUrl &url)
         return;
     }
 
+    if (!url.isValid() || url.scheme().isEmpty())
+    {
+        m_failedLogos.append(logo);
+        return;
+    }
+
     MetaEntryPtr entry = APPLICATION->metacache()->resolveEntry("ModrinthPacks", QString("logos/%1").arg(logo.section(".", 0, 0)));
     auto *job = new NetJob(QString("Modrinth Icon Download %1").arg(logo), APPLICATION->network());
     job->addNetAction(Net::Download::makeCached(url, entry));

@@ -476,14 +476,12 @@ public:
         all_actions.append(&actionViewSelectedMCFolder);
         instanceToolBar->addAction(actionViewSelectedMCFolder);
 
-        /*
         actionViewSelectedModsFolder = TranslatedAction(MainWindow);
         actionViewSelectedModsFolder->setObjectName(QStringLiteral("actionViewSelectedModsFolder"));
-        actionViewSelectedModsFolder.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Mods Folder"));
-        actionViewSelectedModsFolder.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open the selected instance's mods folder in a file browser."));
+        actionViewSelectedModsFolder.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Pasta de Mods"));
+        actionViewSelectedModsFolder.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Abrir a pasta de mods da instância selecionada."));
         all_actions.append(&actionViewSelectedModsFolder);
         instanceToolBar->addAction(actionViewSelectedModsFolder);
-        */
 
         actionConfig_Folder = TranslatedAction(MainWindow);
         actionConfig_Folder->setObjectName(QStringLiteral("actionConfig_Folder"));

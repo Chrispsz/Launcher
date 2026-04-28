@@ -241,6 +241,12 @@ void CurseForge::ListModel::requestLogo(const QString &logo, const QUrl &url)
         return;
     }
 
+    if (!url.isValid() || url.scheme().isEmpty())
+    {
+        logoFailed(logo);
+        return;
+    }
+
     MetaEntryPtr entry = APPLICATION->metacache()->resolveEntry("CurseForgePacks", QString("logos/%1").arg(logo.section(".", 0, 0)));
     auto *job = new NetJob(QString("CurseForge Icon Download %1").arg(logo), APPLICATION->network());
     job->addNetAction(Net::Download::makeCached(url, entry));
@@ -533,8 +539,8 @@ bool parseVersionsInto(QByteArray &input, CurseForge::Modpack &output) {
                     }
                 }
 
-                // Check if the file is a valid modpack zip
-                if (version.download.filename.endsWith(".zip")) {
+                // Check if the file is a valid modpack zip with a download URL
+                if (version.download.filename.endsWith(".zip") && !version.download.url.isEmpty() && version.download.url.startsWith("http")) {
                     version.download.valid = true;
                 }
 
