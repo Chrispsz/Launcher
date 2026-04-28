@@ -10,6 +10,7 @@
 #include <QString>
 #include <QUrl>
 #include "Application.h"
+#include "net/Download.h"
 
 namespace CurseForge {
 
@@ -64,8 +65,8 @@ inline QString getApiKey()
 }
 
 /*
- * Append the API key as a query parameter to the given URL.
- * If the URL already has query params, appends with '&', otherwise with '?'.
+ * Append the API key as a query parameter to the given URL (DEPRECATED).
+ * Use addApiKeyHeader() instead — CurseForge API requires x-api-key header.
  */
 inline QUrl addApiKey(const QUrl &url, const QString &apiKey)
 {
@@ -75,6 +76,17 @@ inline QUrl addApiKey(const QUrl &url, const QString &apiKey)
     QString urlString = url.toString();
     urlString += (urlString.contains("?") ? QStringLiteral("&") : QStringLiteral("?")) + QStringLiteral("apiKey=") + apiKey;
     return QUrl(urlString);
+}
+
+/*
+ * Add the x-api-key header to a Net::Download action.
+ * This is the correct way to authenticate with CurseForge API v1.
+ */
+inline void addApiKeyHeader(Net::Download *download, const QString &apiKey)
+{
+    if (!apiKey.isEmpty()) {
+        download->addCustomHeader("x-api-key", apiKey.toUtf8());
+    }
 }
 
 /*

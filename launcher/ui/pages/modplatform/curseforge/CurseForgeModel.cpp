@@ -110,9 +110,10 @@ void CurseForge::ListModel::performPaginatedSearch()
     auto *netJob = new NetJob("CurseForge::Search", APPLICATION->network());
     QUrl searchUrl = CurseForge::buildSearchUrl(currentSearchTerm, CurseForge::CLASS_ID_MODPACKS,
                                                  currentSortField, "desc", 25, nextSearchOffset);
-    searchUrl = CurseForge::addApiKey(searchUrl, apiKey);
 
-    netJob->addNetAction(Net::Download::makeByteArray(searchUrl, &response));
+    auto dl = Net::Download::makeByteArray(searchUrl, &response);
+    CurseForge::addApiKeyHeader(dl.get(), apiKey);
+    netJob->addNetAction(dl);
     jobPtr = netJob;
     jobPtr->start();
     QObject::connect(netJob, &NetJob::succeeded, this, &ListModel::searchRequestFinished);
@@ -293,10 +294,11 @@ void CurseForge::ListModel::getPackDetails(int id)
     if (modpack.detailsLoaded != LoadState::Loaded)
     {
         QUrl detailsUrl = CurseForge::buildModDetailsUrl(id);
-        detailsUrl = CurseForge::addApiKey(detailsUrl, apiKey);
 
         auto *netJob = new NetJob("CurseForge::PackDetails", APPLICATION->network());
-        netJob->addNetAction(Net::Download::makeByteArray(detailsUrl, &detailsResponse));
+        auto dl = Net::Download::makeByteArray(detailsUrl, &detailsResponse);
+        CurseForge::addApiKeyHeader(dl.get(), apiKey);
+        netJob->addNetAction(dl);
         detailsPtr = netJob;
         detailsPtr->start();
         QObject::connect(netJob, &NetJob::succeeded, this, &ListModel::detailsRequestFinished);
@@ -307,10 +309,11 @@ void CurseForge::ListModel::getPackDetails(int id)
     if (modpack.versionsLoaded != LoadState::Loaded)
     {
         QUrl filesUrl = CurseForge::buildModFilesUrl(id);
-        filesUrl = CurseForge::addApiKey(filesUrl, apiKey);
 
         auto *netJob = new NetJob("CurseForge::PackFiles", APPLICATION->network());
-        netJob->addNetAction(Net::Download::makeByteArray(filesUrl, &versionsResponse));
+        auto dl = Net::Download::makeByteArray(filesUrl, &versionsResponse);
+        CurseForge::addApiKeyHeader(dl.get(), apiKey);
+        netJob->addNetAction(dl);
         versionsPtr = netJob;
         versionsPtr->start();
         QObject::connect(netJob, &NetJob::succeeded, this, &ListModel::versionsRequestFinished);

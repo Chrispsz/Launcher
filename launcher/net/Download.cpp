@@ -68,6 +68,11 @@ void Download::addValidator(Validator * v)
     m_sink->addValidator(v);
 }
 
+void Download::addCustomHeader(const QByteArray &key, const QByteArray &value)
+{
+    m_customHeaders.insert(key, value);
+}
+
 void Download::startImpl()
 {
     if(m_status == Job_Aborted)
@@ -97,6 +102,11 @@ void Download::startImpl()
     }
 
     request.setHeader(QNetworkRequest::UserAgentHeader, BuildConfig.USER_AGENT);
+
+    // Apply custom headers
+    for (auto it = m_customHeaders.constBegin(); it != m_customHeaders.constEnd(); ++it) {
+        request.setRawHeader(it.key(), it.value());
+    }
 
     QNetworkReply *rep = m_network->get(request);
 

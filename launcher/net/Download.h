@@ -19,6 +19,8 @@
 #include "HttpMetaCache.h"
 #include "Validator.h"
 #include "Sink.h"
+#include <QMap>
+#include <QByteArray>
 
 #include "QObjectPtr.h"
 
@@ -50,6 +52,7 @@ public: /* methods */
         return m_target_path;
     }
     void addValidator(Validator * v);
+    void addCustomHeader(const QByteArray &key, const QByteArray &value);
     bool abort() override;
     bool canAbort() override;
 
@@ -71,6 +74,7 @@ private: /* data */
     QString m_target_path;
     std::unique_ptr<Sink> m_sink;
     Options m_options;
+    QMap<QByteArray, QByteArray> m_customHeaders;
     int m_redirects = 0;
     static const int MAX_REDIRECTS = 10;
 };

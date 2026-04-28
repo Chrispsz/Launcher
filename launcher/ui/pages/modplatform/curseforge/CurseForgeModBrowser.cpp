@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "Json.h"
 #include "modplatform/curseforge/CurseForgeAPI.h"
+#include "net/Download.h"
 #include "minecraft/MinecraftInstance.h"
 #include "minecraft/PackProfile.h"
 #include "minecraft/mod/ModFolderModel.h"
@@ -76,13 +77,13 @@ void CurseForgeModBrowserNS::ModListModel::fetchMore(const QModelIndex& parent)
     QString searchUrl = QString(
         "https://api.curseforge.com/v1/mods/search?gameId=432&classId=6"
         "&searchFilter=%1&sortField=2&sortOrder=desc&pageSize=25&indexOffset=%2"
-        "&apiKey=%3"
     ).arg(QString(QUrl::toPercentEncoding(m_searchTerm)))
-     .arg(m_offset)
-     .arg(apiKey);
+     .arg(m_offset);
 
     m_searchJob = new NetJob("CurseForge::ModSearch", APPLICATION->network());
-    m_searchJob->addNetAction(Net::Download::makeByteArray(QUrl(searchUrl), &m_searchResponse));
+    auto dl = Net::Download::makeByteArray(QUrl(searchUrl), &m_searchResponse);
+    CurseForge::addApiKeyHeader(dl.get(), apiKey);
+    m_searchJob->addNetAction(dl);
     m_searchInProgress = true;
 
     QObject::connect(m_searchJob.get(), &NetJob::succeeded, this, &ModListModel::onSearchFinished);
@@ -132,11 +133,13 @@ void CurseForgeModBrowserNS::ModListModel::getVersions(int modId, const QString&
 
     // Build version list URL with game version filter
     QString versionsUrl = QString(
-        "https://api.curseforge.com/v1/mods/%1/files?gameVersion=%2&pageSize=50&apiKey=%3"
-    ).arg(modId).arg(gameVersion).arg(apiKey);
+        "https://api.curseforge.com/v1/mods/%1/files?gameVersion=%2&pageSize=50"
+    ).arg(modId).arg(gameVersion);
 
     m_versionsJob = new NetJob("CurseForge::ModVersions", APPLICATION->network());
-    m_versionsJob->addNetAction(Net::Download::makeByteArray(QUrl(versionsUrl), &m_versionsResponse));
+    auto dl = Net::Download::makeByteArray(QUrl(versionsUrl), &m_versionsResponse);
+    CurseForge::addApiKeyHeader(dl.get(), apiKey);
+    m_versionsJob->addNetAction(dl);
 
     QObject::connect(m_versionsJob.get(), &NetJob::succeeded, this, &ModListModel::onVersionsFinished);
     QObject::connect(m_versionsJob.get(), &NetJob::failed, this, &ModListModel::onVersionsFailed);

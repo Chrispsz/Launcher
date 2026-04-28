@@ -687,6 +687,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     m_settings->registerSetting("ShowGlobalGameTime", false);
     m_settings->registerSetting("RecordGameTime", true);
     m_settings->registerSetting("ShowGameTimeHours", false);
+    m_settings->registerSetting("CurseForgeAPIKey", "");
 
         // Minecraft launch method
         m_settings->registerSetting("MCLaunchMethod", "LauncherPart");
