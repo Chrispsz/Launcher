@@ -67,6 +67,9 @@ void MinecraftPage::applySettings()
     s->set("UseNativeOpenAL", ui->useNativeOpenALCheck->isChecked());
     s->set("UseNativeGLFW", ui->useNativeGLFWCheck->isChecked());
 
+    // CurseForge API Key
+    s->set("CurseForgeAPIKey", ui->cfApiKeyEdit->text().trimmed());
+
     // Game time
     s->set("ShowGameTime", ui->showGameTime->isChecked());
     s->set("ShowGlobalGameTime", ui->showGlobalGameTime->isChecked());
@@ -85,6 +88,9 @@ void MinecraftPage::loadSettings()
 
     ui->useNativeOpenALCheck->setChecked(s->get("UseNativeOpenAL").toBool());
     ui->useNativeGLFWCheck->setChecked(s->get("UseNativeGLFW").toBool());
+
+    // CurseForge API Key
+    ui->cfApiKeyEdit->setText(s->get("CurseForgeAPIKey").toString());
 
     ui->showGameTime->setChecked(s->get("ShowGameTime").toBool());
     ui->showGlobalGameTime->setChecked(s->get("ShowGlobalGameTime").toBool());

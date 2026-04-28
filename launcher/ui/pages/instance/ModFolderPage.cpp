@@ -28,6 +28,7 @@
 #include "ui/dialogs/CustomMessageBox.h"
 #include "ui/GuiUtil.h"
 #include "ui/pages/modplatform/modrinth/ModrinthModBrowser.h"
+#include "ui/pages/modplatform/curseforge/CurseForgeModBrowser.h"
 
 #include "DesktopServices.h"
 
@@ -148,6 +149,10 @@ ModFolderPage::ModFolderPage(
     auto actionBrowseMods = ui->actionsToolbar->addAction(APPLICATION->getThemedIcon("modrinth"), tr("Buscar mods"));
     actionBrowseMods->setToolTip(tr("Buscar mods no Modrinth"));
     connect(actionBrowseMods, &QAction::triggered, this, &ModFolderPage::on_actionBrowseMods_triggered);
+
+    auto actionBrowseCurseForge = ui->actionsToolbar->addAction(APPLICATION->getThemedIcon("flame"), tr("CurseForge"));
+    actionBrowseCurseForge->setToolTip(tr("Buscar mods no CurseForge"));
+    connect(actionBrowseCurseForge, &QAction::triggered, this, &ModFolderPage::on_actionBrowseCurseForge_triggered);
 
     m_inst = inst;
     on_RunningState_changed(m_inst && m_inst->isRunning());
@@ -369,6 +374,28 @@ void ModFolderPage::on_actionBrowseMods_triggered()
         return;
     }
     ModrinthModBrowser browser(mcInst, m_mods, this);
+    browser.exec();
+}
+
+void ModFolderPage::on_actionBrowseCurseForge_triggered()
+{
+    if(!m_controlsEnabled) {
+        return;
+    }
+    auto mcInst = dynamic_cast<MinecraftInstance*>(m_inst);
+    if (!mcInst) {
+        QMessageBox::warning(this, tr("Erro"), tr("Esta instância não suporta busca de mods."));
+        return;
+    }
+    QString apiKey = APPLICATION->settings()->get("CurseForgeAPIKey").toString();
+    if (apiKey.isEmpty()) {
+        QMessageBox::warning(this, tr("CurseForge API Key"),
+            tr("Configure sua chave de API do CurseForge nas configurações:\n\n"
+               "Minecraft → CurseForge\n\n"
+               "Obtenha sua chave em console.curseforge.com"));
+        return;
+    }
+    CurseForgeModBrowser browser(mcInst, m_mods, this);
     browser.exec();
 }
 

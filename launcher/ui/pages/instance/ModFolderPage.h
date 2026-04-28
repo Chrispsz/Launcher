@@ -24,6 +24,7 @@
 
 class ModFolderModel;
 class ModrinthModBrowser;
+class CurseForgeModBrowser;
 namespace Ui
 {
 class ModFolderPage;
@@ -106,6 +107,7 @@ slots:
     void on_actionView_Folder_triggered();
     void on_actionView_configs_triggered();
     void on_actionBrowseMods_triggered();
+    void on_actionBrowseCurseForge_triggered();
     void ShowContextMenu(const QPoint &pos);
 };
 

@@ -431,6 +431,8 @@ set(META_SOURCES
 set(CURSEFORGE_SOURCES
     modplatform/curseforge/CurseForgePackManifest.cpp
     modplatform/curseforge/CurseForgePackManifest.h
+    modplatform/curseforge/CurseForgeAPI.cpp
+    modplatform/curseforge/CurseForgeAPI.h
 )
 
 set(MODRINTH_SOURCES
@@ -595,9 +597,12 @@ SET(LAUNCHER_SOURCES
     ui/pages/modplatform/modrinth/ModrinthModBrowser.h
 
     ui/pages/modplatform/curseforge/CurseForgeData.h
+    ui/pages/modplatform/curseforge/CurseForgeModel.cpp
+    ui/pages/modplatform/curseforge/CurseForgeModel.h
     ui/pages/modplatform/curseforge/CurseForgePage.cpp
     ui/pages/modplatform/curseforge/CurseForgePage.h
-
+    ui/pages/modplatform/curseforge/CurseForgeModBrowser.cpp
+    ui/pages/modplatform/curseforge/CurseForgeModBrowser.h
 
     ui/pages/modplatform/ImportPage.cpp
     ui/pages/modplatform/ImportPage.h
@@ -700,6 +705,7 @@ qt5_wrap_ui(LAUNCHER_UI
     ui/pages/modplatform/modrinth/ModrinthPage.ui
     ui/pages/modplatform/modrinth/ModrinthModBrowser.ui
     ui/pages/modplatform/curseforge/CurseForgePage.ui
+    ui/pages/modplatform/curseforge/CurseForgeModBrowser.ui
     ui/widgets/InstanceCardWidget.ui
     ui/widgets/CustomCommands.ui
     ui/widgets/MCModInfoFrame.ui

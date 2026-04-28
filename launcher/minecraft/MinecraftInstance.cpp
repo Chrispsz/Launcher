@@ -962,6 +962,12 @@ shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPt
     auto accounts = APPLICATION->accounts();
     auto m_acct = accounts->getAccountByProfileName(session->player_name);
 
+    if (!m_acct)
+    {
+        emitFailed(tr("Failed to launch: account '%1' not found.").arg(session->player_name));
+        return;
+    }
+
     // authlib patch
     if (m_acct->provider()->injectorEndpoint() != "")
     {

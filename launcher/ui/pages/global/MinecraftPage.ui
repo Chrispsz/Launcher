@@ -135,6 +135,42 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="curseForgeGroupBox">
+         <property name="title">
+          <string>CurseForge</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_cf">
+          <item>
+           <widget class="QLabel" name="cfApiKeyLabel">
+            <property name="text">
+             <string>Chave de API do CurseForge:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="cfApiKeyEdit">
+            <property name="placeholderText">
+             <string>$2y$10$...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="cfApiKeyHelp">
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>&lt;small&gt;Obtenha sua chave em &lt;a href="https://console.curseforge.com/"&gt;console.curseforge.com&lt;/a&gt;&lt;/small&gt;</string>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="gameTimeGroupBox">
          <property name="title">
           <string>Game time</string>

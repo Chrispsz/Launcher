@@ -570,11 +570,129 @@ void InstanceImportTask::processCurseForge() {
     instance.setName(m_instName);
     instance.saveNow();
 
-    // Note: CurseForge files need projectID+fileID to download from CF API
-    // Since we don't have API access, we inform the user
-    if (!files.empty()) {
-        qDebug() << "CurseForge modpack has" << files.size() << "mod files that require CurseForge API to download.";
-        qDebug() << "These mods need to be downloaded manually or via the CurseForge app.";
+    // Download mod files using CurseForge API if API key is available
+    QString apiKey = APPLICATION->settings()->get("CurseForgeAPIKey").toString();
+    if (!apiKey.isEmpty() && !files.empty()) {
+        // Filter only required files
+        QVector<CurseForge::File> requiredFiles;
+        for (const auto& file : files) {
+            if (file.required == 1) {
+                requiredFiles.push_back(file);
+            }
+        }
+
+        if (!requiredFiles.isEmpty()) {
+            setStatus(tr("Fetching CurseForge mod file info (%1 files)...").arg(requiredFiles.size()));
+
+            // Step 1: Fetch file metadata from CurseForge API to get download URLs
+            m_filesNetJob = new NetJob(tr("CurseForge mod info fetch"), APPLICATION->network());
+
+            struct CFFileResponse {
+                CurseForge::File file;
+                QByteArray* response;
+            };
+            auto* responses = new QVector<CFFileResponse>();
+
+            for (const auto& file : requiredFiles) {
+                QString fileInfoUrl = QString(
+                    "https://api.curseforge.com/v1/mods/%1/files/%2?apiKey=%3"
+                ).arg(file.projectID).arg(file.fileID).arg(apiKey);
+
+                auto* buf = new QByteArray();
+                auto dl = Net::Download::makeByteArray(QUrl(fileInfoUrl), buf);
+                m_filesNetJob->addNetAction(dl);
+                responses->push_back({file, buf});
+            }
+
+            // After fetching all file info, download the actual mod files
+            connect(m_filesNetJob.get(), &NetJob::succeeded, this, [this, responses, apiKey]() {
+                // Step 2: Parse responses to get download URLs and download actual files
+                m_filesNetJob.reset();
+
+                auto* downloadJob = new NetJob(tr("CurseForge mod download"), APPLICATION->network());
+                QString modDir = FS::PathCombine(m_stagingPath, ".minecraft", "mods");
+                FS::ensureFolderPathExists(modDir);
+                bool anyDownloads = false;
+
+                for (const auto& resp : *responses) {
+                    QJsonParseError parseError;
+                    QJsonDocument doc = QJsonDocument::fromJson(*resp.response, &parseError);
+                    if (parseError.error != QJsonParseError::NoError) {
+                        qWarning() << "Failed to parse CurseForge file info for project" << resp.file.projectID << "file" << resp.file.fileID;
+                        continue;
+                    }
+
+                    try {
+                        auto dataObj = Json::requireObject(Json::requireObject(doc), "data");
+                        QString downloadUrl = Json::ensureString(dataObj, "downloadUrl", "");
+                        QString fileName = Json::ensureString(dataObj, "fileName", "");
+
+                        if (downloadUrl.isEmpty()) {
+                            qWarning() << "No download URL for CurseForge file" << resp.file.fileID;
+                            continue;
+                        }
+
+                        QString targetPath = FS::PathCombine(modDir, fileName);
+                        qDebug() << "Will download CurseForge mod:" << downloadUrl << "to" << targetPath;
+                        auto dl = Net::Download::makeFile(QUrl(downloadUrl), targetPath);
+                        downloadJob->addNetAction(dl);
+                        anyDownloads = true;
+                    } catch (const JSONValidationError& e) {
+                        qWarning() << "Error parsing CurseForge file response:" << e.cause();
+                        continue;
+                    }
+                }
+
+                // Clean up response buffers
+                for (auto& resp : *responses) {
+                    delete resp.response;
+                }
+                delete responses;
+
+                if (!anyDownloads) {
+                    qDebug() << "No downloadable CurseForge mods found";
+                    emitSucceeded();
+                    return;
+                }
+
+                m_filesNetJob = downloadJob;
+                setStatus(tr("Downloading CurseForge mods..."));
+                connect(downloadJob, &NetJob::succeeded, this, [this]() {
+                    m_filesNetJob.reset();
+                    emitSucceeded();
+                });
+                connect(downloadJob, &NetJob::failed, this, [this](const QString& reason) {
+                    qWarning() << "CurseForge mod download failed:" << reason;
+                    m_filesNetJob.reset();
+                    // Don't fail entirely - instance is still usable without mods
+                    emitSucceeded();
+                });
+                connect(downloadJob, &NetJob::progress, this, [this](qint64 current, qint64 total) {
+                    setProgress(current, total);
+                });
+                downloadJob->start();
+            });
+
+            connect(m_filesNetJob.get(), &NetJob::failed, this, [this, responses](const QString& reason) {
+                qWarning() << "Failed to fetch CurseForge file info:" << reason;
+                m_filesNetJob.reset();
+                // Clean up response buffers
+                for (auto& resp : *responses) {
+                    delete resp.response;
+                }
+                delete responses;
+                // Don't fail entirely - instance is still usable without mods
+                emitSucceeded();
+            });
+
+            m_filesNetJob->start();
+            return;
+        }
+    } else if (files.empty()) {
+        qDebug() << "CurseForge modpack has no mod file references";
+    } else {
+        qDebug() << "CurseForge API key not configured - skipping mod downloads."
+                 << "Configure it in Settings → Minecraft → CurseForge to enable automatic mod downloads.";
     }
 
     emitSucceeded();

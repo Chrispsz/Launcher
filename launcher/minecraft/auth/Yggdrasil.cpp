@@ -153,7 +153,8 @@ bool Yggdrasil::abort() {
     progress(timeout_max, timeout_max);
     // TODO: actually use this in a meaningful way
     m_aborted = Yggdrasil::BY_USER;
-    m_netReply->abort();
+    if (m_netReply)
+        m_netReply->abort();
     return true;
 }
 
@@ -161,7 +162,8 @@ void Yggdrasil::abortByTimeout() {
     progress(timeout_max, timeout_max);
     // TODO: actually use this in a meaningful way
     m_aborted = Yggdrasil::BY_TIMEOUT;
-    m_netReply->abort();
+    if (m_netReply)
+        m_netReply->abort();
 }
 
 void Yggdrasil::sslErrors(QList<QSslError> errors) {
