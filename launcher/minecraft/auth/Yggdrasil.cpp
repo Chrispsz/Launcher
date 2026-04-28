@@ -222,6 +222,10 @@ void Yggdrasil::processResponse(QJsonObject responseData) {
 }
 
 void Yggdrasil::processReply() {
+    if (!m_netReply) {
+        changeState(AccountTaskState::STATE_FAILED_SOFT, tr("Network reply is null."));
+        return;
+    }
     changeState(AccountTaskState::STATE_WORKING);
 
     switch (m_netReply->error())

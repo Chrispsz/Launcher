@@ -65,7 +65,7 @@ NewInstanceDialog::NewInstanceDialog(const QString & initialGroup, const QString
         index = 0;
     }
     ui->groupBox->setCurrentIndex(index);
-    ui->groupBox->lineEdit()->setPlaceholderText(tr("No group"));
+    ui->groupBox->lineEdit()->setPlaceholderText(tr("Sem grupo"));
 
 
     // NOTE: m_buttons must be initialized before PageContainer, because it indirectly accesses m_buttons through setSuggestedPack! Do not move this below.
@@ -138,7 +138,7 @@ QList<BasePage *> NewInstanceDialog::getPages()
 
 QString NewInstanceDialog::dialogTitle()
 {
-    return tr("New Instance");
+    return tr("Nova instância");
 }
 
 NewInstanceDialog::~NewInstanceDialog()

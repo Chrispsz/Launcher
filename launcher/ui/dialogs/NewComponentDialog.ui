@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add Empty Component</string>
+   <string>Adicionar componente vazio</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -27,7 +27,7 @@
    <item>
     <widget class="QLineEdit" name="nameTextBox">
      <property name="placeholderText">
-      <string>Name</string>
+      <string>Nome</string>
      </property>
     </widget>
    </item>

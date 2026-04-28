@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>New Instance</string>
+   <string>Nova instância</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -39,7 +39,7 @@
      <item row="0" column="1">
       <widget class="QLabel" name="nameLabel">
        <property name="text">
-        <string>&amp;Name:</string>
+        <string>&amp;Nome:</string>
        </property>
        <property name="buddy">
         <cstring>instNameTextBox</cstring>
@@ -49,7 +49,7 @@
      <item row="1" column="1">
       <widget class="QLabel" name="groupLabel">
        <property name="text">
-        <string>&amp;Group:</string>
+        <string>&amp;Grupo:</string>
        </property>
        <property name="buddy">
         <cstring>groupBox</cstring>
@@ -69,7 +69,7 @@
      <item row="0" column="3">
       <widget class="QPushButton" name="resetNameButton">
        <property name="text">
-        <string>Reset</string>
+        <string>Redefinir</string>
        </property>
       </widget>
      </item>

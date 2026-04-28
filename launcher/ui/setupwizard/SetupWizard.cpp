@@ -26,10 +26,10 @@ SetupWizard::SetupWizard(QWidget *parent) : QWizard(parent)
 
 void SetupWizard::retranslate()
 {
-    setButtonText(QWizard::NextButton, tr("&Next >"));
-    setButtonText(QWizard::BackButton, tr("< &Back"));
-    setButtonText(QWizard::FinishButton, tr("&Finish"));
-    setButtonText(QWizard::CustomButton1, tr("&Refresh"));
+    setButtonText(QWizard::NextButton, tr("&Próximo >"));
+    setButtonText(QWizard::BackButton, tr("< &Voltar"));
+    setButtonText(QWizard::FinishButton, tr("&Concluir"));
+    setButtonText(QWizard::CustomButton1, tr("&Atualizar"));
     setWindowTitle(tr("%1 Quick Setup").arg(BuildConfig.LAUNCHER_NAME));
 }
 

@@ -202,7 +202,7 @@ QMenu * ModFolderPage::createPopupMenu()
 
 void ModFolderPage::ShowContextMenu(const QPoint& pos)
 {
-    auto menu = ui->actionsToolbar->createContextMenu(this, tr("Context menu"));
+    auto menu = ui->actionsToolbar->createContextMenu(this, tr("Menu de contexto"));
     menu->exec(ui->modTreeView->mapToGlobal(pos));
     delete menu;
 }

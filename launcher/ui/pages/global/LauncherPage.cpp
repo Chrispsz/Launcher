@@ -84,7 +84,7 @@ bool LauncherPage::apply()
 
 void LauncherPage::on_instDirBrowseBtn_clicked()
 {
-    QString raw_dir = QFileDialog::getExistingDirectory(this, tr("Instance Folder"), ui->instDirTextBox->text());
+    QString raw_dir = QFileDialog::getExistingDirectory(this, tr("Pasta de instâncias"), ui->instDirTextBox->text());
 
     // do not allow current dir - it's dirty. Do not allow dirs that don't exist
     if (!raw_dir.isEmpty() && QDir(raw_dir).exists())
@@ -116,7 +116,7 @@ void LauncherPage::on_instDirBrowseBtn_clicked()
 
 void LauncherPage::on_iconsDirBrowseBtn_clicked()
 {
-    QString raw_dir = QFileDialog::getExistingDirectory(this, tr("Icons Folder"), ui->iconsDirTextBox->text());
+    QString raw_dir = QFileDialog::getExistingDirectory(this, tr("Pasta de ícones"), ui->iconsDirTextBox->text());
 
     // do not allow current dir - it's dirty. Do not allow dirs that don't exist
     if (!raw_dir.isEmpty() && QDir(raw_dir).exists())
@@ -127,7 +127,7 @@ void LauncherPage::on_iconsDirBrowseBtn_clicked()
 }
 void LauncherPage::on_modsDirBrowseBtn_clicked()
 {
-    QString raw_dir = QFileDialog::getExistingDirectory(this, tr("Mods Folder"), ui->modsDirTextBox->text());
+    QString raw_dir = QFileDialog::getExistingDirectory(this, tr("Pasta de mods"), ui->modsDirTextBox->text());
 
     // do not allow current dir - it's dirty. Do not allow dirs that don't exist
     if (!raw_dir.isEmpty() && QDir(raw_dir).exists())

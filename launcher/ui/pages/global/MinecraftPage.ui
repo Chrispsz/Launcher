@@ -45,13 +45,13 @@
        <item>
         <widget class="QGroupBox" name="windowSizeGroupBox">
          <property name="title">
-          <string>Window Size</string>
+          <string>Tamanho da janela</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
            <widget class="QCheckBox" name="maximizedCheckBox">
             <property name="text">
-             <string>Start Minecraft maximized?</string>
+             <string>Iniciar Minecraft maximizado?</string>
             </property>
            </widget>
           </item>
@@ -60,7 +60,7 @@
             <item row="1" column="0">
              <widget class="QLabel" name="labelWindowHeight">
               <property name="text">
-               <string>Window hei&amp;ght:</string>
+               <string>Altura da jane&amp;la:</string>
               </property>
               <property name="buddy">
                <cstring>windowHeightSpinBox</cstring>
@@ -70,7 +70,7 @@
             <item row="0" column="0">
              <widget class="QLabel" name="labelWindowWidth">
               <property name="text">
-               <string>W&amp;indow width:</string>
+               <string>&amp;Largura da janela:</string>
               </property>
               <property name="buddy">
                <cstring>windowWidthSpinBox</cstring>
@@ -114,20 +114,20 @@
        <item>
         <widget class="QGroupBox" name="nativeLibWorkaroundGroupBox">
          <property name="title">
-          <string>Native library workarounds</string>
+          <string>Soluções alternativas de bibliotecas nativas</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
            <widget class="QCheckBox" name="useNativeGLFWCheck">
             <property name="text">
-             <string>Use system installation of GLFW</string>
+             <string>Usar instalação do sistema do GLFW</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="useNativeOpenALCheck">
             <property name="text">
-             <string>Use system installation of OpenAL</string>
+             <string>Usar instalação do sistema do OpenAL</string>
             </property>
            </widget>
           </item>
@@ -173,34 +173,34 @@
        <item>
         <widget class="QGroupBox" name="gameTimeGroupBox">
          <property name="title">
-          <string>Game time</string>
+          <string>Tempo de jogo</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
            <widget class="QCheckBox" name="showGameTime">
             <property name="text">
-             <string>Show time spent playing instances</string>
+             <string>Mostrar tempo jogando nas instâncias</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="showGlobalGameTime">
             <property name="text">
-             <string>Show time spent playing across all instances</string>
+             <string>Mostrar tempo jogando em todas as instâncias</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="recordGameTime">
             <property name="text">
-             <string>Record time spent playing instances</string>
+             <string>Registrar tempo jogando nas instâncias</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="showGameTimeHours">
             <property name="text">
-             <string>Show time spent playing in hours only</string>
+             <string>Mostrar tempo de jogo apenas em horas</string>
             </property>
            </widget>
           </item>

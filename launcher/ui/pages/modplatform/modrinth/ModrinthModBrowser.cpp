@@ -355,9 +355,6 @@ static QString detectLoader(MinecraftInstance* inst)
         return "fabric";
     if (profile->getComponent("net.neoforged"))
         return "neoforge";
-    if (profile->getComponent("org.quiltmc.loader"))
-        return "quilt";
-
     return {};
 }
 
@@ -399,7 +396,6 @@ ModrinthModBrowser::ModrinthModBrowser(BaseInstance* instance, std::shared_ptr<M
         ui->loaderComboBox->addItem("Forge", "forge");
         ui->loaderComboBox->addItem("Fabric", "fabric");
         ui->loaderComboBox->addItem("NeoForge", "neoforge");
-        ui->loaderComboBox->addItem("Quilt", "quilt");
 
         if (!loader.isEmpty()) {
             int idx = ui->loaderComboBox->findData(loader);

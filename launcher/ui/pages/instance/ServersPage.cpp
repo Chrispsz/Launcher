@@ -28,7 +28,7 @@ struct Server
     // Methods
     Server()
     {
-        m_name = QObject::tr("Minecraft Server");
+        m_name = QObject::tr("Servidor Minecraft");
     }
     Server(const QString & name, const QString & address)
     {
@@ -286,11 +286,11 @@ public:
             switch(section)
             {
                 case 0:
-                    return tr("Name");
+                    return tr("Nome");
                 case 1:
-                    return tr("Address");
+                    return tr("Endereço");
                 case 2:
-                    return tr("Latency");
+                    return tr("Latência");
             }
         }
 
@@ -602,7 +602,7 @@ ServersPage::~ServersPage()
 
 void ServersPage::ShowContextMenu(const QPoint& pos)
 {
-    auto menu = ui->toolBar->createContextMenu(this, tr("Context menu"));
+    auto menu = ui->toolBar->createContextMenu(this, tr("Menu de contexto"));
     menu->exec(ui->serversView->mapToGlobal(pos));
     delete menu;
 }

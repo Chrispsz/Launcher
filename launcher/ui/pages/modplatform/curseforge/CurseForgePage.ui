@@ -16,14 +16,14 @@
      <item>
       <widget class="QLineEdit" name="searchEdit">
        <property name="placeholderText">
-        <string>Search and filter ...</string>
+        <string>Buscar e filtrar...</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="searchButton">
        <property name="text">
-        <string>Search</string>
+        <string>Buscar</string>
        </property>
       </widget>
      </item>
@@ -70,7 +70,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Version selected:</string>
+        <string>Versão selecionada:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

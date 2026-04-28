@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Copy Instance</string>
+   <string>Copiar instância</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -71,7 +71,7 @@
    <item>
     <widget class="QLineEdit" name="instNameTextBox">
      <property name="placeholderText">
-      <string>Name</string>
+      <string>Nome</string>
      </property>
     </widget>
    </item>
@@ -87,7 +87,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="labelVersion_3">
        <property name="text">
-        <string>&amp;Group</string>
+        <string>&amp;Grupo</string>
        </property>
        <property name="buddy">
         <cstring>groupBox</cstring>
@@ -112,14 +112,14 @@
    <item>
     <widget class="QCheckBox" name="copySavesCheckbox">
      <property name="text">
-      <string>Copy saves</string>
+      <string>Copiar saves</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="keepPlaytimeCheckbox">
      <property name="text">
-      <string>Keep play time</string>
+      <string>Manter tempo de jogo</string>
      </property>
     </widget>
    </item>

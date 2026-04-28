@@ -26,10 +26,10 @@
    <item>
     <widget class="QCommandLinkButton" name="openGlobalJavaSettingsButton">
      <property name="text">
-      <string>Open Global Settings</string>
+      <string>Abrir configurações globais</string>
      </property>
      <property name="description">
-      <string>The settings here are overrides for global settings.</string>
+      <string>As configurações aqui substituem as configurações globais.</string>
      </property>
     </widget>
    </item>
@@ -52,7 +52,7 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Java insta&amp;llation</string>
+          <string>Instalação &amp;Java</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -67,21 +67,21 @@
           <item row="1" column="0">
            <widget class="QPushButton" name="javaDetectBtn">
             <property name="text">
-             <string>Auto-detect...</string>
+             <string>Auto-detectar...</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
            <widget class="QPushButton" name="javaBrowseBtn">
             <property name="text">
-             <string>Browse...</string>
+             <string>Procurar...</string>
             </property>
            </widget>
           </item>
           <item row="1" column="2">
            <widget class="QPushButton" name="javaTestBtn">
             <property name="text">
-             <string>Test</string>
+             <string>Testar</string>
             </property>
            </widget>
           </item>
@@ -94,7 +94,7 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Memor&amp;y</string>
+          <string>Memória</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -106,14 +106,14 @@
           <item row="0" column="0">
            <widget class="QLabel" name="labelMinMem">
             <property name="text">
-             <string>Minimum memory allocation:</string>
+             <string>Alocação mínima de memória:</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
            <widget class="QSpinBox" name="maxMemSpinBox">
             <property name="toolTip">
-             <string>The maximum amount of memory Minecraft is allowed to use.</string>
+             <string>A quantidade máxima de memória que o Minecraft pode usar.</string>
             </property>
             <property name="suffix">
              <string notr="true"> MiB</string>
@@ -135,7 +135,7 @@
           <item row="0" column="1">
            <widget class="QSpinBox" name="minMemSpinBox">
             <property name="toolTip">
-             <string>The amount of memory Minecraft is started with.</string>
+             <string>A quantidade de memória com a qual o Minecraft é iniciado.</string>
             </property>
             <property name="suffix">
              <string notr="true"> MiB</string>
@@ -157,7 +157,7 @@
           <item row="2" column="1">
            <widget class="QSpinBox" name="permGenSpinBox">
             <property name="toolTip">
-             <string>The amount of memory available to store loaded Java classes.</string>
+             <string>A quantidade de memória disponível para armazenar classes Java carregadas.</string>
             </property>
             <property name="suffix">
              <string notr="true"> MiB</string>
@@ -186,14 +186,14 @@
           <item row="1" column="0">
            <widget class="QLabel" name="labelMaxMem">
             <property name="text">
-             <string>Maximum memory allocation:</string>
+             <string>Alocação máxima de memória:</string>
             </property>
            </widget>
           </item>
           <item row="3" column="0" colspan="2">
            <widget class="QLabel" name="labelPermgenNote">
             <property name="text">
-             <string>Note: Permgen is set automatically by Java 8 and later</string>
+             <string>Nota: Permgen é definido automaticamente pelo Java 8 e posterior</string>
             </property>
            </widget>
           </item>
@@ -206,7 +206,7 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Java argumen&amp;ts</string>
+          <string>Argumentos Java</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -225,7 +225,7 @@
      </widget>
      <widget class="QWidget" name="javaTab">
       <attribute name="title">
-       <string>Game windows</string>
+       <string>Janelas do jogo</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
@@ -234,7 +234,7 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Game Window</string>
+          <string>Janela do jogo</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -246,7 +246,7 @@
           <item>
            <widget class="QCheckBox" name="maximizedCheckBox">
             <property name="text">
-             <string>Start Minecraft maximized?</string>
+             <string>Iniciar o Minecraft maximizado?</string>
             </property>
            </widget>
           </item>
@@ -255,14 +255,14 @@
             <item row="1" column="0">
              <widget class="QLabel" name="labelWindowHeight">
               <property name="text">
-               <string>Window height:</string>
+               <string>Altura da janela:</string>
               </property>
              </widget>
             </item>
             <item row="0" column="0">
              <widget class="QLabel" name="labelWindowWidth">
               <property name="text">
-               <string>Window width:</string>
+               <string>Largura da janela:</string>
               </property>
              </widget>
             </item>
@@ -306,7 +306,7 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Conso&amp;le Settings</string>
+          <string>Configurações do console</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -318,21 +318,21 @@
           <item>
            <widget class="QCheckBox" name="showConsoleCheck">
             <property name="text">
-             <string>Show console while the game is running?</string>
+             <string>Mostrar console enquanto o jogo está rodando?</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="autoCloseConsoleCheck">
             <property name="text">
-             <string>Automatically close console when the game quits?</string>
+             <string>Fechar console automaticamente quando o jogo fecha?</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="showConsoleErrorCheck">
             <property name="text">
-             <string>Show console when the game crashes?</string>
+             <string>Mostrar console quando o jogo fecha inesperadamente?</string>
             </property>
            </widget>
           </item>
@@ -356,7 +356,7 @@
      </widget>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>Custom commands</string>
+       <string>Comandos personalizados</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
@@ -366,7 +366,7 @@
      </widget>
      <widget class="QWidget" name="workaroundsPage">
       <attribute name="title">
-       <string>Workarounds</string>
+       <string>Soluções alternativas</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_8">
        <item>
@@ -375,7 +375,7 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Native libraries</string>
+          <string>Bibliotecas nativas</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -387,14 +387,14 @@
           <item>
            <widget class="QCheckBox" name="useNativeGLFWCheck">
             <property name="text">
-             <string>Use system installation of GLFW</string>
+             <string>Usar instalação do sistema de GLFW</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="useNativeOpenALCheck">
             <property name="text">
-             <string>Use system installation of OpenAL</string>
+             <string>Usar instalação do sistema de OpenAL</string>
             </property>
            </widget>
           </item>
@@ -418,7 +418,7 @@
      </widget>
      <widget class="QWidget" name="miscellaneousPage">
       <attribute name="title">
-       <string>Miscellaneous</string>
+       <string>Diversos</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <item>
@@ -427,7 +427,7 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Override global game time settings</string>
+          <string>Substituir configurações globais de tempo de jogo</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -439,14 +439,14 @@
           <item>
            <widget class="QCheckBox" name="showGameTime">
             <property name="text">
-             <string>Show time spent playing this instance</string>
+             <string>Mostrar tempo gasto jogando nesta instância</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="recordGameTime">
             <property name="text">
-             <string>Record time spent playing this instance</string>
+             <string>Registrar tempo gasto jogando nesta instância</string>
             </property>
            </widget>
           </item>
@@ -456,7 +456,7 @@
        <item>
         <widget class="QGroupBox" name="quickPlayGroupBox">
          <property name="title">
-          <string>Set a world to join on launch</string>
+          <string>Definir um mundo para entrar ao iniciar</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -470,7 +470,7 @@
             <item row="0" column="0">
              <widget class="QRadioButton" name="serverAddressRadioButton">
               <property name="text">
-               <string>Server address:</string>
+               <string>Endereço do servidor:</string>
               </property>
              </widget>
             </item>
@@ -480,7 +480,7 @@
             <item row="1" column="0">
              <widget class="QRadioButton" name="worldRadioButton">
               <property name="text">
-               <string>Singleplayer world:</string>
+               <string>Mundo singleplayer:</string>
               </property>
              </widget>
             </item>

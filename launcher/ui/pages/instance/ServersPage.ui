@@ -69,7 +69,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="nameLabel">
         <property name="text">
-         <string>&amp;Name</string>
+         <string>&amp;Nome</string>
         </property>
         <property name="buddy">
          <cstring>nameLine</cstring>
@@ -82,7 +82,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="addressLabel">
         <property name="text">
-         <string>Address</string>
+         <string>Endereço</string>
         </property>
         <property name="buddy">
          <cstring>addressLine</cstring>
@@ -95,7 +95,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="resourcesLabel">
         <property name="text">
-         <string>Reso&amp;urces</string>
+         <string>Recursos</string>
         </property>
         <property name="buddy">
          <cstring>resourceComboBox</cstring>
@@ -106,17 +106,17 @@
        <widget class="QComboBox" name="resourceComboBox">
         <item>
          <property name="text">
-          <string>Ask to download</string>
+          <string>Perguntar para baixar</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Always download</string>
+          <string>Sempre baixar</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Never download</string>
+          <string>Nunca baixar</string>
          </property>
         </item>
        </widget>
@@ -127,7 +127,7 @@
   </widget>
   <widget class="WideBar" name="toolBar">
    <property name="windowTitle">
-    <string>Actions</string>
+    <string>Ações</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftToolBarArea|Qt::RightToolBarArea</set>
@@ -152,27 +152,27 @@
   </widget>
   <action name="actionAdd">
    <property name="text">
-    <string>Add</string>
+    <string>Adicionar</string>
    </property>
   </action>
   <action name="actionRemove">
    <property name="text">
-    <string>Remove</string>
+    <string>Remover</string>
    </property>
   </action>
   <action name="actionMove_Up">
    <property name="text">
-    <string>Move Up</string>
+    <string>Mover para cima</string>
    </property>
   </action>
   <action name="actionMove_Down">
    <property name="text">
-    <string>Move Down</string>
+    <string>Mover para baixo</string>
    </property>
   </action>
   <action name="actionJoin">
    <property name="text">
-    <string>Join</string>
+    <string>Entrar</string>
    </property>
   </action>
  </widget>

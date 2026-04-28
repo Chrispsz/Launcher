@@ -542,7 +542,7 @@ bool PackProfile::migratePreComponentConfig()
         }
         loadedComponents[file->uid] = component;
     }
-    // try to load the other 'hardcoded' patches (forge, liteloader), if they weren't loaded from files
+    // try to load the other 'hardcoded' patches (forge), if they weren't loaded from files
     auto loadSpecial = [&](const QString & uid, int order)
     {
         auto patchVersion = d->getOldConfigVersion(uid);
@@ -554,7 +554,6 @@ bool PackProfile::migratePreComponentConfig()
         }
     };
     loadSpecial("net.minecraftforge", 5);
-    loadSpecial("com.mumfrey.liteloader", 10);
 
     // load the old order.json file, if present
     ProfileUtils::PatchOrder userOrder;

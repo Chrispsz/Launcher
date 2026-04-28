@@ -106,7 +106,7 @@ WorldListPage::~WorldListPage()
 
 void WorldListPage::ShowContextMenu(const QPoint& pos)
 {
-    auto menu = ui->toolBar->createContextMenu(this, tr("Context menu"));
+    auto menu = ui->toolBar->createContextMenu(this, tr("Menu de contexto"));
     menu->exec(ui->worldTreeView->mapToGlobal(pos));
     delete menu;
 }
@@ -156,11 +156,11 @@ void WorldListPage::on_actionRemove_triggered()
         return;
 
     auto result = QMessageBox::question(this,
-                tr("Are you sure?"),
-                tr("This will remove the selected world permanently.\n"
-                    "The world will be gone forever (A LONG TIME).\n"
+                tr("Tem certeza?"),
+                tr("Isso removerá o mundo selecionado permanentemente.\n"
+                    "O mundo ficará perdido para sempre (MUITO TEMPO).\n"
                     "\n"
-                    "Do you want to continue?"));
+                    "Deseja continuar?"));
     if(result != QMessageBox::Yes)
     {
         return;
@@ -250,8 +250,8 @@ void WorldListPage::on_actionAdd_triggered()
 {
     auto list = GuiUtil::BrowseForFiles(
         displayName(),
-        tr("Select a Minecraft world zip"),
-        tr("Minecraft World Zip File (*.zip)"), QString(), this->parentWidget());
+        tr("Selecionar um zip de mundo Minecraft"),
+        tr("Arquivo zip de mundo Minecraft (*.zip)"), QString(), this->parentWidget());
     if (!list.empty())
     {
         m_worlds->stopWatching();
@@ -272,7 +272,7 @@ bool WorldListPage::worldSafetyNagQuestion()
 {
     if(!isWorldSafe(getSelectedWorld()))
     {
-        auto result = QMessageBox::question(this, tr("Copy World"), tr("Changing a world while Minecraft is running is potentially unsafe.\nDo you wish to proceed?"));
+        auto result = QMessageBox::question(this, tr("Copiar mundo"), tr("Alterar um mundo enquanto o Minecraft está rodando pode ser inseguro.\nDeseja continuar?"));
         if(result == QMessageBox::No)
         {
             return false;
@@ -296,7 +296,7 @@ void WorldListPage::on_actionCopy_triggered()
     auto worldVariant = m_worlds->data(index, WorldList::ObjectRole);
     auto world = (World *) worldVariant.value<void *>();
     bool ok = false;
-    QString name = QInputDialog::getText(this, tr("World name"), tr("Enter a new name for the copy."), QLineEdit::Normal, world->name(), &ok);
+    QString name = QInputDialog::getText(this, tr("Nome do mundo"), tr("Digite um novo nome para a cópia."), QLineEdit::Normal, world->name(), &ok);
 
     if (ok && name.length() > 0)
     {
@@ -319,7 +319,7 @@ void WorldListPage::on_actionRename_triggered()
     auto world = (World *) worldVariant.value<void *>();
 
     bool ok = false;
-    QString name = QInputDialog::getText(this, tr("World name"), tr("Enter a new world name."), QLineEdit::Normal, world->name(), &ok);
+    QString name = QInputDialog::getText(this, tr("Nome do mundo"), tr("Digite um novo nome para o mundo."), QLineEdit::Normal, world->name(), &ok);
 
     if (ok && name.length() > 0)
     {

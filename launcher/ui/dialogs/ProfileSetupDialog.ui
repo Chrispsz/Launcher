@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Choose Minecraft name</string>
+   <string>Escolha o nome do Minecraft</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" colspan="2">
@@ -23,7 +23,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>You just need to take one more step to be able to play Minecraft on this account.
+      <string>Você só precisa de mais um passo para poder jogar Minecraft nesta conta.
 
 Choose your name carefully:</string>
      </property>

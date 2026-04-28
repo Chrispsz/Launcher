@@ -38,7 +38,7 @@
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>Filter</string>
+            <string>Filtro</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -71,7 +71,7 @@
          <item>
           <widget class="QCheckBox" name="oldSnapshotFilter">
            <property name="text">
-            <string>Old Snapshots</string>
+            <string>Snapshots antigos</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -101,7 +101,7 @@
          <item>
           <widget class="QCheckBox" name="experimentsFilter">
            <property name="text">
-            <string>Experiments</string>
+            <string>Experimentos</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -124,7 +124,7 @@
          <item>
           <widget class="QPushButton" name="refreshBtn">
            <property name="text">
-            <string>Refresh</string>
+            <string>Atualizar</string>
            </property>
           </widget>
          </item>

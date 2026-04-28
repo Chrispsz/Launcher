@@ -94,7 +94,7 @@
      </property>
      <widget class="QWidget" name="aboutTab">
       <attribute name="title">
-       <string>About</string>
+       <string>Sobre</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
@@ -154,7 +154,7 @@
        <item>
         <widget class="QLabel" name="versionLabel">
          <property name="text">
-          <string>Version:</string>
+          <string>Versão:</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -164,7 +164,7 @@
        <item>
         <widget class="QLabel" name="platformLabel">
          <property name="text">
-          <string>Platform:</string>
+          <string>Plataforma:</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -174,7 +174,7 @@
        <item>
         <widget class="QLabel" name="buildNumLabel">
          <property name="text">
-          <string>Build Number:</string>
+          <string>Número do build:</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -184,7 +184,7 @@
        <item>
         <widget class="QLabel" name="channelLabel">
          <property name="text">
-          <string>Channel:</string>
+          <string>Canal:</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -208,7 +208,7 @@
      </widget>
      <widget class="QWidget" name="creditsTab">
       <attribute name="title">
-       <string>Credits</string>
+       <string>Créditos</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
@@ -225,7 +225,7 @@
      </widget>
      <widget class="QWidget" name="licenseTab">
       <attribute name="title">
-       <string>License</string>
+       <string>Licença</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
@@ -253,7 +253,7 @@
      </widget>
      <widget class="QWidget" name="forkingTab">
       <attribute name="title">
-       <string>Forking/Redistribution</string>
+       <string>Fork/Redistribuição</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
@@ -275,7 +275,7 @@
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>About Qt</string>
+        <string>Sobre o Qt</string>
        </property>
       </widget>
      </item>
@@ -295,7 +295,7 @@
      <item>
       <widget class="QPushButton" name="closeButton">
        <property name="text">
-        <string>Close</string>
+        <string>Fechar</string>
        </property>
       </widget>
      </item>

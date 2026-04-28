@@ -62,7 +62,7 @@
   </widget>
   <widget class="WideBar" name="toolBar">
    <property name="windowTitle">
-    <string>Actions</string>
+    <string>Ações</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftToolBarArea|Qt::RightToolBarArea</set>
@@ -96,38 +96,38 @@
   </widget>
   <action name="actionAdd">
    <property name="text">
-    <string>Add</string>
+    <string>Adicionar</string>
    </property>
   </action>
   <action name="actionJoin">
    <property name="text">
-    <string>Join</string>
+    <string>Entrar</string>
    </property>
    <property name="toolTip">
-    <string>Launch the instance directly into the selected world</string>
+    <string>Iniciar a instância diretamente no mundo selecionado</string>
    </property>
   </action>
   <action name="actionJoinOffline">
    <property name="text">
-    <string>Join offline</string>
+    <string>Entrar offline</string>
    </property>
    <property name="toolTip">
-    <string>Launch the instance in offline mode directly into the selected world</string>
+    <string>Iniciar a instância em modo offline diretamente no mundo selecionado</string>
    </property>
   </action>
   <action name="actionRename">
    <property name="text">
-    <string>Rename</string>
+    <string>Renomear</string>
    </property>
   </action>
   <action name="actionCopy">
    <property name="text">
-    <string>Copy</string>
+    <string>Copiar</string>
    </property>
   </action>
   <action name="actionRemove">
    <property name="text">
-    <string>Remove</string>
+    <string>Remover</string>
    </property>
   </action>
   <action name="actionMCEdit">
@@ -137,25 +137,25 @@
   </action>
   <action name="actionCopy_Seed">
    <property name="text">
-    <string>Copy Seed</string>
+    <string>Copiar seed</string>
    </property>
   </action>
   <action name="actionRefresh">
    <property name="text">
-    <string>Refresh</string>
+    <string>Atualizar</string>
    </property>
   </action>
   <action name="actionView_Folder">
    <property name="text">
-    <string>View Folder</string>
+    <string>Ver pasta</string>
    </property>
   </action>
   <action name="actionReset_Icon">
    <property name="text">
-    <string>Reset Icon</string>
+    <string>Redefinir ícone</string>
    </property>
    <property name="toolTip">
-    <string>Remove world icon to make the game re-generate it on next load.</string>
+    <string>Remover ícone do mundo para fazer o jogo gerá-lo novamente ao carregar.</string>
    </property>
   </action>
   <action name="actionDatapacks">
@@ -163,7 +163,7 @@
     <string>Datapacks</string>
    </property>
    <property name="toolTip">
-    <string>Manage datapacks inside the world.</string>
+    <string>Gerenciar datapacks dentro do mundo.</string>
    </property>
   </action>
  </widget>

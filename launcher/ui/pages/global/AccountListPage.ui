@@ -65,22 +65,22 @@
   </widget>
   <action name="actionAddLocal">
    <property name="text">
-    <string>Add Local</string>
+    <string>Adicionar local</string>
    </property>
   </action>
   <action name="actionAddMojang">
    <property name="text">
-    <string>Add Ely.by</string>
+    <string>Adicionar Ely.by</string>
    </property>
   </action>
   <action name="actionRemove">
    <property name="text">
-    <string>Remove</string>
+    <string>Remover</string>
    </property>
   </action>
   <action name="actionSetDefault">
    <property name="text">
-    <string>Set Default</string>
+    <string>Definir padrão</string>
    </property>
   </action>
   <action name="actionNoDefault">
@@ -88,33 +88,33 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>No Default</string>
+    <string>Sem padrão</string>
    </property>
   </action>
   <action name="actionUploadSkin">
    <property name="text">
-    <string>Upload Skin</string>
+    <string>Enviar skin</string>
    </property>
   </action>
   <action name="actionDeleteSkin">
    <property name="text">
-    <string>Delete Skin</string>
+    <string>Excluir skin</string>
    </property>
    <property name="toolTip">
-    <string>Delete the currently active skin and go back to the default one</string>
+    <string>Excluir a skin atual e voltar para a padrão</string>
    </property>
   </action>
   <action name="actionAddMicrosoft">
    <property name="text">
-    <string>Add Microsoft</string>
+    <string>Adicionar Microsoft</string>
    </property>
   </action>
   <action name="actionRefresh">
    <property name="text">
-    <string>Refresh</string>
+    <string>Atualizar</string>
    </property>
    <property name="toolTip">
-    <string>Refresh the account tokens</string>
+    <string>Atualizar os tokens da conta</string>
    </property>
   </action>
  </widget>

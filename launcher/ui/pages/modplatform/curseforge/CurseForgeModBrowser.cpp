@@ -370,9 +370,6 @@ static QString detectLoader(MinecraftInstance* inst)
         return "Fabric";
     if (profile->getComponent("net.neoforged"))
         return "NeoForge";
-    if (profile->getComponent("org.quiltmc.loader"))
-        return "Quilt";
-
     return {};
 }
 
@@ -414,7 +411,6 @@ CurseForgeModBrowser::CurseForgeModBrowser(BaseInstance* instance, std::shared_p
         ui->loaderComboBox->addItem("Forge", "Forge");
         ui->loaderComboBox->addItem("Fabric", "Fabric");
         ui->loaderComboBox->addItem("NeoForge", "NeoForge");
-        ui->loaderComboBox->addItem("Quilt", "Quilt");
 
         if (!loader.isEmpty()) {
             int idx = ui->loaderComboBox->findData(loader);

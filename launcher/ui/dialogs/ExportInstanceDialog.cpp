@@ -381,7 +381,7 @@ bool ExportInstanceDialog::doExport()
     auto name = FS::RemoveInvalidFilenameChars(m_instance->name());
 
     const QString output = QFileDialog::getSaveFileName(
-        this, tr("Export %1").arg(m_instance->name()),
+        this, tr("Exportar %1").arg(m_instance->name()),
         FS::PathCombine(QDir::homePath(), name + ".zip"), "Zip (*.zip)", nullptr, QFileDialog::DontConfirmOverwrite);
     if (output.isEmpty())
     {
@@ -390,8 +390,8 @@ bool ExportInstanceDialog::doExport()
     if (QFile::exists(output))
     {
         int ret =
-            QMessageBox::question(this, tr("Overwrite?"),
-                                  tr("This file already exists. Do you want to overwrite it?"),
+            QMessageBox::question(this, tr("Sobrescrever?"),
+                                  tr("Este arquivo já existe. Deseja sobrescrevê-lo?"),
                                   QMessageBox::No, QMessageBox::Yes);
         if (ret == QMessageBox::No)
         {
@@ -405,7 +405,7 @@ bool ExportInstanceDialog::doExport()
     using std::placeholders::_1;
     if (!JlCompress::compressDir(output, m_instance->instanceRoot(), name, std::bind(&SeparatorPrefixTree<'/'>::covers, blocked, _1)))
     {
-        QMessageBox::warning(this, tr("Error"), tr("Unable to export instance"));
+        QMessageBox::warning(this, tr("Erro"), tr("Não foi possível exportar a instância"));
         return false;
     }
     return true;

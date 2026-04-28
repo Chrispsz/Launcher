@@ -40,7 +40,7 @@
       <enum>QLineEdit::Password</enum>
      </property>
      <property name="placeholderText">
-      <string>Password</string>
+      <string>Senha</string>
      </property>
     </widget>
    </item>

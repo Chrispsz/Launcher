@@ -36,11 +36,11 @@ ModrinthPage::ModrinthPage(NewInstanceDialog *dialog, QWidget *parent) : QWidget
     ui->versionSelectionBox->view()->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     ui->versionSelectionBox->view()->parentWidget()->setMaximumHeight(300);
 
-    ui->sortByBox->addItem(tr("Sort by relevance"), QStringLiteral("relevance"));
-    ui->sortByBox->addItem(tr("Sort by total downloads"), QStringLiteral("downloads"));
-    ui->sortByBox->addItem(tr("Sort by follow count"), QStringLiteral("follows"));
-    ui->sortByBox->addItem(tr("Sort by creation date"), QStringLiteral("newest"));
-    ui->sortByBox->addItem(tr("Sort by last updated"), QStringLiteral("updated"));
+    ui->sortByBox->addItem(tr("Ordenar por relevância"), QStringLiteral("relevance"));
+    ui->sortByBox->addItem(tr("Ordenar por total de downloads"), QStringLiteral("downloads"));
+    ui->sortByBox->addItem(tr("Ordenar por número de seguidores"), QStringLiteral("follows"));
+    ui->sortByBox->addItem(tr("Ordenar por data de criação"), QStringLiteral("newest"));
+    ui->sortByBox->addItem(tr("Ordenar por última atualização"), QStringLiteral("updated"));
 
     connect(ui->sortByBox, SIGNAL(currentIndexChanged(int)), this, SLOT(triggerSearch()));
     connect(ui->packView->selectionModel(), &QItemSelectionModel::currentChanged, this, &ModrinthPage::onSelectionChanged);
@@ -155,11 +155,11 @@ void ModrinthPage::updateCurrentPackUI()
 {
     switch(current.detailsLoaded) {
         case Modrinth::LoadState::Errored: {
-            ui->packDescription->setText(tr("Failed to get Modrinth modpack details..."));
+            ui->packDescription->setText(tr("Falha ao buscar detalhes do modpack do Modrinth..."));
             break;
         }
         case Modrinth::LoadState::NotLoaded: {
-            ui->packDescription->setText(tr("Loading..."));
+            ui->packDescription->setText(tr("Carregando..."));
             break;
         }
         case Modrinth::LoadState::Loaded: {

@@ -19,10 +19,10 @@ CurseForgePage::CurseForgePage(NewInstanceDialog *dialog, QWidget *parent)
     ui->versionSelectionBox->view()->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     ui->versionSelectionBox->view()->parentWidget()->setMaximumHeight(300);
 
-    ui->sortByBox->addItem(tr("Sort by popularity"), 2);
-    ui->sortByBox->addItem(tr("Sort by last updated"), 3);
-    ui->sortByBox->addItem(tr("Sort by name"), 4);
-    ui->sortByBox->addItem(tr("Sort by total downloads"), 6);
+    ui->sortByBox->addItem(tr("Ordenar por popularidade"), 2);
+    ui->sortByBox->addItem(tr("Ordenar por última atualização"), 3);
+    ui->sortByBox->addItem(tr("Ordenar por nome"), 4);
+    ui->sortByBox->addItem(tr("Ordenar por total de downloads"), 6);
 
     connect(ui->sortByBox, SIGNAL(currentIndexChanged(int)), this, SLOT(triggerSearch()));
     connect(ui->packView->selectionModel(), &QItemSelectionModel::currentChanged, this, &CurseForgePage::onSelectionChanged);
@@ -139,11 +139,11 @@ void CurseForgePage::updateCurrentPackUI()
 {
     switch(current.detailsLoaded) {
         case CurseForge::LoadState::Errored: {
-            ui->packDescription->setText(tr("Failed to get CurseForge modpack details..."));
+            ui->packDescription->setText(tr("Falha ao buscar detalhes do modpack do CurseForge..."));
             break;
         }
         case CurseForge::LoadState::NotLoaded: {
-            ui->packDescription->setText(tr("Loading..."));
+            ui->packDescription->setText(tr("Carregando..."));
             break;
         }
         case CurseForge::LoadState::Loaded: {

@@ -26,12 +26,12 @@ void LaunchController::executeTask()
 {
     if (!m_instance)
     {
-        emitFailed(tr("No instance specified!"));
+        emitFailed(tr("Nenhuma instância especificada!"));
         return;
     }
 
     if(!JavaCommon::checkJVMArgs(m_instance->settings()->get("JvmArgs").toString(), m_parentWidget)) {
-        emitFailed(tr("Invalid Java arguments specified. Please fix this first."));
+        emitFailed(tr("Argumentos Java inválidos especificados. Corrija isso primeiro."));
         return;
     }
 
@@ -51,7 +51,7 @@ void LaunchController::decideAccount()
         // Tell the user they need to log in at least one account in order to play.
         auto reply = CustomMessageBox::selectable(
             m_parentWidget,
-            tr("No Accounts"),
+            tr("Sem contas"),
             tr("In order to play Minecraft, you must have at least one Mojang or Minecraft "
                "account logged in."
                "Would you like to open the account manager to add an account now?"),
@@ -83,7 +83,7 @@ void LaunchController::login() {
     // if no account is selected, we bail
     if (!m_accountToUse)
     {
-        emitFailed(tr("No account selected for launch."));
+        emitFailed(tr("Nenhuma conta selecionada para iniciar."));
         return;
     }
 
@@ -92,7 +92,7 @@ void LaunchController::login() {
     // we loop until the user succeeds in logging in or gives up
     bool tryagain = true;
     // the failure. the default failure.
-    const QString needLoginAgain = tr("Your account is currently not logged in. Please enter your password to log in again. <br /> <br /> This could be caused by a password change.");
+    const QString needLoginAgain = tr("Sua conta não está logada no momento. Você pode jogar offline.");
     QString failReason = needLoginAgain;
 
     while (tryagain)
@@ -121,8 +121,8 @@ void LaunchController::login() {
                         usedname = lastOfflinePlayerName.isEmpty() ? m_session->player_name : lastOfflinePlayerName;
                         QString name = QInputDialog::getText(
                             m_parentWidget,
-                            tr("Player name"),
-                            tr("Choose your offline mode player name."),
+                            tr("Nome do jogador"),
+                            tr("Escolha seu nome no modo offline."),
                             QLineEdit::Normal,
                             usedname,
                             &ok
@@ -160,11 +160,11 @@ void LaunchController::login() {
                 else {
                     // play demo ?
                     QMessageBox box(m_parentWidget);
-                    box.setWindowTitle(tr("Play demo?"));
-                    box.setText(tr("This account does not own Minecraft.\nYou need to purchase the game first to play it.\n\nDo you want to play the demo?"));
+                    box.setWindowTitle(tr("Jogar demonstração?"));
+                    box.setText(tr("Esta conta não possui Minecraft. Você gostaria de jogar a demonstração?"));
                     box.setIcon(QMessageBox::Warning);
-                    auto demoButton = box.addButton(tr("Play Demo"), QMessageBox::ButtonRole::YesRole);
-                    auto cancelButton = box.addButton(tr("Cancel"), QMessageBox::ButtonRole::NoRole);
+                    auto demoButton = box.addButton(tr("Jogar Demonstração"), QMessageBox::ButtonRole::YesRole);
+                    auto cancelButton = box.addButton(tr("Cancelar"), QMessageBox::ButtonRole::NoRole);
                     box.setDefaultButton(cancelButton);
 
                     box.exec();
@@ -174,7 +174,7 @@ void LaunchController::login() {
                         launchInstance();
                     }
                     else {
-                        emitFailed(tr("Launch cancelled - account does not own Minecraft."));
+                        emitFailed(tr("Início cancelado - a conta não possui Minecraft."));
                     }
                 }
                 return;
@@ -190,7 +190,7 @@ void LaunchController::login() {
                 ProgressDialog progDialog(m_parentWidget);
                 if (m_online)
                 {
-                    progDialog.setSkipButton(true, tr("Play Offline"));
+                    progDialog.setSkipButton(true, tr("Jogar Offline"));
                 }
                 auto task = m_accountToUse->currentTask();
                 progDialog.execWithTask(task.get());
@@ -210,10 +210,10 @@ void LaunchController::login() {
                 return;
             }
             case AccountState::Gone: {
-                auto errorString = tr("The account no longer exists on the servers. It may have been migrated, in which case please add the new account you migrated this one to.");
+                auto errorString = tr("Esta conta não existe mais nos servidores da Mojang.");
                 QMessageBox::warning(
                     m_parentWidget,
-                    tr("Account gone"),
+                    tr("Conta inexistente"),
                     errorString,
                     QMessageBox::StandardButton::Ok,
                     QMessageBox::StandardButton::Ok
@@ -222,10 +222,10 @@ void LaunchController::login() {
                 return;
             }
             case AccountState::MustMigrate: {
-                auto errorString = tr("The account must be migrated to a Microsoft account.");
+                auto errorString = tr("Esta conta precisa ser migrada para uma conta Microsoft.");
                 QMessageBox::warning(
                     m_parentWidget,
-                    tr("Account requires migration"),
+                    tr("Conta requer migração"),
                     errorString,
                     QMessageBox::StandardButton::Ok,
                     QMessageBox::StandardButton::Ok
@@ -235,7 +235,7 @@ void LaunchController::login() {
             }
         }
     }
-    emitFailed(tr("Failed to launch."));
+    emitFailed(tr("Falha ao iniciar."));
 }
 
 void LaunchController::launchInstance()
@@ -245,15 +245,15 @@ void LaunchController::launchInstance()
 
     if(!m_instance->reloadSettings())
     {
-        QMessageBox::critical(m_parentWidget, tr("Error!"), tr("Couldn't load the instance profile."));
-        emitFailed(tr("Couldn't load the instance profile."));
+        QMessageBox::critical(m_parentWidget, tr("Erro"), tr("Não foi possível carregar o perfil da instância."));
+        emitFailed(tr("Não foi possível carregar o perfil da instância."));
         return;
     }
 
     m_launcher = m_instance->createLaunchTask(m_session, m_quickPlayTarget, m_authserver->port());
     if (!m_launcher)
     {
-        emitFailed(tr("Couldn't instantiate a launcher."));
+        emitFailed(tr("Não foi possível instanciar o launcher."));
         return;
     }
 
@@ -306,7 +306,7 @@ void LaunchController::onFailed(QString reason)
 void LaunchController::onProgressRequested(Task* task)
 {
     ProgressDialog progDialog(m_parentWidget);
-    progDialog.setSkipButton(true, tr("Abort"));
+    progDialog.setSkipButton(true, tr("Abortar"));
     m_launcher->proceed();
     progDialog.execWithTask(task);
 }
@@ -322,7 +322,7 @@ bool LaunchController::abort()
         return false;
     }
     auto response = CustomMessageBox::selectable(
-            m_parentWidget, tr("Kill Minecraft?"),
+            m_parentWidget, tr("Matar Minecraft?"),
             tr("This can cause the instance to get corrupted and should only be used if Minecraft "
             "is frozen for some reason"),
             QMessageBox::Question, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes)->exec();

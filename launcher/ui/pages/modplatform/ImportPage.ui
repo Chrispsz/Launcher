@@ -14,7 +14,7 @@
    <item row="1" column="1">
     <widget class="QPushButton" name="modpackBtn">
      <property name="text">
-      <string>Browse</string>
+      <string>Procurar</string>
      </property>
     </widget>
    </item>
@@ -28,7 +28,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="modpackLabel">
      <property name="text">
-      <string>Local file or link to a direct download:</string>
+      <string>Arquivo local ou link para download direto:</string>
      </property>
     </widget>
    </item>

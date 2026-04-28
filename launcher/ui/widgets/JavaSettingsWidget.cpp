@@ -148,7 +148,7 @@ JavaSettingsWidget::ValidationStatus JavaSettingsWidget::validate()
         {
             int button = CustomMessageBox::selectable(
                 this,
-                tr("No Java version selected"),
+                tr("Nenhuma versão do Java selecionada"),
                 tr("You didn't select a Java version or selected something that doesn't work.\n"
                     "%1 will not be able to start Minecraft.\n"
                     "Do you wish to proceed without any Java?"
@@ -262,7 +262,7 @@ void JavaSettingsWidget::on_javaBrowseBtn_clicked()
 #else
     filter = "Java (java)";
 #endif
-    QString raw_path = QFileDialog::getOpenFileName(this, tr("Find Java executable"), QString(), filter);
+    QString raw_path = QFileDialog::getOpenFileName(this, tr("Encontrar executável do Java"), QString(), filter);
     if(raw_path.isEmpty())
     {
         return;
@@ -282,12 +282,12 @@ void JavaSettingsWidget::on_javaStatusBtn_clicked()
             checkJavaPath(m_javaPathTextBox->text());
             return;
         case JavaStatus::DoesNotExist:
-            text += QObject::tr("The specified file either doesn't exist or is not a proper executable.");
+            text += QObject::tr("O arquivo especificado não existe ou não é um executável válido.");
             failed = true;
             break;
         case JavaStatus::DoesNotStart:
         {
-            text += QObject::tr("The specified java binary didn't start properly.<br />");
+            text += QObject::tr("O binário Java especificado não iniciou corretamente.<br />");
             auto htmlError = m_result.errorLog;
             if(!htmlError.isEmpty())
             {
@@ -299,7 +299,7 @@ void JavaSettingsWidget::on_javaStatusBtn_clicked()
         }
         case JavaStatus::ReturnedInvalidData:
         {
-            text += QObject::tr("The specified java binary returned unexpected results:<br />");
+            text += QObject::tr("O binário Java especificado retornou resultados inesperados:<br />");
             auto htmlOut = m_result.outLog;
             if(!htmlOut.isEmpty())
             {
@@ -319,7 +319,7 @@ void JavaSettingsWidget::on_javaStatusBtn_clicked()
     }
     CustomMessageBox::selectable(
         this,
-        failed ? QObject::tr("Java test failure") : QObject::tr("Java test success"),
+        failed ? QObject::tr("Falha no teste do Java") : QObject::tr("Teste do Java bem-sucedido"),
         text,
         failed ? QMessageBox::Critical : QMessageBox::Information
     )->show();
@@ -422,11 +422,11 @@ void JavaSettingsWidget::checkFinished(JavaCheckResult result)
 
 void JavaSettingsWidget::retranslate()
 {
-    m_memoryGroupBox->setTitle(tr("Memory"));
-    m_maxMemSpinBox->setToolTip(tr("The maximum amount of memory Minecraft is allowed to use."));
-    m_labelMinMem->setText(tr("Minimum memory allocation:"));
-    m_labelMaxMem->setText(tr("Maximum memory allocation:"));
+    m_memoryGroupBox->setTitle(tr("Memória"));
+    m_maxMemSpinBox->setToolTip(tr("Quantidade máxima de memória que o Minecraft pode usar."));
+    m_labelMinMem->setText(tr("Alocação mínima de memória:"));
+    m_labelMaxMem->setText(tr("Alocação máxima de memória:"));
     m_minMemSpinBox->setToolTip(tr("The amount of memory Minecraft is started with."));
     m_permGenSpinBox->setToolTip(tr("The amount of memory available to store loaded Java classes."));
-    m_javaBrowseBtn->setText(tr("Browse"));
+    m_javaBrowseBtn->setText(tr("Procurar"));
 }

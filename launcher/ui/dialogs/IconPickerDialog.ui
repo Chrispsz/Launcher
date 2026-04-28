@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Pick icon</string>
+   <string>Escolher ícone</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

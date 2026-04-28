@@ -124,7 +124,7 @@ void OtherLogsPage::on_btnReload_clicked()
         setControlsEnabled(false);
         ui->btnReload->setEnabled(true); // allow reload
         m_currentFile = QString();
-        QMessageBox::critical(this, tr("Error"), tr("Unable to open %1 for reading: %2")
+        QMessageBox::critical(this, tr("Erro"), tr("Não foi possível abrir %1 para leitura: %2")
                                                      .arg(m_currentFile, file.errorString()));
     }
     else
@@ -160,7 +160,7 @@ void OtherLogsPage::on_btnReload_clicked()
             if(!GZip::unzip(file.readAll(), temp))
             {
                 setPlainText(
-                    tr("The file (%1) is not readable.").arg(file.fileName()));
+                    tr("O arquivo (%1) não é legível.").arg(file.fileName()));
                 return;
             }
             content = QString::fromUtf8(temp);
@@ -182,8 +182,8 @@ void OtherLogsPage::on_btnPaste_clicked()
 {
     auto response = CustomMessageBox::selectable(
             this,
-            tr("Log upload"),
-            tr("Are you sure you want to upload this log file?"),
+            tr("Upload do log"),
+            tr("Tem certeza que deseja enviar este arquivo de log?"),
             QMessageBox::Warning,
             QMessageBox::Yes | QMessageBox::No,
             QMessageBox::No
@@ -207,8 +207,8 @@ void OtherLogsPage::on_btnDelete_clicked()
         setControlsEnabled(false);
         return;
     }
-    if (QMessageBox::question(this, tr("Delete"),
-                              tr("Do you really want to delete %1?").arg(m_currentFile),
+    if (QMessageBox::question(this, tr("Excluir"),
+                              tr("Deseja realmente excluir %1?").arg(m_currentFile),
                               QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
     {
         return;
@@ -216,7 +216,7 @@ void OtherLogsPage::on_btnDelete_clicked()
     QFile file(FS::PathCombine(m_path, m_currentFile));
     if (!file.remove())
     {
-        QMessageBox::critical(this, tr("Error"), tr("Unable to delete %1: %2")
+        QMessageBox::critical(this, tr("Erro"), tr("Não foi possível excluir %1: %2")
                                                      .arg(m_currentFile, file.errorString()));
     }
 }
@@ -231,15 +231,15 @@ void OtherLogsPage::on_btnClean_clicked()
         return;
     }
     QMessageBox *messageBox = new QMessageBox(this);
-    messageBox->setWindowTitle(tr("Clean up"));
+    messageBox->setWindowTitle(tr("Limpeza"));
     if(toDelete.size() > 5)
     {
-        messageBox->setText(tr("Do you really want to delete all log files?"));
+        messageBox->setText(tr("Deseja realmente excluir todos os arquivos de log?"));
         messageBox->setDetailedText(toDelete.join('\n'));
     }
     else
     {
-        messageBox->setText(tr("Do you really want to delete these files?\n%1").arg(toDelete.join('\n')));
+        messageBox->setText(tr("Deseja realmente excluir estes arquivos?\n%1").arg(toDelete.join('\n')));
     }
     messageBox->setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     messageBox->setDefaultButton(QMessageBox::Ok);
@@ -263,15 +263,15 @@ void OtherLogsPage::on_btnClean_clicked()
     if(!failed.empty())
     {
         QMessageBox *messageBox = new QMessageBox(this);
-        messageBox->setWindowTitle(tr("Error"));
+        messageBox->setWindowTitle(tr("Erro"));
         if(failed.size() > 5)
         {
-            messageBox->setText(tr("Couldn't delete some files!"));
+            messageBox->setText(tr("Não foi possível excluir alguns arquivos!"));
             messageBox->setDetailedText(failed.join('\n'));
         }
         else
         {
-            messageBox->setText(tr("Couldn't delete some files:\n%1").arg(failed.join('\n')));
+            messageBox->setText(tr("Não foi possível excluir alguns arquivos:\n%1").arg(failed.join('\n')));
         }
         messageBox->setStandardButtons(QMessageBox::Ok);
         messageBox->setDefaultButton(QMessageBox::Ok);

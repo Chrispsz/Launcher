@@ -859,7 +859,6 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         m_metacache->addBase("libraries", QDir("libraries").absolutePath());
         m_metacache->addBase("minecraftforge", QDir("mods/minecraftforge").absolutePath());
         m_metacache->addBase("fmllibs", QDir("mods/minecraftforge/libs").absolutePath());
-        m_metacache->addBase("liteloader", QDir("mods/liteloader").absolutePath());
         m_metacache->addBase("general", QDir("cache").absolutePath());
         // ATLauncher/FTB/Technic cache bases removed
         m_metacache->addBase("ModrinthPacks", QDir("cache/ModrinthPacks").absolutePath());

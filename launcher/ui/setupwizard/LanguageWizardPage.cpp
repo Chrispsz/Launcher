@@ -43,7 +43,7 @@ bool LanguageWizardPage::validatePage()
 
 void LanguageWizardPage::retranslate()
 {
-    setTitle(tr("Language"));
-    setSubTitle(tr("Select the language to use in %1").arg(BuildConfig.LAUNCHER_NAME));
+    setTitle(tr("Idioma"));
+    setSubTitle(tr("Selecione o idioma para usar no %1").arg(BuildConfig.LAUNCHER_NAME));
     mainWidget->retranslate();
 }

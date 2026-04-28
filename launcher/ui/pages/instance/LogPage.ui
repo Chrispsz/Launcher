@@ -57,7 +57,7 @@
          <item>
           <widget class="QCheckBox" name="trackLogCheckbox">
            <property name="text">
-            <string>Keep updating</string>
+            <string>Manter atualizando</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -67,7 +67,7 @@
          <item>
           <widget class="QCheckBox" name="wrapCheckbox">
            <property name="text">
-            <string>Wrap lines</string>
+            <string>Quebrar linhas</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -90,30 +90,30 @@
          <item>
           <widget class="QPushButton" name="btnCopy">
            <property name="toolTip">
-            <string>Copy the whole log into the clipboard</string>
+            <string>Copiar todo o log para a área de transferência</string>
            </property>
            <property name="text">
-            <string>&amp;Copy</string>
+            <string>&amp;Copiar</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btnPaste">
            <property name="toolTip">
-            <string>Upload the log to paste.ee - it will stay online for a month</string>
+            <string>Enviar o log para paste.ee - ficará online por um mês</string>
            </property>
            <property name="text">
-            <string>Upload</string>
+            <string>Enviar</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btnClear">
            <property name="toolTip">
-            <string>Clear the log</string>
+            <string>Limpar o log</string>
            </property>
            <property name="text">
-            <string>Clear</string>
+            <string>Limpar</string>
            </property>
           </widget>
          </item>
@@ -122,14 +122,14 @@
        <item row="2" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>Search:</string>
+          <string>Buscar:</string>
          </property>
         </widget>
        </item>
        <item row="2" column="2">
         <widget class="QPushButton" name="findButton">
          <property name="text">
-          <string>Find</string>
+          <string>Buscar</string>
          </property>
         </widget>
        </item>
@@ -139,10 +139,10 @@
        <item row="2" column="4">
         <widget class="QPushButton" name="btnBottom">
          <property name="toolTip">
-          <string>Scroll all the way to bottom</string>
+          <string>Rolar até o fundo</string>
          </property>
          <property name="text">
-          <string>Bottom</string>
+          <string>Fundo</string>
          </property>
         </widget>
        </item>

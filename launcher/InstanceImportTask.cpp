@@ -286,7 +286,7 @@ bool mergeOverrides(const QString &fromDir, const QString &toDir) {
 
 void InstanceImportTask::processModrinth() {
     std::vector<Modrinth::File> files;
-    QString minecraftVersion, fabricVersion, quiltVersion, forgeVersion, neoforgeVersion;
+    QString minecraftVersion, fabricVersion, forgeVersion, neoforgeVersion;
     try
     {
         QString indexPath = FS::PathCombine(m_stagingPath, "modrinth.index.json");
@@ -373,12 +373,6 @@ void InstanceImportTask::processModrinth() {
                         throw JSONValidationError("Duplicate Fabric Loader version");
                     fabricVersion = Json::requireValueString(*it, "Fabric Loader version");
                 }
-                else if (name == "quilt-loader")
-                {
-                    if (!quiltVersion.isEmpty())
-                        throw JSONValidationError("Duplicate Quilt Loader version");
-                    quiltVersion = Json::requireValueString(*it, "Quilt Loader version");
-                }
                 else if (name == "forge")
                 {
                     if (!forgeVersion.isEmpty())
@@ -441,8 +435,6 @@ void InstanceImportTask::processModrinth() {
     components->setComponentVersion("net.minecraft", minecraftVersion, true);
     if (!fabricVersion.isEmpty())
         components->setComponentVersion("net.fabricmc.fabric-loader", fabricVersion, true);
-    if (!quiltVersion.isEmpty())
-        components->setComponentVersion("org.quiltmc.quilt-loader", quiltVersion, true);
     if (!forgeVersion.isEmpty())
         components->setComponentVersion("net.minecraftforge", forgeVersion, true);
     if (!neoforgeVersion.isEmpty())
@@ -483,7 +475,7 @@ void InstanceImportTask::processModrinth() {
 
 void InstanceImportTask::processCurseForge() {
     QString minecraftVersion;
-    QString forgeVersion, fabricVersion, neoforgeVersion, quiltVersion;
+    QString forgeVersion, fabricVersion, neoforgeVersion;
     std::vector<CurseForge::File> files;
     QString overridesDir;
 
@@ -508,8 +500,6 @@ void InstanceImportTask::processCurseForge() {
                 neoforgeVersion = loaderId.mid(9);
             } else if (loaderId.startsWith("fabric-")) {
                 fabricVersion = loaderId.mid(7);
-            } else if (loaderId.startsWith("quilt-")) {
-                quiltVersion = loaderId.mid(6);
             } else if (loaderId == "forge") {
                 // Old format without version
                 forgeVersion = QString();
@@ -562,8 +552,6 @@ void InstanceImportTask::processCurseForge() {
         components->setComponentVersion("net.fabricmc.fabric-loader", fabricVersion, true);
     if (!neoforgeVersion.isEmpty())
         components->setComponentVersion("net.neoforged", neoforgeVersion, true);
-    if (!quiltVersion.isEmpty())
-        components->setComponentVersion("org.quiltmc.quilt-loader", quiltVersion, true);
 
     if (m_instIcon != "default") {
         instance.setIconKey(m_instIcon);

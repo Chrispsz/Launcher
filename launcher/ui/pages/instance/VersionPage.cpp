@@ -153,7 +153,7 @@ VersionPage::~VersionPage()
 
 void VersionPage::showContextMenu(const QPoint& pos)
 {
-    auto menu = ui->toolBar->createContextMenu(this, tr("Context menu"));
+    auto menu = ui->toolBar->createContextMenu(this, tr("Menu de contexto"));
     menu->exec(ui->packageView->mapToGlobal(pos));
     delete menu;
 }
@@ -171,10 +171,10 @@ void VersionPage::packageCurrent(const QModelIndex &current, const QModelIndex &
     switch(severity)
     {
         case ProblemSeverity::Warning:
-            ui->frame->setModText(tr("%1 possibly has issues.").arg(patch->getName()));
+            ui->frame->setModText(tr("%1 possivelmente tem problemas.").arg(patch->getName()));
             break;
         case ProblemSeverity::Error:
-            ui->frame->setModText(tr("%1 has issues!").arg(patch->getName()));
+            ui->frame->setModText(tr("%1 tem problemas!").arg(patch->getName()));
             break;
         default:
         case ProblemSeverity::None:
@@ -188,11 +188,11 @@ void VersionPage::packageCurrent(const QModelIndex &current, const QModelIndex &
     {
         if(problem.m_severity == ProblemSeverity::Error)
         {
-            problemOut += tr("Error: ");
+            problemOut += tr("Erro: ");
         }
         else if(problem.m_severity == ProblemSeverity::Warning)
         {
-            problemOut += tr("Warning: ");
+            problemOut += tr("Aviso: ");
         }
         problemOut += problem.m_description;
         problemOut += "\n";
@@ -216,9 +216,6 @@ void VersionPage::updateVersionControls()
     bool supportsFabric = minecraftReleaseDate >= g_VersionFilterData.fabricBeginsDate;
     ui->actionInstall_Fabric->setEnabled(controlsEnabled && supportsFabric);
     ui->actionInstall_Quilt->setEnabled((controlsEnabled) && supportsFabric);
-
-    bool supportsLiteLoader = minecraftReleaseDate <= g_VersionFilterData.liteLoaderEndsDate;
-    ui->actionInstall_LiteLoader->setEnabled(controlsEnabled && supportsLiteLoader);
 
     bool supportsNeoForge = minecraftReleaseDate >= g_VersionFilterData.neoForgeBeginsDate;
     ui->actionInstall_NeoForge->setEnabled(controlsEnabled && supportsNeoForge);
@@ -255,14 +252,14 @@ bool VersionPage::reloadPackProfile()
     }
     catch (const Exception &e)
     {
-        QMessageBox::critical(this, tr("Error"), e.cause());
+        QMessageBox::critical(this, tr("Erro"), e.cause());
         return false;
     }
     catch (...)
     {
         QMessageBox::critical(
-            this, tr("Error"),
-            tr("Couldn't load the instance profile."));
+            this, tr("Erro"),
+            tr("Não foi possível carregar o perfil da instância."));
         return false;
     }
 }
@@ -280,7 +277,7 @@ void VersionPage::on_actionRemove_triggered()
         // FIXME: use actual model, not reloading.
         if (!m_profile->remove(ui->packageView->currentIndex().row()))
         {
-            QMessageBox::critical(this, tr("Error"), tr("Couldn't remove file"));
+            QMessageBox::critical(this, tr("Erro"), tr("Não foi possível remover o arquivo"));
         }
     }
     updateButtons();
@@ -298,7 +295,7 @@ void VersionPage::on_actionInstall_mods_triggered()
 
 void VersionPage::on_actionAdd_to_Minecraft_jar_triggered()
 {
-    auto list = GuiUtil::BrowseForFiles("jarmod", tr("Select jar mods"), tr("Minecraft.jar mods (*.zip *.jar)"), APPLICATION->settings()->get("CentralModsDir").toString(), this->parentWidget());
+    auto list = GuiUtil::BrowseForFiles("jarmod", tr("Selecionar mods jar"), tr("Mods Minecraft.jar (*.zip *.jar)"), APPLICATION->settings()->get("CentralModsDir").toString(), this->parentWidget());
     if(!list.empty())
     {
         m_profile->installJarMods(list);
@@ -308,7 +305,7 @@ void VersionPage::on_actionAdd_to_Minecraft_jar_triggered()
 
 void VersionPage::on_actionReplace_Minecraft_jar_triggered()
 {
-    auto jarPath = GuiUtil::BrowseForFile("jar", tr("Select jar"), tr("Minecraft.jar replacement (*.jar)"), APPLICATION->settings()->get("CentralModsDir").toString(), this->parentWidget());
+    auto jarPath = GuiUtil::BrowseForFile("jar", tr("Selecionar jar"), tr("Substituição Minecraft.jar (*.jar)"), APPLICATION->settings()->get("CentralModsDir").toString(), this->parentWidget());
     if(!jarPath.isEmpty())
     {
         m_profile->installCustomJar(jarPath);
@@ -324,7 +321,7 @@ void VersionPage::on_actionMove_up_triggered()
     }
     catch (const Exception &e)
     {
-        QMessageBox::critical(this, tr("Error"), e.cause());
+        QMessageBox::critical(this, tr("Erro"), e.cause());
     }
     updateButtons();
 }
@@ -337,7 +334,7 @@ void VersionPage::on_actionMove_down_triggered()
     }
     catch (const Exception &e)
     {
-        QMessageBox::critical(this, tr("Error"), e.cause());
+        QMessageBox::critical(this, tr("Erro"), e.cause());
     }
     updateButtons();
 }
@@ -368,16 +365,11 @@ void VersionPage::on_actionChange_version_triggered()
         on_actionInstall_NeoForge_triggered();
         return;
     }
-    else if (uid == "com.mumfrey.liteloader")
+    VersionSelectDialog vselect(list.get(), tr("Alterar versão do %1").arg(name), this);
+    if (uid == "net.fabricmc.intermediary")
     {
-        on_actionInstall_LiteLoader_triggered();
-        return;
-    }
-    VersionSelectDialog vselect(list.get(), tr("Change %1 version").arg(name), this);
-    if (uid == "net.fabricmc.intermediary" || uid == "org.quiltmc.hashed")
-    {
-        vselect.setEmptyString(tr("No intermediary mappings versions are currently available."));
-        vselect.setEmptyErrorString(tr("Couldn't load or download the intermediary mappings version lists!"));
+        vselect.setEmptyString(tr("Nenhuma versão de mappings intermediária disponível no momento."));
+        vselect.setEmptyErrorString(tr("Não foi possível carregar ou baixar a lista de versões de mappings intermediária!"));
         vselect.setExactFilter(BaseVersionList::ParentVersionRole, m_profile->getComponentVersion("net.minecraft"));
     }
     auto currentVersion = patch->getVersion();
@@ -404,7 +396,7 @@ void VersionPage::on_actionDownload_All_triggered()
     if (!APPLICATION->accounts()->anyAccountIsValid())
     {
         CustomMessageBox::selectable(
-            this, tr("Error"),
+            this, tr("Erro"),
             tr("MultiMC cannot download Minecraft or update instances unless you have at least "
                "one account added.\nPlease add your Mojang or Minecraft account."),
             QMessageBox::Warning)->show();
@@ -431,10 +423,10 @@ void VersionPage::on_actionInstall_Forge_triggered()
     {
         return;
     }
-    VersionSelectDialog vselect(vlist.get(), tr("Select Forge version"), this);
+    VersionSelectDialog vselect(vlist.get(), tr("Selecionar versão do Forge"), this);
     vselect.setExactFilter(BaseVersionList::ParentVersionRole, m_profile->getComponentVersion("net.minecraft"));
-    vselect.setEmptyString(tr("No Forge versions are currently available for Minecraft ") + m_profile->getComponentVersion("net.minecraft"));
-    vselect.setEmptyErrorString(tr("Couldn't load or download the Forge version lists!"));
+    vselect.setEmptyString(tr("Nenhuma versão do Forge disponível para Minecraft ") + m_profile->getComponentVersion("net.minecraft"));
+    vselect.setEmptyErrorString(tr("Não foi possível carregar ou baixar a lista de versões do Forge!"));
 
     auto currentVersion = m_profile->getComponentVersion("net.minecraftforge");
     if(!currentVersion.isEmpty())
@@ -460,10 +452,10 @@ void VersionPage::on_actionInstall_NeoForge_triggered()
     {
         return;
     }
-    VersionSelectDialog vselect(vlist.get(), tr("Select NeoForge version"), this);
+    VersionSelectDialog vselect(vlist.get(), tr("Selecionar versão do NeoForge"), this);
     vselect.setExactFilter(BaseVersionList::ParentVersionRole, m_profile->getComponentVersion("net.minecraft"));
-    vselect.setEmptyString(tr("No NeoForge versions are currently available for Minecraft ") + m_profile->getComponentVersion("net.minecraft"));
-    vselect.setEmptyErrorString(tr("Couldn't load or download the NeoForge version lists!"));
+    vselect.setEmptyString(tr("Nenhuma versão do NeoForge disponível para Minecraft ") + m_profile->getComponentVersion("net.minecraft"));
+    vselect.setEmptyErrorString(tr("Não foi possível carregar ou baixar a lista de versões do NeoForge!"));
 
     auto currentVersion = m_profile->getComponentVersion("net.neoforged");
     if(!currentVersion.isEmpty())
@@ -489,9 +481,9 @@ void VersionPage::on_actionInstall_Fabric_triggered()
     {
         return;
     }
-    VersionSelectDialog vselect(vlist.get(), tr("Select Fabric Loader version"), this);
-    vselect.setEmptyString(tr("No Fabric Loader versions are currently available."));
-    vselect.setEmptyErrorString(tr("Couldn't load or download the Fabric Loader version lists!"));
+    VersionSelectDialog vselect(vlist.get(), tr("Selecionar versão do Fabric Loader"), this);
+    vselect.setEmptyString(tr("Nenhuma versão do Fabric Loader disponível no momento."));
+    vselect.setEmptyErrorString(tr("Não foi possível carregar ou baixar a lista de versões do Fabric Loader!"));
 
     auto currentVersion = m_profile->getComponentVersion("net.fabricmc.fabric-loader");
     if(!currentVersion.isEmpty())
@@ -554,35 +546,6 @@ void VersionPage::on_actionAdd_Empty_triggered()
     }
 }
 
-void VersionPage::on_actionInstall_LiteLoader_triggered()
-{
-    auto vlist = APPLICATION->metadataIndex()->get("com.mumfrey.liteloader");
-    if(!vlist)
-    {
-        return;
-    }
-    VersionSelectDialog vselect(vlist.get(), tr("Select LiteLoader version"), this);
-    vselect.setExactFilter(BaseVersionList::ParentVersionRole, m_profile->getComponentVersion("net.minecraft"));
-    vselect.setEmptyString(tr("No LiteLoader versions are currently available for Minecraft ") + m_profile->getComponentVersion("net.minecraft"));
-    vselect.setEmptyErrorString(tr("Couldn't load or download the LiteLoader version lists!"));
-
-    auto currentVersion = m_profile->getComponentVersion("com.mumfrey.liteloader");
-    if(!currentVersion.isEmpty())
-    {
-        vselect.setCurrentVersion(currentVersion);
-    }
-
-    if (vselect.exec() && vselect.selectedVersion())
-    {
-        auto vsn = vselect.selectedVersion();
-        m_profile->setComponentVersion("com.mumfrey.liteloader", vsn->descriptor());
-        m_profile->resolve(Net::Mode::Online);
-        // m_profile->installVersion(vselect.selectedVersion());
-        preselect(m_profile->rowCount(QModelIndex())-1);
-        m_container->refreshContainer();
-    }
-}
-
 void VersionPage::on_actionLibrariesFolder_triggered()
 {
     DesktopServices::openDirectory(m_inst->getLocalLibraryPath(), true);
@@ -620,7 +583,7 @@ void VersionPage::preselect(int row)
 
 void VersionPage::onGameUpdateError(QString error)
 {
-    CustomMessageBox::selectable(this, tr("Error updating instance"), error, QMessageBox::Warning)->show();
+    CustomMessageBox::selectable(this, tr("Erro ao atualizar instância"), error, QMessageBox::Warning)->show();
 }
 
 Component * VersionPage::current()

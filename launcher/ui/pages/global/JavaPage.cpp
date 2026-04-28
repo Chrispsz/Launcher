@@ -104,7 +104,7 @@ void JavaPage::on_javaDetectBtn_clicked()
 {
     JavaInstallPtr java;
 
-    VersionSelectDialog vselect(APPLICATION->javalist().get(), tr("Select a Java version"), this, true);
+    VersionSelectDialog vselect(APPLICATION->javalist().get(), tr("Selecionar versão do Java"), this, true);
     vselect.setResizeOn(2);
     vselect.exec();
 
@@ -117,7 +117,7 @@ void JavaPage::on_javaDetectBtn_clicked()
 
 void JavaPage::on_javaBrowseBtn_clicked()
 {
-    QString raw_path = QFileDialog::getOpenFileName(this, tr("Find Java executable"));
+    QString raw_path = QFileDialog::getOpenFileName(this, tr("Encontrar executável do Java"));
 
     // do not allow current dir - it's dirty. Do not allow dirs that don't exist
     if(raw_path.isEmpty())

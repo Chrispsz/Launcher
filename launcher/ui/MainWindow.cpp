@@ -88,7 +88,7 @@ QString profileInUseFilter(const QString & profile, bool used)
 {
     if(used)
     {
-        return QObject::tr("%1 (in use)").arg(profile);
+        return QObject::tr("%1 (em uso)").arg(profile);
     }
     else
     {
@@ -239,12 +239,12 @@ public:
     {
         if(m_kill)
         {
-            actionLaunchInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Kill"));
-            actionLaunchInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Kill the running instance"));
+            actionLaunchInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Matar"));
+            actionLaunchInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Matar instância em execução"));
         }
         else
         {
-            actionLaunchInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Launch"));
+            actionLaunchInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Iniciar"));
             actionLaunchInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Launch the selected instance."));
         }
         actionLaunchInstance.retranslate();
@@ -295,7 +295,7 @@ public:
         foldersMenu->addAction(actionViewCentralModsFolder);
 
         foldersMenuButton = TranslatedToolButton(MainWindow);
-        foldersMenuButton.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Folders"));
+        foldersMenuButton.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Pastas"));
         foldersMenuButton.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open one of the folders shared between instances."));
         foldersMenuButton->setMenu(foldersMenu);
         foldersMenuButton->setPopupMode(QToolButton::InstantPopup);
@@ -329,7 +329,7 @@ public:
         helpMenu->addAction(actionAbout);
 
         helpMenuButton = TranslatedToolButton(MainWindow);
-        helpMenuButton.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Help"));
+        helpMenuButton.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Ajuda"));
         helpMenuButton.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Get help with %1 or Minecraft."));
         helpMenuButton->setMenu(helpMenu);
         helpMenuButton->setPopupMode(QToolButton::InstantPopup);
@@ -418,7 +418,7 @@ public:
 
         actionLaunchInstanceOffline = TranslatedAction(MainWindow);
         actionLaunchInstanceOffline->setObjectName(QStringLiteral("actionLaunchInstanceOffline"));
-        actionLaunchInstanceOffline.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Launch Offline"));
+        actionLaunchInstanceOffline.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Iniciar Offline"));
         actionLaunchInstanceOffline.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Launch the selected instance in offline mode."));
         all_actions.append(&actionLaunchInstanceOffline);
         instanceToolBar->addAction(actionLaunchInstanceOffline);
@@ -589,8 +589,8 @@ public:
             item->retranslate();
         }
         // submenu buttons
-        foldersMenuButton->setText(tr("Folders"));
-        helpMenuButton->setText(tr("Help"));
+        foldersMenuButton->setText(tr("Pastas"));
+        helpMenuButton->setText(tr("Ajuda"));
     } // retranslateUi
 };
 
@@ -659,8 +659,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new MainWindow
     // When the global settings page closes, we want to know about it and update our state
     connect(APPLICATION, &Application::globalSettingsClosed, this, &MainWindow::globalSettingsClosed);
 
-    m_statusLeft = new QLabel(tr("No instance selected"), this);
-    m_statusCenter = new QLabel(tr("Total playtime: 0s"), this);
+    m_statusLeft = new QLabel(tr("Nenhuma instância selecionada"), this);
+    m_statusCenter = new QLabel(tr("Tempo total de jogo: 0s"), this);
     statusBar()->addPermanentWidget(m_statusLeft, 1);
     statusBar()->addPermanentWidget(m_statusCenter, 0);
 
@@ -721,13 +721,13 @@ void MainWindow::retranslateUi()
         accountMenuButton->setText(profileLabel);
     }
     else {
-        accountMenuButton->setText(tr("Profiles"));
+        accountMenuButton->setText(tr("Perfis"));
     }
 
     if (m_selectedInstance) {
         m_statusLeft->setText(m_selectedInstance->getStatusbarDescription());
     } else {
-        m_statusLeft->setText(tr("No instance selected"));
+        m_statusLeft->setText(tr("Nenhuma instância selecionada"));
     }
 
     ui->retranslateUi(this);
@@ -776,7 +776,7 @@ void MainWindow::showInstanceContextMenu(const QPoint &pos)
         QAction *actionVoid = new QAction(BuildConfig.LAUNCHER_NAME, this);
         actionVoid->setEnabled(false);
 
-        QAction *actionCreateInstance = new QAction(tr("Create instance"), this);
+        QAction *actionCreateInstance = new QAction(tr("Criar instância"), this);
         actionCreateInstance->setToolTip(ui->actionAddInstance->toolTip());
         if(!group.isNull())
         {
@@ -792,7 +792,7 @@ void MainWindow::showInstanceContextMenu(const QPoint &pos)
         actions.append(actionCreateInstance);
         if(!group.isNull())
         {
-            QAction *actionDeleteGroup = new QAction(tr("Delete group '%1'").arg(group), this);
+            QAction *actionDeleteGroup = new QAction(tr("Excluir grupo '%1'").arg(group), this);
             QVariantMap data;
             data["group"] = group;
             actionDeleteGroup->setData(data);
@@ -827,7 +827,7 @@ void MainWindow::updateToolsMenu()
     exportMenu->addSeparator()->setText(tr("Format"));
 
     QAction *mmcExport = exportMenu->addAction(BuildConfig.LAUNCHER_NAME);
-    QAction *modrinthExport = exportMenu->addAction(tr("Modrinth (WIP)"));
+    QAction *modrinthExport = exportMenu->addAction(tr("Modrinth"));
 
     // Fix 3: Use action as context so connections auto-disconnect when action is deleted
     connect(mmcExport, &QAction::triggered, mmcExport, [this]()
@@ -890,8 +890,8 @@ void MainWindow::updateToolsMenu()
         launchOfflineMenu = new QMenu(this);
     }
 
-    QAction *normalLaunch = launchMenu->addAction(tr("Launch"));
-    QAction *normalLaunchOffline = launchOfflineMenu->addAction(tr("Launch Offline"));
+    QAction *normalLaunch = launchMenu->addAction(tr("Iniciar"));
+    QAction *normalLaunchOffline = launchOfflineMenu->addAction(tr("Iniciar Offline"));
     // Fix 3: Use action as context so connections auto-disconnect when action is deleted via menu->clear()
     connect(normalLaunch, &QAction::triggered, normalLaunch, [this]()
             {
@@ -926,7 +926,7 @@ void MainWindow::repopulateAccountsMenu()
 
     if (accounts->count() <= 0)
     {
-        QAction *action = new QAction(tr("No accounts added!"), this);
+        QAction *action = new QAction(tr("Nenhuma conta adicionada!"), this);
         action->setEnabled(false);
         accountMenu->addAction(action);
     }
@@ -959,7 +959,7 @@ void MainWindow::repopulateAccountsMenu()
 
     accountMenu->addSeparator();
 
-    QAction *action = new QAction(tr("No Default Account"), this);
+    QAction *action = new QAction(tr("Sem conta padrão"), this);
     action->setCheckable(true);
     action->setIcon(APPLICATION->getThemedIcon("noaccount"));
     action->setData(-1);
@@ -1024,7 +1024,7 @@ void MainWindow::defaultAccountChanged()
 
     // Set the icon to the "no account" icon.
     accountMenuButton->setIcon(APPLICATION->getThemedIcon("noaccount"));
-    accountMenuButton->setText(tr("Profiles"));
+    accountMenuButton->setText(tr("Perfis"));
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *ev)
@@ -1130,18 +1130,18 @@ void MainWindow::runModalTask(Task *task)
 {
     connect(task, &Task::failed, [this](QString reason)
         {
-            CustomMessageBox::selectable(this, tr("Error"), reason, QMessageBox::Critical)->show();
+            CustomMessageBox::selectable(this, tr("Erro"), reason, QMessageBox::Critical)->show();
         });
     connect(task, &Task::succeeded, [this, task]()
         {
             QStringList warnings = task->warnings();
             if(warnings.count())
             {
-                CustomMessageBox::selectable(this, tr("Warnings"), warnings.join('\n'), QMessageBox::Warning)->show();
+                CustomMessageBox::selectable(this, tr("Avisos"), warnings.join('\n'), QMessageBox::Warning)->show();
             }
         });
     ProgressDialog loadDialog(this);
-    loadDialog.setSkipButton(true, tr("Abort"));
+    loadDialog.setSkipButton(true, tr("Abortar"));
     loadDialog.execWithTask(task);
 }
 
@@ -1179,11 +1179,11 @@ void MainWindow::finalizeInstance(InstancePtr inst)
         connect(update.get(), &Task::failed, [this](QString reason)
                 {
                     QString error = QString("Instance load failed: %1").arg(reason);
-                    CustomMessageBox::selectable(this, tr("Error"), error, QMessageBox::Warning)->show();
+                    CustomMessageBox::selectable(this, tr("Erro"), error, QMessageBox::Warning)->show();
                 });
         if(update)
         {
-            loadDialog.setSkipButton(true, tr("Abort"));
+            loadDialog.setSkipButton(true, tr("Abortar"));
             loadDialog.execWithTask(update.get());
         }
     }
@@ -1191,7 +1191,7 @@ void MainWindow::finalizeInstance(InstancePtr inst)
     {
         CustomMessageBox::selectable(
             this,
-            tr("Error"),
+            tr("Erro"),
             tr("The launcher cannot download Minecraft or update instances unless you have at least "
                 "one account added.\nPlease add your Mojang or Minecraft account."),
             QMessageBox::Warning
@@ -1319,7 +1319,7 @@ void MainWindow::on_actionChangeInstGroup_triggered()
     groups.sort(Qt::CaseInsensitive);
     int foo = groups.indexOf(name);
 
-    name = QInputDialog::getItem(this, tr("Group name"), tr("Enter a new group name."), groups, foo, true, &ok);
+    name = QInputDialog::getItem(this, tr("Nome do grupo"), tr("Digite um novo nome para o grupo."), groups, foo, true, &ok);
     name = name.simplified();
     if (ok)
     {
@@ -1341,7 +1341,7 @@ void MainWindow::deleteGroup()
     QString groupName = map["group"].toString();
     if(!groupName.isEmpty())
     {
-        auto reply = QMessageBox::question(this, tr("Delete group"), tr("Are you sure you want to delete the group %1")
+        auto reply = QMessageBox::question(this, tr("Excluir grupo"), tr("Tem certeza que deseja excluir o grupo %1")
             .arg(groupName), QMessageBox::Yes | QMessageBox::No);
         if(reply == QMessageBox::Yes)
         {
@@ -1447,8 +1447,8 @@ void MainWindow::on_actionDeleteInstance_triggered()
     auto id = m_selectedInstance->id();
     auto response = CustomMessageBox::selectable(
         this,
-        tr("CAREFUL!"),
-        tr("About to delete: %1\nThis is permanent and will completely delete the instance.\n\nAre you sure?").arg(m_selectedInstance->name()),
+        tr("CUIDADO!"),
+        tr("Preste atenção: %1\nEsta ação é permanente e apagará completamente a instância.\n\nTem certeza?").arg(m_selectedInstance->name()),
         QMessageBox::Warning,
         QMessageBox::Yes | QMessageBox::No,
         QMessageBox::No
@@ -1661,7 +1661,7 @@ void MainWindow::selectionBad()
 
     statusBar()->clearMessage();
     ui->instanceToolBar->setEnabled(false);
-    ui->renameButton->setText(tr("Rename Instance"));
+    ui->renameButton->setText(tr("Renomear instância"));
     updateInstanceToolIcon("grass");
 
     // ...and then see if we can enable the previously selected instance
@@ -1674,7 +1674,7 @@ void MainWindow::checkInstancePathForProblems()
     if (FS::checkProblemticPathJava(QDir(instanceFolder)))
     {
         QMessageBox warning(this);
-        warning.setText(tr("Your instance folder contains \'!\' and this is known to cause Java problems!"));
+        warning.setText(tr("A pasta da instância contém '!' e isso é conhecido por causar problemas com o Java!"));
         warning.setInformativeText(
             tr(
                 "You have now two options: <br/>"
@@ -1692,7 +1692,7 @@ void MainWindow::checkInstancePathForProblems()
     if (pathfoldername.contains("Rar$", Qt::CaseInsensitive))
     {
         QMessageBox warning(this);
-        warning.setText(tr("Your instance folder contains \'Rar$\' - that means you haven't extracted the launcher archive!"));
+        warning.setText(tr("A pasta da instância contém 'Rar$' - isso significa que você não extraiu o arquivo do launcher!"));
         warning.setInformativeText(tempFolderText);
         warning.setDefaultButton(QMessageBox::Ok);
         warning.exec();
@@ -1700,7 +1700,7 @@ void MainWindow::checkInstancePathForProblems()
     else if (pathfoldername.startsWith(QDir::tempPath()) || pathfoldername.contains("/TempState/"))
     {
         QMessageBox warning(this);
-        warning.setText(tr("Your instance folder is in a temporary folder: \'%1\'!").arg(QDir::tempPath()));
+        warning.setText(tr("A pasta da instância está em uma pasta temporária: '%1'!").arg(QDir::tempPath()));
         warning.setInformativeText(tempFolderText);
         warning.setDefaultButton(QMessageBox::Ok);
         warning.exec();
@@ -1714,9 +1714,9 @@ void MainWindow::updateStatusCenter()
     int timePlayed = APPLICATION->instances()->getTotalPlayTime();
     if (timePlayed > 0) {
         if (APPLICATION->settings()->get("ShowGameTimeHours").toBool()) {
-            m_statusCenter->setText(tr("Total playtime: %1 hours").arg(Time::prettifyDurationHours(timePlayed)));
+            m_statusCenter->setText(tr("Tempo total de jogo: %1 horas").arg(Time::prettifyDurationHours(timePlayed)));
         } else {
-            m_statusCenter->setText(tr("Total playtime: %1").arg(Time::prettifyDuration(timePlayed)));
+            m_statusCenter->setText(tr("Tempo total de jogo: %1").arg(Time::prettifyDuration(timePlayed)));
         }
     }
 }

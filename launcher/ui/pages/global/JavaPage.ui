@@ -42,13 +42,13 @@
        <item>
         <widget class="QGroupBox" name="memoryGroupBox">
          <property name="title">
-          <string>Memory</string>
+          <string>Memória</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="1" column="1">
            <widget class="QSpinBox" name="maxMemSpinBox">
             <property name="toolTip">
-             <string>The maximum amount of memory Minecraft is allowed to use.</string>
+             <string>Quantidade máxima de memória que o Minecraft pode usar.</string>
             </property>
             <property name="suffix">
              <string notr="true"> MiB</string>
@@ -70,21 +70,21 @@
           <item row="0" column="0">
            <widget class="QLabel" name="labelMinMem">
             <property name="text">
-             <string>Minimum memory allocation:</string>
+             <string>Alocação mínima de memória:</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="labelMaxMem">
             <property name="text">
-             <string>Maximum memory allocation:</string>
+             <string>Alocação máxima de memória:</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
            <widget class="QSpinBox" name="minMemSpinBox">
             <property name="toolTip">
-             <string>The amount of memory Minecraft is started with.</string>
+             <string>Quantidade de memória ao iniciar o Minecraft.</string>
             </property>
             <property name="suffix">
              <string notr="true"> MiB</string>
@@ -113,7 +113,7 @@
           <item row="2" column="1">
            <widget class="QSpinBox" name="permGenSpinBox">
             <property name="toolTip">
-             <string>The amount of memory available to store loaded Java classes.</string>
+             <string>Memória disponível para armazenar classes Java carregadas.</string>
             </property>
             <property name="suffix">
              <string notr="true"> MiB</string>
@@ -138,7 +138,7 @@
        <item>
         <widget class="QGroupBox" name="javaSettingsGroupBox">
          <property name="title">
-          <string>Java Runtime</string>
+          <string>Java</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="0">
@@ -150,7 +150,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Java path:</string>
+             <string>Caminho do Java:</string>
             </property>
            </widget>
           </item>
@@ -192,7 +192,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>JVM arguments:</string>
+             <string>Argumentos da JVM:</string>
             </property>
            </widget>
           </item>
@@ -205,7 +205,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Auto-detect...</string>
+             <string>Detectar automaticamente...</string>
             </property>
            </widget>
           </item>
@@ -218,7 +218,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Test</string>
+             <string>Testar</string>
             </property>
            </widget>
           </item>

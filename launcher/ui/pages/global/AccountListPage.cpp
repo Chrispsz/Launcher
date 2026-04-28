@@ -85,7 +85,7 @@ AccountListPage::~AccountListPage()
 
 void AccountListPage::ShowContextMenu(const QPoint& pos)
 {
-    auto menu = ui->toolBar->createContextMenu(this, tr("Context menu"));
+    auto menu = ui->toolBar->createContextMenu(this, tr("Menu de contexto"));
     menu->exec(ui->listView->mapToGlobal(pos));
     delete menu;
 }
@@ -116,7 +116,7 @@ void AccountListPage::on_actionAddLocal_triggered()
 {
     MinecraftAccountPtr account = LocalLoginDialog::newAccount(
         this,
-        tr("Please enter your desired username to add your account.")
+        tr("Digite o nome de usuário desejado para adicionar sua conta.")
     );
 
     if (account)
@@ -147,7 +147,7 @@ void AccountListPage::on_actionAddMicrosoft_triggered()
     if(BuildConfig.BUILD_PLATFORM == "osx64") {
         CustomMessageBox::selectable(
             this,
-            tr("Microsoft Accounts not available"),
+            tr("Contas Microsoft não disponíveis"),
             tr(
                 "Microsoft accounts are only usable on macOS 10.13 or newer, with fully updated MultiMC.\n\n"
                 "Please update both your operating system and MultiMC."
@@ -258,7 +258,7 @@ void AccountListPage::on_actionDeleteSkin_triggered()
     ProgressDialog prog(this);
     auto deleteSkinTask = std::make_shared<SkinDelete>(this, account->accessToken());
     if (prog.execWithTask((Task*)deleteSkinTask.get()) != QDialog::Accepted) {
-        CustomMessageBox::selectable(this, tr("Skin Delete"), tr("Failed to delete current skin!"), QMessageBox::Warning)->exec();
+        CustomMessageBox::selectable(this, tr("Excluir skin"), tr("Falha ao excluir a skin atual!"), QMessageBox::Warning)->exec();
         return;
     }
 }

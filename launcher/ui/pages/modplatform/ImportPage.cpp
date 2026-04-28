@@ -104,7 +104,7 @@ void ImportPage::setUrl(const QString& url)
 
 void ImportPage::on_modpackBtn_clicked()
 {
-    const QUrl url = QFileDialog::getOpenFileUrl(this, tr("Choose modpack"), modpackUrl(), tr("Zip (*.zip *.mrpack)"));
+    const QUrl url = QFileDialog::getOpenFileUrl(this, tr("Escolher modpack"), modpackUrl(), tr("Zip (*.zip *.mrpack)"));
     if (url.isValid())
     {
         if (url.isLocalFile())

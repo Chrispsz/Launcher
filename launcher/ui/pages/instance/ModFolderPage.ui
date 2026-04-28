@@ -36,7 +36,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="filterLabel">
         <property name="text">
-         <string>Filter:</string>
+         <string>Filtro:</string>
         </property>
        </widget>
       </item>
@@ -72,7 +72,7 @@
   </widget>
   <widget class="WideBar" name="actionsToolbar">
    <property name="windowTitle">
-    <string>Actions</string>
+    <string>Ações</string>
    </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonTextOnly</enum>
@@ -93,47 +93,47 @@
   </widget>
   <action name="actionAdd">
    <property name="text">
-    <string>&amp;Add</string>
+    <string>&amp;Adicionar</string>
    </property>
    <property name="toolTip">
-    <string>Add mods</string>
+    <string>Adicionar mods</string>
    </property>
   </action>
   <action name="actionRemove">
    <property name="text">
-    <string>&amp;Remove</string>
+    <string>&amp;Remover</string>
    </property>
    <property name="toolTip">
-    <string>Remove selected mods</string>
+    <string>Remover mods selecionados</string>
    </property>
   </action>
   <action name="actionEnable">
    <property name="text">
-    <string>&amp;Enable</string>
+    <string>&amp;Ativar</string>
    </property>
    <property name="toolTip">
-    <string>Enable selected mods</string>
+    <string>Ativar mods selecionados</string>
    </property>
   </action>
   <action name="actionDisable">
    <property name="text">
-    <string>&amp;Disable</string>
+    <string>&amp;Desativar</string>
    </property>
    <property name="toolTip">
-    <string>Disable selected mods</string>
+    <string>Desativar mods selecionados</string>
    </property>
   </action>
   <action name="actionView_configs">
    <property name="text">
-    <string>View &amp;Configs</string>
+    <string>Ver &amp;Configs</string>
    </property>
    <property name="toolTip">
-    <string>Open the 'config' folder in the system file manager.</string>
+    <string>Abrir a pasta 'config' no gerenciador de arquivos do sistema.</string>
    </property>
   </action>
   <action name="actionView_Folder">
    <property name="text">
-    <string>View &amp;Folder</string>
+    <string>Ver &amp;Pasta</string>
    </property>
   </action>
  </widget>

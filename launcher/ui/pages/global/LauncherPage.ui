@@ -42,19 +42,19 @@
      </property>
      <widget class="QWidget" name="featuresTab">
       <attribute name="title">
-       <string>Features</string>
+       <string>Recursos</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <item>
         <widget class="QGroupBox" name="updateSettingsBox">
          <property name="title">
-          <string>Update Settings</string>
+          <string>Configurações de atualização</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>
            <widget class="QCheckBox" name="autoUpdateCheckBox">
             <property name="text">
-             <string>Check for updates on start?</string>
+             <string>Verificar atualizações ao iniciar?</string>
             </property>
            </widget>
           </item>
@@ -64,13 +64,13 @@
        <item>
         <widget class="QGroupBox" name="foldersBox">
          <property name="title">
-          <string>Folders</string>
+          <string>Pastas</string>
          </property>
          <layout class="QGridLayout" name="foldersBoxLayout">
           <item row="0" column="0">
            <widget class="QLabel" name="labelInstDir">
             <property name="text">
-             <string>I&amp;nstances:</string>
+             <string>&amp;Instâncias:</string>
             </property>
             <property name="buddy">
              <cstring>instDirTextBox</cstring>
@@ -113,7 +113,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="labelIconsDir">
             <property name="text">
-             <string>&amp;Icons:</string>
+             <string>Í&amp;cones:</string>
             </property>
             <property name="buddy">
              <cstring>iconsDirTextBox</cstring>
@@ -133,7 +133,7 @@
        <item>
         <widget class="QPushButton" name="migrateDataFolderMacBtn">
          <property name="text">
-          <string>Move the data to new location (will restart the launcher)</string>
+          <string>Mover os dados para o novo local (reiniciará o launcher)</string>
          </property>
         </widget>
        </item>
@@ -154,19 +154,19 @@
      </widget>
      <widget class="QWidget" name="generalTab">
       <attribute name="title">
-       <string>User Interface</string>
+       <string>Interface do usuário</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
-          <string>Launcher notifications</string>
+          <string>Notificações do launcher</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
            <widget class="QPushButton" name="resetNotificationsBtn">
             <property name="text">
-             <string>Reset hidden notifications</string>
+             <string>Redefinir notificações ocultas</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -182,13 +182,13 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Instance view sorting mode</string>
+          <string>Modo de ordenação das instâncias</string>
          </property>
          <layout class="QHBoxLayout" name="sortingModeBoxLayout">
           <item>
            <widget class="QRadioButton" name="sortLastLaunchedBtn">
             <property name="text">
-             <string>By &amp;last launched</string>
+             <string>Por ú&amp;ltimo lançamento</string>
             </property>
             <attribute name="buttonGroup">
              <string notr="true">sortingModeGroup</string>
@@ -198,7 +198,7 @@
           <item>
            <widget class="QRadioButton" name="sortByNameBtn">
             <property name="text">
-             <string>By &amp;name</string>
+             <string>Por &amp;nome</string>
             </property>
             <attribute name="buttonGroup">
              <string notr="true">sortingModeGroup</string>
@@ -211,13 +211,13 @@
        <item>
         <widget class="QGroupBox" name="themeBox">
          <property name="title">
-          <string>Theme</string>
+          <string>Tema</string>
          </property>
          <layout class="QFormLayout" name="formLayout">
           <item row="0" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>&amp;Icons</string>
+             <string>Í&amp;cones</string>
             </property>
             <property name="buddy">
              <cstring>themeComboBox</cstring>
@@ -237,27 +237,27 @@
             </property>
             <item>
              <property name="text">
-              <string>Default</string>
+              <string>Padrão</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>Simple (Dark Icons)</string>
+              <string>Simples (Ícones escuros)</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>Simple (Light Icons)</string>
+              <string>Simples (Ícones claros)</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>Simple (Blue Icons)</string>
+              <string>Simples (Ícones azuis)</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>Simple (Colored Icons)</string>
+              <string>Simples (Ícones coloridos)</string>
              </property>
             </item>
             <item>
@@ -277,7 +277,7 @@
             </item>
             <item>
              <property name="text">
-              <string>Custom</string>
+              <string>Personalizado</string>
              </property>
             </item>
            </widget>
@@ -298,7 +298,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Colors</string>
+             <string>Cores</string>
             </property>
             <property name="buddy">
              <cstring>themeComboBoxColors</cstring>
@@ -331,27 +331,27 @@
        <item>
         <widget class="QGroupBox" name="consoleSettingsBox">
          <property name="title">
-          <string>Console Settings</string>
+          <string>Configurações do console</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
            <widget class="QCheckBox" name="showConsoleCheck">
             <property name="text">
-             <string>Show console while the game is running?</string>
+             <string>Mostrar console enquanto o jogo está rodando?</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="autoCloseConsoleCheck">
             <property name="text">
-             <string>Automatically close console when the game quits?</string>
+             <string>Fechar console automaticamente quando o jogo fecha?</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="showConsoleErrorCheck">
             <property name="text">
-             <string>Show console when the game crashes?</string>
+             <string>Mostrar console quando o jogo crasha?</string>
             </property>
            </widget>
           </item>
@@ -361,13 +361,13 @@
        <item>
         <widget class="QGroupBox" name="groupBox_4">
          <property name="title">
-          <string>History limit</string>
+          <string>Limite do histórico</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="1" column="0">
            <widget class="QCheckBox" name="checkStopLogging">
             <property name="text">
-             <string>Stop logging when log overflows</string>
+             <string>Parar de registrar quando o log estoura</string>
             </property>
            </widget>
           </item>
@@ -380,7 +380,7 @@
              </sizepolicy>
             </property>
             <property name="suffix">
-             <string> lines</string>
+             <string> linhas</string>
             </property>
             <property name="minimum">
              <number>10000</number>
@@ -408,7 +408,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Console font</string>
+          <string>Fonte do console</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="1" column="0" colspan="2">
@@ -460,19 +460,19 @@
      </widget>
      <widget class="QWidget" name="analyticsTab">
       <attribute name="title">
-       <string>Analytics</string>
+       <string>Estatísticas</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_8">
        <item>
         <widget class="QGroupBox" name="consoleSettingsBox_2">
          <property name="title">
-          <string>Analytics Settings</string>
+          <string>Configurações de estatísticas</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
            <widget class="QCheckBox" name="analyticsCheck">
             <property name="text">
-             <string>Send anonymous usage statistics?</string>
+             <string>Enviar estatísticas de uso anônimas?</string>
             </property>
            </widget>
           </item>

@@ -62,8 +62,8 @@ IconPickerDialog::IconPickerDialog(QWidget *parent)
     contentsWidget->setModel(APPLICATION->icons().get());
 
     // NOTE: ResetRole forces the button to be on the left, while the OK/Cancel ones are on the right. We win.
-    auto buttonAdd = ui->buttonBox->addButton(tr("Add Icon"), QDialogButtonBox::ResetRole);
-    auto buttonRemove = ui->buttonBox->addButton(tr("Remove Icon"), QDialogButtonBox::ResetRole);
+    auto buttonAdd = ui->buttonBox->addButton(tr("Adicionar ícone"), QDialogButtonBox::ResetRole);
+    auto buttonRemove = ui->buttonBox->addButton(tr("Remover ícone"), QDialogButtonBox::ResetRole);
 
     connect(buttonAdd, SIGNAL(clicked(bool)), SLOT(addNewIcon()));
     connect(buttonRemove, SIGNAL(clicked(bool)), SLOT(removeSelectedIcon()));
@@ -72,7 +72,7 @@ IconPickerDialog::IconPickerDialog(QWidget *parent)
 
     connect(contentsWidget->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), SLOT(selectionChanged(QItemSelection, QItemSelection)));
 
-    auto buttonFolder = ui->buttonBox->addButton(tr("Open Folder"), QDialogButtonBox::ResetRole);
+    auto buttonFolder = ui->buttonBox->addButton(tr("Abrir pasta"), QDialogButtonBox::ResetRole);
     connect(buttonFolder, &QPushButton::clicked, this, &IconPickerDialog::openFolder);
 }
 
@@ -102,10 +102,10 @@ bool IconPickerDialog::eventFilter(QObject *obj, QEvent *evt)
 void IconPickerDialog::addNewIcon()
 {
     //: The title of the select icons open file dialog
-    QString selectIcons = tr("Select Icons");
+    QString selectIcons = tr("Selecionar ícones");
     //: The type of icon files
     auto filter = IconUtils::getIconFilter();
-    QStringList fileNames = QFileDialog::getOpenFileNames(this, selectIcons, QString(), tr("Icons %1").arg(filter));
+    QStringList fileNames = QFileDialog::getOpenFileNames(this, selectIcons, QString(), tr("Ícones %1").arg(filter));
     APPLICATION->icons()->installIcons(fileNames);
 }
 

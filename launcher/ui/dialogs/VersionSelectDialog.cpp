@@ -78,9 +78,9 @@ VersionSelectDialog::VersionSelectDialog(BaseVersionList *vlist, QString title, 
 void VersionSelectDialog::retranslate()
 {
     // FIXME: overrides custom title given in constructor!
-    setWindowTitle(tr("Choose Version"));
-    m_refreshButton->setToolTip(tr("Reloads the version list."));
-    m_refreshButton->setText(tr("&Refresh"));
+    setWindowTitle(tr("Escolher versão"));
+    m_refreshButton->setToolTip(tr("Recarrega a lista de versões."));
+    m_refreshButton->setText(tr("&Atualizar"));
 }
 
 void VersionSelectDialog::setCurrentVersion(const QString& version)
