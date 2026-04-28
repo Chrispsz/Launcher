@@ -594,16 +594,20 @@ void InstanceImportTask::processCurseForge() {
                 responses->push_back({file, buf});
             }
 
-            // After fetching all file info, download the actual mod files
+            // After fetching all file info, resolve download URLs and download the actual mod files
             connect(m_filesNetJob.get(), &NetJob::succeeded, this, [this, responses, apiKey]() {
-                // Step 2: Parse responses to get download URLs and download actual files
                 m_filesNetJob.reset();
 
-                auto* downloadJob = new NetJob(tr("Download de mods CurseForge"), APPLICATION->network());
-                QString modDir = FS::PathCombine(m_stagingPath, ".minecraft", "mods");
-                FS::ensureFolderPathExists(modDir);
-                bool anyDownloads = false;
+                // Struct to hold resolved file info
+                struct ResolvedFile {
+                    QString projectID;
+                    QString fileID;
+                    QString fileName;
+                    QString downloadUrl;
+                };
+                QVector<ResolvedFile> resolvedFiles;
 
+                // Parse all file info responses
                 for (const auto& resp : *responses) {
                     QJsonParseError parseError;
                     QJsonDocument doc = QJsonDocument::fromJson(*resp.response, &parseError);
@@ -614,19 +618,12 @@ void InstanceImportTask::processCurseForge() {
 
                     try {
                         auto dataObj = Json::requireObject(Json::requireObject(doc), "data");
-                        QString downloadUrl = Json::ensureString(dataObj, "downloadUrl", "");
-                        QString fileName = Json::ensureString(dataObj, "fileName", "");
-
-                        if (downloadUrl.isEmpty()) {
-                            qWarning() << "No download URL for CurseForge file" << resp.file.fileID;
-                            continue;
-                        }
-
-                        QString targetPath = FS::PathCombine(modDir, fileName);
-                        qDebug() << "Will download CurseForge mod:" << downloadUrl << "to" << targetPath;
-                        auto dl = Net::Download::makeFile(QUrl(downloadUrl), targetPath);
-                        downloadJob->addNetAction(dl);
-                        anyDownloads = true;
+                        ResolvedFile rf;
+                        rf.projectID = resp.file.projectID;
+                        rf.fileID = resp.file.fileID;
+                        rf.fileName = Json::ensureString(dataObj, "fileName", "");
+                        rf.downloadUrl = Json::ensureString(dataObj, "downloadUrl", "");
+                        resolvedFiles.append(rf);
                     } catch (const JSONValidationError& e) {
                         qWarning() << "Error parsing CurseForge file response:" << e.cause();
                         continue;
@@ -639,28 +636,121 @@ void InstanceImportTask::processCurseForge() {
                 }
                 delete responses;
 
-                if (!anyDownloads) {
-                    qDebug() << "No downloadable CurseForge mods found";
-                    emitSucceeded();
+                // Separate files with and without download URLs
+                QVector<ResolvedFile> filesWithUrl;
+                QVector<ResolvedFile> filesNeedingUrl;
+                for (const auto& rf : resolvedFiles) {
+                    if (rf.downloadUrl.isEmpty()) {
+                        filesNeedingUrl.append(rf);
+                    } else {
+                        filesWithUrl.append(rf);
+                    }
+                }
+
+                // Helper lambda to start actual file downloads
+                auto startDownloads = [this](const QVector<ResolvedFile>& files) {
+                    if (files.isEmpty()) {
+                        qDebug() << "No downloadable CurseForge mods found";
+                        emitSucceeded();
+                        return;
+                    }
+
+                    auto* downloadJob = new NetJob(tr("Download de mods CurseForge"), APPLICATION->network());
+                    QString modDir = FS::PathCombine(m_stagingPath, ".minecraft", "mods");
+                    FS::ensureFolderPathExists(modDir);
+
+                    for (const auto& rf : files) {
+                        QString targetPath = FS::PathCombine(modDir, rf.fileName);
+                        qDebug() << "Will download CurseForge mod:" << rf.downloadUrl << "to" << targetPath;
+                        auto dl = Net::Download::makeFile(QUrl(rf.downloadUrl), targetPath);
+                        downloadJob->addNetAction(dl);
+                    }
+
+                    m_filesNetJob = downloadJob;
+                    setStatus(tr("Baixando mods do CurseForge..."));
+                    connect(downloadJob, &NetJob::succeeded, this, [this]() {
+                        m_filesNetJob.reset();
+                        emitSucceeded();
+                    });
+                    connect(downloadJob, &NetJob::failed, this, [this](const QString& reason) {
+                        qWarning() << "CurseForge mod download failed:" << reason;
+                        m_filesNetJob.reset();
+                        // Don't fail entirely - instance is still usable without mods
+                        emitSucceeded();
+                    });
+                    connect(downloadJob, &NetJob::progress, this, [this](qint64 current, qint64 total) {
+                        setProgress(current, total);
+                    });
+                    downloadJob->start();
+                };
+
+                // If all files have URLs, proceed directly to downloads
+                if (filesNeedingUrl.isEmpty()) {
+                    startDownloads(filesWithUrl);
                     return;
                 }
 
-                m_filesNetJob = downloadJob;
-                setStatus(tr("Baixando mods do CurseForge..."));
-                connect(downloadJob, &NetJob::succeeded, this, [this]() {
+                // Some files are missing download URLs — use the /download-url endpoint as fallback
+                qDebug() << "Fetching fallback download URLs for" << filesNeedingUrl.size() << "CurseForge file(s)";
+                setStatus(tr("Obtendo URLs de download faltantes (%1 arquivos)...").arg(filesNeedingUrl.size()));
+
+                auto* urlJob = new NetJob(tr("Obtenção de URLs de download CurseForge"), APPLICATION->network());
+
+                struct UrlResponse {
+                    ResolvedFile file;
+                    QByteArray* response;
+                };
+                auto* urlResponses = new QVector<UrlResponse>();
+
+                for (const auto& rf : filesNeedingUrl) {
+                    QUrl url = CurseForge::buildFileDownloadUrlEndpoint(rf.projectID.toInt(), rf.fileID.toInt());
+                    auto* buf = new QByteArray();
+                    auto dl = Net::Download::makeByteArray(url, buf);
+                    CurseForge::addApiKeyHeader(dl.get(), apiKey);
+                    urlJob->addNetAction(dl);
+                    urlResponses->push_back({rf, buf});
+                }
+
+                connect(urlJob, &NetJob::succeeded, this,
+                        [this, urlResponses, filesWithUrl, startDownloads]() {
                     m_filesNetJob.reset();
-                    emitSucceeded();
+
+                    QVector<ResolvedFile> allFiles = filesWithUrl;
+                    for (const auto& resp : *urlResponses) {
+                        QJsonDocument doc = QJsonDocument::fromJson(*resp.response);
+                        if (!doc.isNull()) {
+                            auto data = doc.object().value("data");
+                            if (data.isString() && !data.toString().isEmpty()) {
+                                ResolvedFile rf = resp.file;
+                                rf.downloadUrl = data.toString();
+                                qDebug() << "Got fallback download URL for file" << rf.fileID << ":" << rf.downloadUrl;
+                                allFiles.append(rf);
+                                delete resp.response;
+                                continue;
+                            }
+                        }
+                        qWarning() << "No download URL for CurseForge file" << resp.file.fileID
+                                   << "(fallback endpoint also returned empty)";
+                        delete resp.response;
+                    }
+                    delete urlResponses;
+                    startDownloads(allFiles);
                 });
-                connect(downloadJob, &NetJob::failed, this, [this](const QString& reason) {
-                    qWarning() << "CurseForge mod download failed:" << reason;
+
+                connect(urlJob, &NetJob::failed, this,
+                        [this, urlResponses, filesWithUrl, startDownloads](const QString& reason) {
+                    qWarning() << "Failed to fetch CurseForge download URLs:" << reason;
                     m_filesNetJob.reset();
-                    // Don't fail entirely - instance is still usable without mods
-                    emitSucceeded();
+                    for (auto& resp : *urlResponses) {
+                        delete resp.response;
+                    }
+                    delete urlResponses;
+                    // Proceed with files we already have URLs for
+                    startDownloads(filesWithUrl);
                 });
-                connect(downloadJob, &NetJob::progress, this, [this](qint64 current, qint64 total) {
-                    setProgress(current, total);
-                });
-                downloadJob->start();
+
+                m_filesNetJob = urlJob;
+                urlJob->start();
             });
 
             connect(m_filesNetJob.get(), &NetJob::failed, this, [this, responses](const QString& reason) {

@@ -191,7 +191,22 @@ template<> double requireIsType<double>(const QJsonValue &value, const QString &
 {
     if (!value.isDouble())
     {
-        throw JsonException(what + " is not a double");
+        QString actualType;
+        if (value.isString())
+            actualType = "a string";
+        else if (value.isArray())
+            actualType = "an array";
+        else if (value.isObject())
+            actualType = "an object";
+        else if (value.isBool())
+            actualType = "a boolean";
+        else if (value.isNull())
+            actualType = "null";
+        else if (value.isUndefined())
+            actualType = "undefined";
+        else
+            actualType = "an unknown type";
+        throw JsonException(what + " is not a double (found " + actualType + ")");
     }
     return value.toDouble();
 }

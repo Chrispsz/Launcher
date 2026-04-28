@@ -72,22 +72,46 @@ void CurseForgeModBrowserNS::ModListModel::fetchMore(const QModelIndex& parent)
         return;
 
     QString apiKey = CurseForge::getApiKey();
+    int gen = m_searchGeneration;
 
-    // Build search URL with pagination
-    QString searchUrl = QString(
-        "https://api.curseforge.com/v1/mods/search?gameId=432&classId=6"
-        "&searchFilter=%1&sortField=2&sortOrder=desc&pageSize=25&indexOffset=%2"
-    ).arg(QString(QUrl::toPercentEncoding(m_searchTerm)))
-     .arg(m_offset);
+    // Build search URL with pagination and filters
+    QString searchUrl = CurseForge::buildSearchUrl(
+        QString(QUrl::toPercentEncoding(m_searchTerm)),
+        CurseForge::CLASS_ID_MODS,
+        static_cast<int>(CurseForge::SortFieldId::Popularity),
+        "desc", 25, m_offset
+    ).toString();
 
+    // Append game version filter
+    if (!m_gameVersion.isEmpty())
+        searchUrl += "&gameVersion=" + QUrl::toPercentEncoding(m_gameVersion);
+
+    // Append mod loader type filter
+    if (!m_loader.isEmpty()) {
+        int loaderTypeId = 0;
+        if (m_loader == "Forge")
+            loaderTypeId = static_cast<int>(CurseForge::ModLoaderTypeId::Forge);
+        else if (m_loader == "Fabric")
+            loaderTypeId = static_cast<int>(CurseForge::ModLoaderTypeId::Fabric);
+        else if (m_loader == "NeoForge")
+            loaderTypeId = static_cast<int>(CurseForge::ModLoaderTypeId::NeoForge);
+        if (loaderTypeId > 0)
+            searchUrl += QString("&modLoaderType=%1").arg(loaderTypeId);
+    }
+
+    m_searchResponse.clear();
     m_searchJob = new NetJob("CurseForge::ModSearch", APPLICATION->network());
     auto dl = Net::Download::makeByteArray(QUrl(searchUrl), &m_searchResponse);
     CurseForge::addApiKeyHeader(dl.get(), apiKey);
     m_searchJob->addNetAction(dl);
     m_searchInProgress = true;
 
-    QObject::connect(m_searchJob.get(), &NetJob::succeeded, this, &ModListModel::onSearchFinished);
-    QObject::connect(m_searchJob.get(), &NetJob::failed, this, &ModListModel::onSearchFailed);
+    QObject::connect(m_searchJob.get(), &NetJob::succeeded, this, [this, gen]() {
+        if (gen == m_searchGeneration) onSearchFinished();
+    });
+    QObject::connect(m_searchJob.get(), &NetJob::failed, this, [this, gen]() {
+        if (gen == m_searchGeneration) onSearchFailed();
+    });
     m_searchJob->start();
 }
 
@@ -103,16 +127,19 @@ void CurseForgeModBrowserNS::ModListModel::search(const QString& term, const QSt
         m_versionsJob.reset();
     }
 
+    m_searchGeneration++;
+
     beginResetModel();
     m_mods.clear();
     m_versions.clear();
     m_offset = 0;
     m_totalCount = 0;
-    m_canFetchMore = false;
+    m_canFetchMore = true;
     m_searchInProgress = false;
     m_searchTerm = term;
     m_gameVersion = gameVersion;
     m_loader = loader;
+    m_searchResponse.clear();
     endResetModel();
 
     // Trigger initial fetch
@@ -126,6 +153,9 @@ void CurseForgeModBrowserNS::ModListModel::getVersions(int modId, const QString&
         m_versionsJob.reset();
     }
 
+    m_versionsGeneration++;
+    int gen = m_versionsGeneration;
+
     m_versions.clear();
     m_versionsResponse.clear();
 
@@ -133,16 +163,20 @@ void CurseForgeModBrowserNS::ModListModel::getVersions(int modId, const QString&
 
     // Build version list URL with game version filter
     QString versionsUrl = QString(
-        "https://api.curseforge.com/v1/mods/%1/files?gameVersion=%2&pageSize=50"
-    ).arg(modId).arg(gameVersion);
+        "%1/mods/%2/files?gameVersion=%3&pageSize=50"
+    ).arg(CurseForge::API_BASE).arg(modId).arg(gameVersion);
 
     m_versionsJob = new NetJob("CurseForge::ModVersions", APPLICATION->network());
     auto dl = Net::Download::makeByteArray(QUrl(versionsUrl), &m_versionsResponse);
     CurseForge::addApiKeyHeader(dl.get(), apiKey);
     m_versionsJob->addNetAction(dl);
 
-    QObject::connect(m_versionsJob.get(), &NetJob::succeeded, this, &ModListModel::onVersionsFinished);
-    QObject::connect(m_versionsJob.get(), &NetJob::failed, this, &ModListModel::onVersionsFailed);
+    QObject::connect(m_versionsJob.get(), &NetJob::succeeded, this, [this, gen]() {
+        if (gen == m_versionsGeneration) onVersionsFinished();
+    });
+    QObject::connect(m_versionsJob.get(), &NetJob::failed, this, [this, gen]() {
+        if (gen == m_versionsGeneration) onVersionsFailed();
+    });
     m_versionsJob->start();
 }
 
@@ -326,15 +360,16 @@ void CurseForgeModBrowserNS::ModListModel::requestLogo(int id, const QUrl& url)
     MetaEntryPtr entry = APPLICATION->metacache()->resolveEntry(
         "CurseForgeMods", QString("logos/%1").arg(id));
 
-    auto* job = new NetJob(QString("CurseForge Mod Icon %1").arg(id), APPLICATION->network());
+    auto job = NetJob::Ptr(new NetJob(QString("CurseForge Mod Icon %1").arg(id), APPLICATION->network()));
     job->addNetAction(Net::Download::makeCached(url, entry));
 
     auto fullPath = entry->getFullPath();
-    QObject::connect(job, &NetJob::succeeded, this, [this, id, fullPath] {
+    QObject::connect(job.get(), &NetJob::succeeded, this, [this, id, fullPath, job]() mutable {
         QIcon icon(fullPath);
         if (icon.isNull()) {
             m_loadingLogos.removeAll(id);
             m_failedLogos.append(id);
+            job.reset();
             return;
         }
         QSize size = icon.actualSize(QSize(48, 48));
@@ -348,11 +383,13 @@ void CurseForgeModBrowserNS::ModListModel::requestLogo(int id, const QUrl& url)
                 emit dataChanged(createIndex(i, 0), createIndex(i, 0), {Qt::DecorationRole});
             }
         }
+        job.reset();
     });
 
-    QObject::connect(job, &NetJob::failed, this, [this, id] {
+    QObject::connect(job.get(), &NetJob::failed, this, [this, id, job]() mutable {
         m_loadingLogos.removeAll(id);
         m_failedLogos.append(id);
+        job.reset();
     });
 
     job->start();

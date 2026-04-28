@@ -82,6 +82,8 @@ private:
     int m_totalCount = 0;
     bool m_canFetchMore = false;
     bool m_searchInProgress = false;
+    int m_searchGeneration = 0;
+    int m_versionsGeneration = 0;
 
     NetJob::Ptr m_searchJob;
     QByteArray m_searchResponse;

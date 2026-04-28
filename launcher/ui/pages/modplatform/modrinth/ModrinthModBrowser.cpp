@@ -313,15 +313,16 @@ void ModrinthModBrowserNS::ModListModel::requestLogo(const QString& id, const QU
     MetaEntryPtr entry = APPLICATION->metacache()->resolveEntry(
         "ModrinthMods", QString("logos/%1").arg(id.section(".", 0, 0)));
 
-    auto* job = new NetJob(QString("Modrinth Mod Icon %1").arg(id), APPLICATION->network());
+    auto job = NetJob::Ptr(new NetJob(QString("Modrinth Mod Icon %1").arg(id), APPLICATION->network()));
     job->addNetAction(Net::Download::makeCached(url, entry));
 
     auto fullPath = entry->getFullPath();
-    QObject::connect(job, &NetJob::succeeded, this, [this, id, fullPath] {
+    QObject::connect(job.get(), &NetJob::succeeded, this, [this, id, fullPath, job]() mutable {
         QIcon icon(fullPath);
         if (icon.isNull()) {
             m_loadingLogos.removeAll(id);
             m_failedLogos.append(id);
+            job.reset();
             return;
         }
         QSize size = icon.actualSize(QSize(48, 48));
@@ -335,11 +336,13 @@ void ModrinthModBrowserNS::ModListModel::requestLogo(const QString& id, const QU
                 emit dataChanged(createIndex(i, 0), createIndex(i, 0), {Qt::DecorationRole});
             }
         }
+        job.reset();
     });
 
-    QObject::connect(job, &NetJob::failed, this, [this, id] {
+    QObject::connect(job.get(), &NetJob::failed, this, [this, id, job]() mutable {
         m_loadingLogos.removeAll(id);
         m_failedLogos.append(id);
+        job.reset();
     });
 
     job->start();

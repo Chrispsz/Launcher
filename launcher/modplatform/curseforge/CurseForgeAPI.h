@@ -143,4 +143,19 @@ inline QUrl buildModFilesUrl(int modId)
     return QUrl(QString("%1/mods/%2/files").arg(API_BASE).arg(modId));
 }
 
+/*
+ * Build a file download URL endpoint.
+ * This endpoint returns the actual download URL for a file, which is useful
+ * when the file's downloadUrl field is null/empty in the file info response.
+ * Response: { "data": "https://edge.forgecdn.net/files/..." }
+ *
+ * @param modId  The CurseForge project/mod ID
+ * @param fileId The CurseForge file ID
+ * @return QUrl  The download-url API URL
+ */
+inline QUrl buildFileDownloadUrlEndpoint(int modId, int fileId)
+{
+    return QUrl(QString("%1/mods/%2/files/%3/download-url").arg(API_BASE).arg(modId).arg(fileId));
+}
+
 }  // namespace CurseForge

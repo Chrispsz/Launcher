@@ -125,7 +125,7 @@ T ensureIsType(const QJsonValue &value, const T default_ = T(), const QString &w
     {
         return requireIsType<T>(value, what);
     }
-    catch (const JsonException &)
+    catch (const Exception &)
     {
         return default_;
     }
