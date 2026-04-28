@@ -34,12 +34,8 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QNetworkAccessManager>
-#include <QTranslator>
-#include <QLibraryInfo>
-#include <QList>
 #include <QStringList>
 #include <QDebug>
-#include <QStyleFactory>
 #include <QTimer>
 
 #include "InstanceList.h"
@@ -78,9 +74,6 @@
 #include <windows.h>
 #include <stdio.h>
 #endif
-
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
 
 static const QLatin1String liveCheckFile("live.check");
 
@@ -762,6 +755,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         Q_UNUSED(port)
         QString user = settings()->get("ProxyUser").toString();
         QString pass = settings()->get("ProxyPass").toString();
+        updateProxySettings(proxyTypeStr, addr, port, user, pass);
         qDebug() << "<> Network done.";
     }
 
@@ -963,6 +957,7 @@ bool Application::createSetupWizard()
 void Application::setupWizardFinished(int status)
 {
     qDebug() << "Wizard result =" << status;
+    m_setupWizard = nullptr;
     performMainStartupAction();
 }
 
@@ -1120,22 +1115,6 @@ void Application::messageReceived(const QByteArray& message)
         qWarning() << "Received invalid message" << message;
     }
 }
-
-// Analytics setter removed — GAnalytics has been deleted
-// {
-//     if(!m_analytics)
-//         return;
-//     bool enabled = value.toBool();
-//     if(enabled)
-//     {
-//         qDebug() << "Analytics enabled by user.";
-//     }
-//     else
-//     {
-//         qDebug() << "Analytics disabled by user.";
-//     }
-//     m_analytics->enable(enabled);
-// }
 
 std::shared_ptr<TranslationsModel> Application::translations()
 {
@@ -1314,14 +1293,6 @@ bool Application::shouldExitNow() const
 {
     return m_runningInstances == 0 && m_openWindows == 0;
 }
-
-// updatesAreAllowed() removed — updater has been deleted
-
-// setUpdateRunning() removed — updater has been deleted
-// {
-//     m_updateRunning = running;
-// }
-
 
 void Application::controllerSucceeded()
 {

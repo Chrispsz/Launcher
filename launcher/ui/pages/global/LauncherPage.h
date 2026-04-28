@@ -42,7 +42,7 @@ public:
 
     QString displayName() const override
     {
-        return "Launcher";
+        return tr("Launcher");
     }
     QIcon icon() const override
     {
@@ -78,7 +78,7 @@ private:
     Ui::LauncherPage *ui;
 
     // default format for the font preview...
-    QTextCharFormat *defaultFormat;
+    QTextCharFormat defaultFormat;
 
     std::unique_ptr<LogColorCache> m_colors;
 

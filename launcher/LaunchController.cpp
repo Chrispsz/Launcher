@@ -69,8 +69,10 @@ void LaunchController::decideAccount()
     m_accountToUse = accounts->defaultAccount();
     if (!m_accountToUse)
     {
-        // No default account set - just use the first available one
-        m_accountToUse = accounts->defaultAccount();
+        // No default account set - use the first available one
+        if (accounts->count() > 0) {
+            m_accountToUse = accounts->at(0);
+        }
     }
 }
 

@@ -149,6 +149,10 @@ void Download::sslErrors(const QList<QSslError> & errors)
         qCritical() << "Certificate in question:\n" << cert.toText();
         i++;
     }
+    // LAUNCHERMC: abort download on SSL errors to prevent MITM attacks
+    if(m_reply) {
+        m_reply->abort();
+    }
 }
 
 bool Download::handleRedirect()
@@ -207,7 +211,22 @@ bool Download::handleRedirect()
         qDebug() << "Location header:" << redirect;
     }
 
+    if(m_redirects >= MAX_REDIRECTS)
+    {
+        qWarning() << "Too many redirects for" << m_url.toString();
+        downloadError(QNetworkReply::ProtocolFailure);
+        return false;
+    }
+    m_redirects++;
+
     m_url = QUrl(redirect.toString());
+    // LAUNCHERMC: validate redirect URL scheme to prevent SSRF
+    if(m_url.scheme() != "http" && m_url.scheme() != "https")
+    {
+        qWarning() << "Redirect to non-HTTP scheme blocked:" << m_url.toString();
+        downloadError(QNetworkReply::ProtocolFailure);
+        return false;
+    }
     qDebug() << "Following redirect to " << m_url.toString();
     start(m_network);
     return true;

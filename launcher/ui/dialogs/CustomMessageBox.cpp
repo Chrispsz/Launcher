@@ -29,6 +29,10 @@ QMessageBox *selectable(QWidget *parent, const QString &title, const QString &te
     messageBox->setTextInteractionFlags(Qt::TextSelectableByMouse);
     messageBox->setIcon(icon);
     messageBox->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    // Fix 2: Ensure the dialog is deleted when closed to prevent memory leaks.
+    // This works with exec() because exec() triggers a close event on return,
+    // and WA_DeleteOnClose schedules deletion via deleteLater().
+    messageBox->setAttribute(Qt::WA_DeleteOnClose);
 
     return messageBox;
 }

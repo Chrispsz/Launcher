@@ -67,6 +67,7 @@ public:
 
     void setIconTheme(const QString& name);
 
+    // NOTE: Returns raw pointers to objects owned by m_themes. Do not store or delete.
     std::vector<ITheme *> getValidApplicationThemes();
 
     void setApplicationTheme(const QString& name, bool initial);

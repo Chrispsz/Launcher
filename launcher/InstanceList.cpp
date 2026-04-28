@@ -402,6 +402,8 @@ InstanceList::InstListError InstanceList::loadList()
         {
             auto instPtr = removedItem.first;
             instPtr->invalidate();
+            instanceSet.remove(instPtr->id());
+            m_instanceGroupIndex.remove(instPtr->id());
             currentItem = removedItem.second;
             if(back_bookmark == -1)
             {

@@ -9,6 +9,8 @@ namespace Net {
 class ByteArraySink : public Sink
 {
 public:
+    static const qint64 MAX_SIZE = 100 * 1024 * 1024; // 100MB
+
     ByteArraySink(QByteArray *output)
         :m_output(output)
     {
@@ -31,6 +33,10 @@ public:
 
     JobStatus write(QByteArray & data) override
     {
+        if(m_output->size() + data.size() > MAX_SIZE) {
+            qCritical() << "ByteArraySink: response too large, aborting";
+            return Job_Failed;
+        }
         m_output->append(data);
         if(writeAllValidators(data))
             return Job_InProgress;

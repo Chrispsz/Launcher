@@ -172,6 +172,10 @@ void Yggdrasil::sslErrors(QList<QSslError> errors) {
         qCritical() << "Certificate in question:\n" << cert.toText();
         i++;
     }
+    // LAUNCHERMC: abort on SSL errors for authentication
+    if(m_netReply) {
+        m_netReply->abort();
+    }
 }
 
 void Yggdrasil::processResponse(QJsonObject responseData) {
@@ -251,6 +255,7 @@ void Yggdrasil::processReply() {
             AccountTaskState::STATE_FAILED_GONE,
             tr("The Mojang account no longer exists. It may have been migrated to a Microsoft account.")
         );
+        return;
     }
     default:
         changeState(

@@ -63,7 +63,10 @@ JobStatus FileSink::write(QByteArray& data)
 
 JobStatus FileSink::abort()
 {
-    m_output_file->cancelWriting();
+    if(m_output_file)
+    {
+        m_output_file->cancelWriting();
+    }
     failAllValidators();
     return Job_Failed;
 }

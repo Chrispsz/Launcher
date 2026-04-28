@@ -104,7 +104,7 @@ private:
     QStringList m_Warnings;
     QString m_failReason = "";
     QString m_status;
-    int m_progress = 0;
-    int m_progressTotal = 100;
+    qint64 m_progress = 0;
+    qint64 m_progressTotal = 100;
 };
 

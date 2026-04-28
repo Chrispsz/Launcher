@@ -808,15 +808,20 @@ void MainWindow::showInstanceContextMenu(const QPoint &pos)
 
 void MainWindow::updateToolsMenu()
 {
-    QToolButton *exportButton = dynamic_cast<QToolButton*>(ui->instanceToolBar->widgetForAction(ui->actionExportInstance));
-    exportButton->setPopupMode(QToolButton::MenuButtonPopup);
+    // Fix 1: Use qobject_cast with null checks to prevent crashes
+    QToolButton *exportButton = qobject_cast<QToolButton*>(ui->instanceToolBar->widgetForAction(ui->actionExportInstance));
+    if(exportButton)
+    {
+        exportButton->setPopupMode(QToolButton::MenuButtonPopup);
+    }
 
+    // Fix 3: Reuse existing menu to prevent connection leaks
     QMenu *exportMenu = ui->actionExportInstance->menu();
 
     if (exportMenu) {
         exportMenu->clear();
     } else {
-        exportMenu = new QMenu();
+        exportMenu = new QMenu(this);
     }
 
     exportMenu->addSeparator()->setText(tr("Format"));
@@ -824,8 +829,12 @@ void MainWindow::updateToolsMenu()
     QAction *mmcExport = exportMenu->addAction(BuildConfig.LAUNCHER_NAME);
     QAction *modrinthExport = exportMenu->addAction(tr("Modrinth (WIP)"));
 
-    connect(mmcExport, &QAction::triggered, this, &MainWindow::on_actionExportInstance_triggered);
-    connect(modrinthExport, &QAction::triggered, [this]()
+    // Fix 3: Use action as context so connections auto-disconnect when action is deleted
+    connect(mmcExport, &QAction::triggered, mmcExport, [this]()
+    {
+        on_actionExportInstance_triggered();
+    });
+    connect(modrinthExport, &QAction::triggered, modrinthExport, [this]()
     {
         if (m_selectedInstance) {
             // ModrinthExportDialog has been removed
@@ -836,22 +845,35 @@ void MainWindow::updateToolsMenu()
 
     ui->actionExportInstance->setMenu(exportMenu);
 
-    QToolButton *launchButton = dynamic_cast<QToolButton*>(ui->instanceToolBar->widgetForAction(ui->actionLaunchInstance));
-    QToolButton *launchOfflineButton = dynamic_cast<QToolButton*>(ui->instanceToolBar->widgetForAction(ui->actionLaunchInstanceOffline));
+    // Fix 1: Use qobject_cast with null checks to prevent crashes
+    QToolButton *launchButton = qobject_cast<QToolButton*>(ui->instanceToolBar->widgetForAction(ui->actionLaunchInstance));
+    QToolButton *launchOfflineButton = qobject_cast<QToolButton*>(ui->instanceToolBar->widgetForAction(ui->actionLaunchInstanceOffline));
 
     if(!m_selectedInstance || m_selectedInstance->isRunning())
     {
         ui->actionLaunchInstance->setMenu(nullptr);
         ui->actionLaunchInstanceOffline->setMenu(nullptr);
-        launchButton->setPopupMode(QToolButton::InstantPopup);
-        launchOfflineButton->setPopupMode(QToolButton::InstantPopup);
+        if(launchButton)
+        {
+            launchButton->setPopupMode(QToolButton::InstantPopup);
+        }
+        if(launchOfflineButton)
+        {
+            launchOfflineButton->setPopupMode(QToolButton::InstantPopup);
+        }
         return;
     }
 
     QMenu *launchMenu = ui->actionLaunchInstance->menu();
     QMenu *launchOfflineMenu = ui->actionLaunchInstanceOffline->menu();
-    launchButton->setPopupMode(QToolButton::MenuButtonPopup);
-    launchOfflineButton->setPopupMode(QToolButton::MenuButtonPopup);
+    if(launchButton)
+    {
+        launchButton->setPopupMode(QToolButton::MenuButtonPopup);
+    }
+    if(launchOfflineButton)
+    {
+        launchOfflineButton->setPopupMode(QToolButton::MenuButtonPopup);
+    }
     if (launchMenu)
     {
         launchMenu->clear();
@@ -870,11 +892,12 @@ void MainWindow::updateToolsMenu()
 
     QAction *normalLaunch = launchMenu->addAction(tr("Launch"));
     QAction *normalLaunchOffline = launchOfflineMenu->addAction(tr("Launch Offline"));
-    connect(normalLaunch, &QAction::triggered, [this]()
+    // Fix 3: Use action as context so connections auto-disconnect when action is deleted via menu->clear()
+    connect(normalLaunch, &QAction::triggered, normalLaunch, [this]()
             {
                 APPLICATION->launch(m_selectedInstance, true);
             });
-    connect(normalLaunchOffline, &QAction::triggered, [this]()
+    connect(normalLaunchOffline, &QAction::triggered, normalLaunchOffline, [this]()
             {
                 APPLICATION->launch(m_selectedInstance, false);
             });
@@ -891,7 +914,6 @@ void MainWindow::repopulateAccountsMenu()
     auto accounts = APPLICATION->accounts();
     MinecraftAccountPtr defaultAccount = accounts->defaultAccount();
 
-    QString active_profileId = "";
     if (defaultAccount)
     {
         // this can be called before accountMenuButton exists
@@ -959,7 +981,10 @@ void MainWindow::repopulateAccountsMenu()
  */
 void MainWindow::changeActiveAccount()
 {
-    QAction *sAction = (QAction *)sender();
+    // Fix 4: Use qobject_cast instead of C-style cast, with null check
+    QAction *sAction = qobject_cast<QAction *>(sender());
+    if (!sAction)
+        return;
 
     // Profile's associated Mojang username
     if (sAction->data().type() != QVariant::Type::Int)

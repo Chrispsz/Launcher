@@ -20,7 +20,6 @@
 #include "minecraft/MinecraftInstance.h"
 #include "ui/pages/BasePage.h"
 #include <Application.h>
-#include <LoggedProcess.h>
 
 class WorldList;
 namespace Ui
@@ -73,18 +72,14 @@ private:
     QModelIndex getSelectedWorld();
     bool isWorldSafe(QModelIndex index);
     bool worldSafetyNagQuestion();
-    void mceditError();
     void joinSelectedWorld(bool online);
 
 private:
     Ui::WorldListPage *ui;
     std::shared_ptr<WorldList> m_worlds;
-    unique_qobject_ptr<LoggedProcess> m_mceditProcess;
-    bool m_mceditStarting = false;
 
 private slots:
     void on_actionCopy_Seed_triggered();
-    void on_actionMCEdit_triggered();
     void on_actionRemove_triggered();
     void on_actionAdd_triggered();
     void on_actionCopy_triggered();
@@ -96,7 +91,6 @@ private slots:
     void on_actionJoin_triggered();
     void on_actionJoinOffline_triggered();
     void worldChanged(const QModelIndex &current, const QModelIndex &previous);
-    void mceditState(LoggedProcess::State state);
 
     void ShowContextMenu(const QPoint &pos);
 };

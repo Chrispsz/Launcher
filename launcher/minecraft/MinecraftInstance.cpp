@@ -58,7 +58,6 @@
 // if either of the settings {a, b} is true, this also resolves to true
 class OrSetting : public Setting
 {
-    Q_OBJECT
 public:
     OrSetting(QString id, std::shared_ptr<Setting> a, std::shared_ptr<Setting> b)
     :Setting({id}, false), m_a(a), m_b(b)
@@ -1107,4 +1106,4 @@ QList< Mod > MinecraftInstance::getJarMods() const
 }
 
 
-#include "MinecraftInstance.moc"
+

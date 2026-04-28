@@ -50,7 +50,7 @@ LauncherPage::LauncherPage(QWidget *parent) : QWidget(parent), ui(new Ui::Launch
     ui->sortingModeGroup->setId(ui->sortByNameBtn, Sort_Name);
     ui->sortingModeGroup->setId(ui->sortLastLaunchedBtn, Sort_LastLaunch);
 
-    defaultFormat = new QTextCharFormat(ui->fontPreview->currentCharFormat());
+    defaultFormat = QTextCharFormat(ui->fontPreview->currentCharFormat());
 
     m_languageModel = APPLICATION->translations();
     loadSettings();
@@ -74,7 +74,6 @@ LauncherPage::LauncherPage(QWidget *parent) : QWidget(parent), ui(new Ui::Launch
 LauncherPage::~LauncherPage()
 {
     delete ui;
-    delete defaultFormat;
 }
 
 bool LauncherPage::apply()
@@ -337,9 +336,9 @@ void LauncherPage::refreshFontPreview()
     int fontSize = ui->fontSizeBox->value();
     QString fontFamily = ui->consoleFont->currentFont().family();
     ui->fontPreview->clear();
-    defaultFormat->setFont(QFont(fontFamily, fontSize));
+    defaultFormat.setFont(QFont(fontFamily, fontSize));
     {
-        QTextCharFormat format(*defaultFormat);
+        QTextCharFormat format(defaultFormat);
         format.setForeground(m_colors->getFront(MessageLevel::Error));
         // append a paragraph/line
         auto workCursor = ui->fontPreview->textCursor();
@@ -348,7 +347,7 @@ void LauncherPage::refreshFontPreview()
         workCursor.insertBlock();
     }
     {
-        QTextCharFormat format(*defaultFormat);
+        QTextCharFormat format(defaultFormat);
         format.setForeground(m_colors->getFront(MessageLevel::Message));
         // append a paragraph/line
         auto workCursor = ui->fontPreview->textCursor();
@@ -357,7 +356,7 @@ void LauncherPage::refreshFontPreview()
         workCursor.insertBlock();
     }
     {
-        QTextCharFormat format(*defaultFormat);
+        QTextCharFormat format(defaultFormat);
         format.setForeground(m_colors->getFront(MessageLevel::Warning));
         // append a paragraph/line
         auto workCursor = ui->fontPreview->textCursor();

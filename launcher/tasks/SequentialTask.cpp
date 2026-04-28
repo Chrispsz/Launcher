@@ -53,3 +53,26 @@ void SequentialTask::subTaskProgress(qint64 current, qint64 total)
     }
     setProgress(current, total);
 }
+
+bool SequentialTask::canAbort() const
+{
+    for(auto iter = m_queue.begin(); iter != m_queue.end(); iter++) {
+        if((*iter)->canAbort()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool SequentialTask::abort()
+{
+    // Abort the currently running task
+    if(m_currentIndex >= 0 && m_currentIndex < m_queue.size()) {
+        if(!m_queue[m_currentIndex]->abort()) {
+            return false;
+        }
+    }
+    // Clear pending tasks
+    m_queue.clear();
+    return true;
+}

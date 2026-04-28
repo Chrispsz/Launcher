@@ -13,6 +13,8 @@ public:
     virtual ~SequentialTask() {};
 
     void addTask(Task::Ptr task);
+    bool canAbort() const override;
+    bool abort() override;
 
 protected:
     void executeTask();

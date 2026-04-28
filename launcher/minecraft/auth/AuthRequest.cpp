@@ -119,7 +119,7 @@ void AuthRequest::finish() {
     status_ = Idle;
     timedReplies_.remove(reply_);
     reply_->disconnect(this);
-    reply_->deleteLater();
     QList<QNetworkReply::RawHeaderPair> headers = reply_->rawHeaderPairs();
+    reply_->deleteLater();
     emit finished(error_, data, headers);
 }

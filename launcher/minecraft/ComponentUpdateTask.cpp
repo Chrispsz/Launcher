@@ -501,6 +501,11 @@ static bool getTrivialComponentChanges(const ComponentIndex & index, const Requi
 void ComponentUpdateTask::resolveDependencies(bool checkOnly)
 {
     qDebug() << "Resolving dependencies";
+    if(m_resolveRecursionDepth > 20) {
+        emitFailed(tr("Dependency resolution failed: too many recursion steps"));
+        return;
+    }
+    m_resolveRecursionDepth++;
     /*
      * this is a naive dependency resolving algorithm. all it does is check for following conditions and react in simple ways:
      * 1. There are conflicting dependencies on the same uid with different exact version numbers

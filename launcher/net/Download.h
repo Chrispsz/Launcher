@@ -71,6 +71,8 @@ private: /* data */
     QString m_target_path;
     std::unique_ptr<Sink> m_sink;
     Options m_options;
+    int m_redirects = 0;
+    static const int MAX_REDIRECTS = 10;
 };
 }
 

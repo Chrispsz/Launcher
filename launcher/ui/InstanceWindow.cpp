@@ -142,9 +142,8 @@ void InstanceWindow::updateLaunchButtons()
         m_killButton->setObjectName("launchButton");
         m_killButton->setToolTip(tr("Launch the instance"));
     }
-    // NOTE: this is a hack to force the button to recalculate its style
-    m_killButton->setStyleSheet("/* */");
-    m_killButton->setStyleSheet(QString());
+    m_killButton->style()->unpolish(m_killButton);
+    m_killButton->style()->polish(m_killButton);
 }
 
 void InstanceWindow::on_btnLaunchMinecraftOffline_clicked()

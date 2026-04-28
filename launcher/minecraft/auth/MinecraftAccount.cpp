@@ -140,11 +140,10 @@ shared_qobject_ptr<AccountTask> MinecraftAccount::refresh() {
 
     if (data.type == AccountType::Local) {
         m_currentTask.reset(new LocalRefresh(&data));
+        connect(m_currentTask.get(), SIGNAL(succeeded()), SLOT(authSucceeded()));
+        connect(m_currentTask.get(), SIGNAL(failed(QString)), SLOT(authFailed(QString)));
+        emit activityChanged(true);
     }
-
-    connect(m_currentTask.get(), SIGNAL(succeeded()), SLOT(authSucceeded()));
-    connect(m_currentTask.get(), SIGNAL(failed(QString)), SLOT(authFailed(QString)));
-    emit activityChanged(true);
     return m_currentTask;
 }
 

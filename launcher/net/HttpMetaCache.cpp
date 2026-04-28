@@ -209,7 +209,7 @@ void HttpMetaCache::Load()
     for (auto element : array)
     {
         if (!element.isObject())
-            return;
+            continue;
         auto element_obj = element.toObject();
         QString base = element_obj.value("base").toString();
         if (!m_entries.contains(base))

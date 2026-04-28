@@ -157,7 +157,7 @@ void WorldListPage::on_actionRemove_triggered()
 
     auto result = QMessageBox::question(this,
                 tr("Are you sure?"),
-                tr("This will remove the selected world permenantly.\n"
+                tr("This will remove the selected world permanently.\n"
                     "The world will be gone forever (A LONG TIME).\n"
                     "\n"
                     "Do you want to continue?"));
@@ -226,27 +226,6 @@ void WorldListPage::on_actionCopy_Seed_triggered()
     APPLICATION->clipboard()->setText(QString::number(seed));
 }
 
-void WorldListPage::on_actionMCEdit_triggered()
-{
-    // MCEdit tool has been removed
-    QMessageBox::warning(
-        this->parentWidget(),
-        tr("MCEdit not available"),
-        tr("MCEdit support has been removed from this launcher.")
-    );
-}
-
-void WorldListPage::mceditError()
-{
-    // MCEdit tool has been removed
-}
-
-void WorldListPage::mceditState(LoggedProcess::State state)
-{
-    Q_UNUSED(state)
-    // MCEdit tool has been removed
-}
-
 void WorldListPage::worldChanged(const QModelIndex &current, const QModelIndex &previous)
 {
     auto mcInst = std::dynamic_pointer_cast<MinecraftInstance>(m_inst);
@@ -259,7 +238,6 @@ void WorldListPage::worldChanged(const QModelIndex &current, const QModelIndex &
     ui->actionJoin->setEnabled(enable && enableJoinActions);
     ui->actionJoinOffline->setEnabled(enable && enableJoinActions);
     ui->actionCopy_Seed->setEnabled(enable);
-    ui->actionMCEdit->setEnabled(enable);
     ui->actionRemove->setEnabled(enable);
     ui->actionCopy->setEnabled(enable);
     ui->actionRename->setEnabled(enable);

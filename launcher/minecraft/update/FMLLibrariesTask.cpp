@@ -114,6 +114,10 @@ void FMLLibrariesTask::fmllibsFinished()
 }
 void FMLLibrariesTask::fmllibsFailed(QString reason)
 {
+    if(!downloadJob) {
+        emitFailed(reason);
+        return;
+    }
     QStringList failed = downloadJob->getFailedFiles();
     QString failed_all = failed.join("\n");
     emitFailed(tr("Failed to download the following files:\n%1\n\nReason:%2\nPlease try again.").arg(failed_all, reason));

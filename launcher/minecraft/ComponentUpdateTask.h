@@ -34,4 +34,5 @@ private:
 
 private:
     std::unique_ptr<ComponentUpdateTaskData> d;
+    int m_resolveRecursionDepth = 0;
 };
