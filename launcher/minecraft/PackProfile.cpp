@@ -51,6 +51,7 @@ PackProfile::PackProfile(MinecraftInstance * instance)
 
 PackProfile::~PackProfile()
 {
+    d->m_saveTimer.stop();
     saveNow();
 }
 

@@ -624,6 +624,9 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     m_settings->registerSetting("ShownNotifications", QString());
     m_settings->registerSetting("LastUsedGroupForNewInstance", QString());
 
+    // ── UPDATER (desativado mas registrado para evitar warning) ──
+    m_settings->registerSetting("AutoUpdate", false);
+
     // ── CONSOLE ──
     m_settings->registerSetting("ConsoleFont", QString("monospace"));
     m_settings->registerSetting("ConsoleFontSize", 10);

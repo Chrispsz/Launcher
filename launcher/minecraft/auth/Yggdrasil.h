@@ -38,7 +38,11 @@ public:
         AccountData *data,
         QObject *parent = 0
     );
-    virtual ~Yggdrasil() = default;
+    virtual ~Yggdrasil()
+    {
+        timeout_keeper.stop();
+        counter.stop();
+    }
 
     void refresh();
     void login(QString password);

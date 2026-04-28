@@ -1557,9 +1557,10 @@ void MainWindow::on_actionLaunchInstanceOffline_triggered()
 void MainWindow::taskEnd()
 {
     QObject *sender = QObject::sender();
+    if (!sender)
+        return;
     if (sender == m_versionLoadTask)
         m_versionLoadTask = NULL;
-
     sender->deleteLater();
 }
 

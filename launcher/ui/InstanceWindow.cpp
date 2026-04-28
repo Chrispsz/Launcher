@@ -224,6 +224,13 @@ void InstanceWindow::refreshContainer()
 
 InstanceWindow::~InstanceWindow()
 {
+    // LAUNCHERMC: Disconnect from instance signals to prevent postEvent null receiver warnings
+    if (m_instance)
+    {
+        disconnect(m_instance.get(), &BaseInstance::launchTaskChanged, this, &InstanceWindow::on_InstanceLaunchTask_changed);
+        disconnect(m_instance.get(), &BaseInstance::runningStatusChanged, this, &InstanceWindow::on_RunningState_changed);
+        disconnect(m_instance.get(), &BaseInstance::statusChanged, this, &InstanceWindow::on_instanceStatusChanged);
+    }
 }
 
 bool InstanceWindow::requestClose()

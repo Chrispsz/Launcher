@@ -48,7 +48,13 @@ AccountList::AccountList(QObject *parent) : QAbstractListModel(parent) {
     connect(m_nextTimer, &QTimer::timeout, this, &AccountList::tryNext);
 }
 
-AccountList::~AccountList() noexcept {}
+AccountList::~AccountList() noexcept
+{
+    if (m_refreshTimer)
+        m_refreshTimer->stop();
+    if (m_nextTimer)
+        m_nextTimer->stop();
+}
 
 int AccountList::findAccountByProfileId(const QString& profileId) const {
     for (int i = 0; i < count(); i++) {
