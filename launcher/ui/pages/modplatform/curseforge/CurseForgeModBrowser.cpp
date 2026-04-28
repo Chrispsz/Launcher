@@ -11,7 +11,6 @@
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QIcon>
-#include <QObject>
 #include <QStandardPaths>
 #include <QDir>
 
@@ -440,9 +439,9 @@ CurseForgeModBrowser::CurseForgeModBrowser(BaseInstance* instance, std::shared_p
     connect(ui->modListView, &QListView::clicked, this, &CurseForgeModBrowser::onModSelected);
     connect(ui->modListView, &QListView::doubleClicked, this, &CurseForgeModBrowser::onModSelected);
 
-    connect(ui->versionComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+    connect(ui->versionComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &CurseForgeModBrowser::onVersionSelected);
-    connect(ui->loaderComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+    connect(ui->loaderComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, [this](int) { triggerSearch(); });
 
     connect(ui->downloadButton, &QPushButton::clicked, this, &CurseForgeModBrowser::onDownloadClicked);

@@ -9,7 +9,6 @@
 
 #include <QMessageBox>
 #include <QFileInfo>
-#include <QObject>
 #include <QIcon>
 #include <QStandardPaths>
 #include <QDir>
@@ -425,9 +424,9 @@ ModrinthModBrowser::ModrinthModBrowser(BaseInstance* instance, std::shared_ptr<M
     connect(ui->modListView, &QListView::clicked, this, &ModrinthModBrowser::onModSelected);
     connect(ui->modListView, &QListView::doubleClicked, this, &ModrinthModBrowser::onModSelected);
 
-    connect(ui->versionComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+    connect(ui->versionComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &ModrinthModBrowser::onVersionSelected);
-    connect(ui->loaderComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+    connect(ui->loaderComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, [this](int) { triggerSearch(); });
 
     connect(ui->downloadButton, &QPushButton::clicked, this, &ModrinthModBrowser::onDownloadClicked);
