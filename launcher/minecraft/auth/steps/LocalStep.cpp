@@ -9,7 +9,7 @@ LocalStep::~LocalStep() noexcept = default;
 
 QString LocalStep::describe()
 {
-    return tr("Creating local account.");
+    return tr("Criando conta local.");
 }
 
 void LocalStep::rehydrate()
@@ -19,5 +19,5 @@ void LocalStep::rehydrate()
 
 void LocalStep::perform()
 {
-    emit finished(AccountTaskState::STATE_WORKING, tr("Created local account."));
+    emit finished(AccountTaskState::STATE_WORKING, tr("Conta local criada."));
 }

@@ -52,9 +52,9 @@ void LaunchController::decideAccount()
         auto reply = CustomMessageBox::selectable(
             m_parentWidget,
             tr("Sem contas"),
-            tr("In order to play Minecraft, you must have at least one Mojang or Minecraft "
-               "account logged in."
-               "Would you like to open the account manager to add an account now?"),
+            tr("Para jogar Minecraft, você deve ter pelo menos uma conta Mojang ou Minecraft "
+               "conectada."
+               "Gostaria de abrir o gerenciador de contas para adicionar uma conta agora?"),
             QMessageBox::Information,
             QMessageBox::Yes | QMessageBox::No
         )->exec();
@@ -323,8 +323,8 @@ bool LaunchController::abort()
     }
     auto response = CustomMessageBox::selectable(
             m_parentWidget, tr("Matar Minecraft?"),
-            tr("This can cause the instance to get corrupted and should only be used if Minecraft "
-            "is frozen for some reason"),
+            tr("Isso pode causar a corrupção da instância e só deve ser usado se o Minecraft "
+            "estiver congelado por algum motivo"),
             QMessageBox::Question, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes)->exec();
     if (response == QMessageBox::Yes)
     {

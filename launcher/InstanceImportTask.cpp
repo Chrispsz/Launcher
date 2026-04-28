@@ -53,13 +53,13 @@ void InstanceImportTask::executeTask()
     }
     else
     {
-        setStatus(tr("Downloading modpack:\n%1").arg(m_sourceUrl.toString()));
+        setStatus(tr("Baixando modpack:\n%1").arg(m_sourceUrl.toString()));
         m_downloadRequired = true;
 
         const QString path = m_sourceUrl.host() + '/' + m_sourceUrl.path();
         auto entry = APPLICATION->metacache()->resolveEntry("general", path);
         entry->setStale(true);
-        m_filesNetJob = new NetJob(tr("Modpack download"), APPLICATION->network());
+        m_filesNetJob = new NetJob(tr("Download do modpack"), APPLICATION->network());
         m_filesNetJob->addNetAction(Net::Download::makeCached(m_sourceUrl, entry));
         m_archivePath = entry->getFullPath();
         auto job = m_filesNetJob.get();
@@ -89,7 +89,7 @@ void InstanceImportTask::downloadProgressChanged(qint64 current, qint64 total)
 
 void InstanceImportTask::processZipPack()
 {
-    setStatus(tr("Extracting modpack"));
+    setStatus(tr("Extraindo modpack"));
     QDir extractDir(m_stagingPath);
     qDebug() << "Attempting to create instance from" << m_archivePath;
 
@@ -97,7 +97,7 @@ void InstanceImportTask::processZipPack()
     m_packZip.reset(new QuaZip(m_archivePath));
     if (!m_packZip->open(QuaZip::mdUnzip))
     {
-        emitFailed(tr("Unable to open supplied modpack zip file."));
+        emitFailed(tr("Não foi possível abrir o arquivo zip do modpack fornecido."));
         return;
     }
 
@@ -130,7 +130,7 @@ void InstanceImportTask::processZipPack()
     }
     if(m_modpackType == ModpackType::Unknown)
     {
-        emitFailed(tr("Archive does not contain a recognized modpack type."));
+        emitFailed(tr("O arquivo não contém um tipo de modpack reconhecido."));
         return;
     }
 
@@ -146,7 +146,7 @@ void InstanceImportTask::extractFinished()
     m_packZip.reset();
     if (!m_extractFuture.result())
     {
-        emitFailed(tr("Failed to extract modpack"));
+        emitFailed(tr("Falha ao extrair modpack"));
         return;
     }
     QDir extractDir(m_stagingPath);
@@ -173,7 +173,7 @@ void InstanceImportTask::extractFinished()
         {
             if(!QFile::setPermissions(filepath, permissions))
             {
-                logWarning(tr("Could not fix permissions for %1").arg(filepath));
+                logWarning(tr("Não foi possível corrigir as permissões de %1").arg(filepath));
             }
             else
             {
@@ -194,14 +194,14 @@ void InstanceImportTask::extractFinished()
             processCurseForge();
             return;
         case ModpackType::Unknown:
-            emitFailed(tr("Archive does not contain a recognized modpack type."));
+            emitFailed(tr("O arquivo não contém um tipo de modpack reconhecido."));
             return;
     }
 }
 
 void InstanceImportTask::extractAborted()
 {
-    emitFailed(tr("Instance import has been aborted."));
+    emitFailed(tr("A importação da instância foi abortada."));
     return;
 }
 
@@ -399,26 +399,26 @@ void InstanceImportTask::processModrinth() {
     }
     catch (const JSONValidationError &e)
     {
-        emitFailed(tr("Could not understand pack index:\n") + e.cause());
+        emitFailed(tr("Não foi possível entender o índice do pacote:\n") + e.cause());
         return;
     }
     QString clientOverridePath = FS::PathCombine(m_stagingPath, "client-overrides");
     if (QFile::exists(clientOverridePath)) {
         QString mcPath = FS::PathCombine(m_stagingPath, ".minecraft");
         if (!QFile::rename(clientOverridePath, mcPath)) {
-            emitFailed(tr("Could not rename the overrides folder:\n") + "overrides");
+            emitFailed(tr("Não foi possível renomear a pasta de overrides:\n") + "overrides");
             return;
         }
     }
 
     // TODO: only extract things we actually want instead of everything only to just delete it afterwards ...
     if(!mergeOverrides(FS::PathCombine(m_stagingPath, "client-overrides"), FS::PathCombine(m_stagingPath, ".minecraft"))) {
-        emitFailed(tr("Could not merge the overrides folder:\n") + "client-overrides");
+        emitFailed(tr("Não foi possível mesclar a pasta de overrides:\n") + "client-overrides");
         return;
     }
 
     if(!mergeOverrides(FS::PathCombine(m_stagingPath, "overrides"), FS::PathCombine(m_stagingPath, ".minecraft"))) {
-        emitFailed(tr("Could not merge the overrides folder:\n") + "overrides");
+        emitFailed(tr("Não foi possível mesclar a pasta de overrides:\n") + "overrides");
         return;
     }
 
@@ -446,7 +446,7 @@ void InstanceImportTask::processModrinth() {
     instance.setName(m_instName);
     instance.saveNow();
 
-    m_filesNetJob = new NetJob(tr("Mod download"), APPLICATION->network());
+    m_filesNetJob = new NetJob(tr("Download de mods"), APPLICATION->network());
     for (auto &file : files)
     {
         auto path = FS::PathCombine(m_stagingPath, ".minecraft", file.path);
@@ -469,7 +469,7 @@ void InstanceImportTask::processModrinth() {
     {
         setProgress(current, total);
     });
-    setStatus(tr("Downloading mods..."));
+    setStatus(tr("Baixando mods..."));
     m_filesNetJob->start();
 }
 
@@ -521,14 +521,14 @@ void InstanceImportTask::processCurseForge() {
 
         QFile::remove(manifestPath);
     } catch (const JSONValidationError &e) {
-        emitFailed(tr("Could not parse manifest.json:\n") + e.cause());
+        emitFailed(tr("Não foi possível analisar manifest.json:\n") + e.cause());
         return;
     }
 
     // Merge overrides
     QString overridesPath = FS::PathCombine(m_stagingPath, overridesDir);
     if (!mergeOverrides(overridesPath, FS::PathCombine(m_stagingPath, ".minecraft"))) {
-        emitFailed(tr("Failed to merge the overrides folder."));
+        emitFailed(tr("Falha ao mesclar a pasta de overrides."));
         return;
     }
     FS::deletePath(FS::PathCombine(m_stagingPath, "server-overrides"));
@@ -571,10 +571,10 @@ void InstanceImportTask::processCurseForge() {
         }
 
         if (!requiredFiles.isEmpty()) {
-            setStatus(tr("Fetching CurseForge mod file info (%1 files)...").arg(requiredFiles.size()));
+            setStatus(tr("Obtendo informações de arquivos de mods do CurseForge (%1 arquivos)...").arg(requiredFiles.size()));
 
             // Step 1: Fetch file metadata from CurseForge API to get download URLs
-            m_filesNetJob = new NetJob(tr("CurseForge mod info fetch"), APPLICATION->network());
+            m_filesNetJob = new NetJob(tr("Obtenção de informações de mods CurseForge"), APPLICATION->network());
 
             struct CFFileResponse {
                 CurseForge::File file;
@@ -599,7 +599,7 @@ void InstanceImportTask::processCurseForge() {
                 // Step 2: Parse responses to get download URLs and download actual files
                 m_filesNetJob.reset();
 
-                auto* downloadJob = new NetJob(tr("CurseForge mod download"), APPLICATION->network());
+                auto* downloadJob = new NetJob(tr("Download de mods CurseForge"), APPLICATION->network());
                 QString modDir = FS::PathCombine(m_stagingPath, ".minecraft", "mods");
                 FS::ensureFolderPathExists(modDir);
                 bool anyDownloads = false;
@@ -646,7 +646,7 @@ void InstanceImportTask::processCurseForge() {
                 }
 
                 m_filesNetJob = downloadJob;
-                setStatus(tr("Downloading CurseForge mods..."));
+                setStatus(tr("Baixando mods do CurseForge..."));
                 connect(downloadJob, &NetJob::succeeded, this, [this]() {
                     m_filesNetJob.reset();
                     emitSucceeded();

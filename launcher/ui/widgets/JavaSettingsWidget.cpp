@@ -149,11 +149,11 @@ JavaSettingsWidget::ValidationStatus JavaSettingsWidget::validate()
             int button = CustomMessageBox::selectable(
                 this,
                 tr("Nenhuma versão do Java selecionada"),
-                tr("You didn't select a Java version or selected something that doesn't work.\n"
-                    "%1 will not be able to start Minecraft.\n"
-                    "Do you wish to proceed without any Java?"
+                tr("Você não selecionou uma versão do Java ou selecionou algo que não funciona.\n"
+                    "%1 não poderá iniciar o Minecraft.\n"
+                    "Deseja continuar sem nenhum Java?"
                     "\n\n"
-                    "You can change the Java version in the settings later.\n"
+                    "Você pode alterar a versão do Java nas configurações mais tarde.\n"
                 ).arg(BuildConfig.LAUNCHER_NAME),
                 QMessageBox::Warning,
                 QMessageBox::Yes | QMessageBox::No,
@@ -426,7 +426,7 @@ void JavaSettingsWidget::retranslate()
     m_maxMemSpinBox->setToolTip(tr("Quantidade máxima de memória que o Minecraft pode usar."));
     m_labelMinMem->setText(tr("Alocação mínima de memória:"));
     m_labelMaxMem->setText(tr("Alocação máxima de memória:"));
-    m_minMemSpinBox->setToolTip(tr("The amount of memory Minecraft is started with."));
-    m_permGenSpinBox->setToolTip(tr("The amount of memory available to store loaded Java classes."));
+    m_minMemSpinBox->setToolTip(tr("A quantidade de memória com a qual o Minecraft é iniciado."));
+    m_permGenSpinBox->setToolTip(tr("A quantidade de memória disponível para armazenar classes Java carregadas."));
     m_javaBrowseBtn->setText(tr("Procurar"));
 }

@@ -42,7 +42,7 @@ public:
     }
     QString displayName() const override
     {
-        return tr("Other logs");
+        return tr("Outros logs");
     }
     QIcon icon() const override
     {

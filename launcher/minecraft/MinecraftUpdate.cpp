@@ -84,7 +84,7 @@ void MinecraftUpdate::next()
 {
     if(m_abort)
     {
-        emitFailed(tr("Aborted by user."));
+        emitFailed(tr("Cancelado pelo usuário."));
         return;
     }
     if(m_failed_out_of_order)

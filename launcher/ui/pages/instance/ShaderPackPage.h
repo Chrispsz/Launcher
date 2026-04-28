@@ -9,7 +9,7 @@ class ShaderPackPage : public ModFolderPage
 public:
     explicit ShaderPackPage(MinecraftInstance *instance, QWidget *parent = 0)
         : ModFolderPage(instance, instance->shaderPackList(), "shaderpacks",
-                        "shaderpacks", tr("Shader packs"), "Resource-packs", parent)
+                        "shaderpacks", tr("Pacotes de shaders"), "Resource-packs", parent)
     {
         ui->actionView_configs->setVisible(false);
     }

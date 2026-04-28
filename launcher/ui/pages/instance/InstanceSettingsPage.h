@@ -40,7 +40,7 @@ public:
     virtual ~InstanceSettingsPage();
     virtual QString displayName() const override
     {
-        return tr("Settings");
+        return tr("Configurações");
     }
     virtual QIcon icon() const override
     {

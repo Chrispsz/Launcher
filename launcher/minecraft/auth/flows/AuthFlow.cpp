@@ -17,7 +17,7 @@ void AuthFlow::succeed() {
     m_data->validity_ = Katabasis::Validity::Certain;
     changeState(
         AccountTaskState::STATE_SUCCEEDED,
-        tr("Finished all authentication steps")
+        tr("Todas as etapas de autenticação foram concluídas")
     );
 }
 
@@ -25,7 +25,7 @@ void AuthFlow::executeTask() {
     if(m_currentStep) {
         return;
     }
-    changeState(AccountTaskState::STATE_WORKING, tr("Initializing"));
+    changeState(AccountTaskState::STATE_WORKING, tr("Inicializando"));
     nextStep();
 }
 
@@ -55,7 +55,7 @@ QString AuthFlow::getStateMessage() const {
                 return m_currentStep->describe();
             }
             else {
-                return tr("Working...");
+                return tr("Trabalhando...");
             }
         }
         default: {

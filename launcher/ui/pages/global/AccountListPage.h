@@ -39,7 +39,7 @@ public:
 
     QString displayName() const override
     {
-        return tr("Accounts");
+        return tr("Contas");
     }
     QIcon icon() const override
     {

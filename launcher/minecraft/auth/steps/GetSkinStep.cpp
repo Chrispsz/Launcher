@@ -13,7 +13,7 @@ GetSkinStep::GetSkinStep(AccountData* data) : AuthStep(data) {
 GetSkinStep::~GetSkinStep() noexcept = default;
 
 QString GetSkinStep::describe() {
-    return tr("Getting skin.");
+    return tr("Obtendo skin.");
 }
 
 void GetSkinStep::perform() {
@@ -39,5 +39,5 @@ void GetSkinStep::onRequestDone(
     if (error == QNetworkReply::NoError) {
         m_data->minecraftProfile.skin.data = data;
     }
-    emit finished(AccountTaskState::STATE_SUCCEEDED, tr("Got skin"));
+    emit finished(AccountTaskState::STATE_SUCCEEDED, tr("Skin obtida"));
 }

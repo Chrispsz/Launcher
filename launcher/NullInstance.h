@@ -17,7 +17,7 @@ public:
     }
     QString getStatusbarDescription() override
     {
-        return tr("Unknown instance type");
+        return tr("Tipo de instância desconhecido");
     };
     QSet< QString > traits() const override
     {

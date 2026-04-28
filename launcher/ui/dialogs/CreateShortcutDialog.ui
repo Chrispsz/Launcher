@@ -22,7 +22,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Create Shortcut</string>
+   <string>Criar atalho</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -33,14 +33,14 @@
      <item row="0" column="0">
       <widget class="QLabel" name="shortcutPathLabel">
        <property name="text">
-        <string>Shortcut path:</string>
+        <string>Caminho do atalho:</string>
        </property>
       </widget>
      </item>
      <item row="4" column="0">
       <widget class="QCheckBox" name="useProfileCheckBox">
        <property name="text">
-        <string>Use specific profile:</string>
+        <string>Usar perfil específico:</string>
        </property>
       </widget>
      </item>
@@ -54,7 +54,7 @@
      <item row="5" column="0">
       <widget class="QCheckBox" name="launchOfflineCheckBox">
        <property name="text">
-        <string>Launch in offline mode</string>
+        <string>Iniciar em modo offline</string>
        </property>
       </widget>
      </item>
@@ -68,7 +68,7 @@
      <item row="1" column="0">
       <widget class="QCheckBox" name="joinWorldCheckBox">
        <property name="text">
-        <string>Join world on launch:</string>
+        <string>Entrar no mundo ao iniciar:</string>
        </property>
       </widget>
      </item>
@@ -95,7 +95,7 @@
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>Set offline mode username:</string>
+        <string>Definir nome de usuário offline:</string>
        </property>
       </widget>
      </item>
@@ -105,14 +105,14 @@
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>Singleplayer world:</string>
+        <string>Mundo singleplayer:</string>
        </property>
       </widget>
      </item>
      <item row="0" column="2">
       <widget class="QPushButton" name="shortcutPathBrowse">
        <property name="text">
-        <string>Browse</string>
+        <string>Procurar</string>
        </property>
       </widget>
      </item>
@@ -122,7 +122,7 @@
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>Server address:</string>
+        <string>Endereço do servidor:</string>
        </property>
       </widget>
      </item>
@@ -149,7 +149,7 @@
      <item>
       <widget class="QCheckBox" name="createScriptCheckBox">
        <property name="text">
-        <string>Create script instead of shortcut</string>
+        <string>Criar script em vez de atalho</string>
        </property>
       </widget>
      </item>

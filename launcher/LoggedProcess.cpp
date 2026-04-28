@@ -76,16 +76,16 @@ void LoggedProcess::on_exit(int exit_code, QProcess::ExitStatus status)
         if (status == QProcess::NormalExit)
         {
             //: Message displayed on instance exit
-            emit log({tr("Process exited with exit code %1 (0x%2).").arg(exit_code).arg(exit_code, 0, 16)}, MessageLevel::Launcher);
+            emit log({tr("Processo encerrado com código de saída %1 (0x%2).").arg(exit_code).arg(exit_code, 0, 16)}, MessageLevel::Launcher);
             changeState(LoggedProcess::Finished);
         }
         else
         {
             //: Message displayed on instance crashed
             if(exit_code == -1)
-                emit log({tr("Process crashed.")}, MessageLevel::Launcher);
+                emit log({tr("Processo crashou.")}, MessageLevel::Launcher);
             else
-                emit log({tr("Process crashed with exit code %1 (0x%2).").arg(exit_code).arg(exit_code, 0, 16)}, MessageLevel::Launcher);
+                emit log({tr("Processo crashou com código de saída %1 (0x%2).").arg(exit_code).arg(exit_code, 0, 16)}, MessageLevel::Launcher);
             changeState(LoggedProcess::Crashed);
         }
 
@@ -101,27 +101,27 @@ void LoggedProcess::on_exit(int exit_code, QProcess::ExitStatus status)
             bool hasNameOrDescription = Sys::lookupSystemStatusCode(u_exit_code, statusName, statusDescription);
             if(hasNameOrDescription)
             {
-                emit log({tr("Below is an analysis of the exit code. THIS MAY BE INCORRECT AND SHOULD BE TAKEN WITH A GRAIN OF SALT!")}, MessageLevel::Launcher);
+                emit log({tr("Abaixo está uma análise do código de saída. ISSO PODE ESTAR INCORRETO E DEVE SER LEVADO COM RESERVA!")}, MessageLevel::Launcher);
 
                 if(!statusName.empty())
                 {
-                    emit log({tr("System exit code name: %1").arg(QString::fromStdString(statusName))}, MessageLevel::Launcher);
+                    emit log({tr("Nome do código de saída do sistema: %1").arg(QString::fromStdString(statusName))}, MessageLevel::Launcher);
                 }
 
                 if(!statusDescription.empty())
                 {
-                    emit log({tr("System exit code description: %1").arg(QString::fromStdString(statusDescription))}, MessageLevel::Launcher);
+                    emit log({tr("Descrição do código de saída do sistema: %1").arg(QString::fromStdString(statusDescription))}, MessageLevel::Launcher);
                 }
             }
         }
 
-        emit log({tr("Please note that usually neither the exit code, nor its description are enough to diagnose issues!")}, MessageLevel::Launcher);
-        emit log({tr("Always upload the entire log and not just the exit code.")}, MessageLevel::Launcher);
+        emit log({tr("Observe que geralmente nem o código de saída, nem sua descrição são suficientes para diagnosticar problemas!")}, MessageLevel::Launcher);
+        emit log({tr("Sempre envie o log completo e não apenas o código de saída.")}, MessageLevel::Launcher);
     }
     else
     {
         //: Message displayed after the instance exits due to kill request
-        emit log({tr("Process was killed by user.")}, MessageLevel::Error);
+        emit log({tr("Processo foi encerrado pelo usuário.")}, MessageLevel::Error);
         changeState(LoggedProcess::Aborted);
     }
 }
@@ -132,7 +132,7 @@ void LoggedProcess::on_error(QProcess::ProcessError error)
     {
         case QProcess::FailedToStart:
         {
-            emit log({tr("The process failed to start.")}, MessageLevel::Fatal);
+            emit log({tr("O processo falhou ao iniciar.")}, MessageLevel::Fatal);
             changeState(LoggedProcess::FailedToStart);
             break;
         }

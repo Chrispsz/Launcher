@@ -13,7 +13,7 @@ LauncherLoginStep::LauncherLoginStep(AccountData* data) : AuthStep(data) {
 LauncherLoginStep::~LauncherLoginStep() noexcept = default;
 
 QString LauncherLoginStep::describe() {
-    return tr("Accessing Mojang services.");
+    return tr("Acessando serviços Mojang.");
 }
 
 void LauncherLoginStep::perform() {
@@ -57,7 +57,7 @@ void LauncherLoginStep::onRequestDone(
 #endif
         emit finished(
             AccountTaskState::STATE_FAILED_SOFT,
-            tr("Failed to get Minecraft access token: %1").arg(requestor->errorString_)
+            tr("Falha ao obter o token de acesso Minecraft: %1").arg(requestor->errorString_)
         );
         return;
     }
@@ -69,7 +69,7 @@ void LauncherLoginStep::onRequestDone(
 #endif
         emit finished(
             AccountTaskState::STATE_FAILED_SOFT,
-            tr("Failed to parse the Minecraft access token response.")
+            tr("Falha ao analisar a resposta do token de acesso Minecraft.")
         );
         return;
     }

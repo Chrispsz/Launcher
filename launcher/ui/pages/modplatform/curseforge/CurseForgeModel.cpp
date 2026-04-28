@@ -255,6 +255,11 @@ void CurseForge::ListModel::requestLogo(const QString &logo, const QUrl &url)
     QObject::connect(job, &NetJob::succeeded, this, [this, logo, fullPath]
     {
         QIcon icon(fullPath);
+        if (icon.isNull())
+        {
+            logoFailed(logo);
+            return;
+        }
         QSize size = icon.actualSize(QSize(48, 48));
         if (size.width() < 48 && size.height() < 48)
         {

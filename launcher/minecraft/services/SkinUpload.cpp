@@ -42,7 +42,7 @@ void SkinUpload::executeTask()
     QNetworkReply *rep = APPLICATION->network()->post(request, multiPart);
     m_reply = shared_qobject_ptr<QNetworkReply>(rep);
 
-    setStatus(tr("Uploading skin"));
+    setStatus(tr("Enviando skin"));
     connect(rep, &QNetworkReply::uploadProgress, this, &Task::setProgress);
     connect(rep, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(downloadError(QNetworkReply::NetworkError)));
     connect(rep, SIGNAL(finished()), this, SLOT(downloadFinished()));

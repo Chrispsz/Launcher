@@ -728,13 +728,13 @@ QMap<QString, QString> MinecraftInstance::createCensorFilterFromSession(AuthSess
     };
     if (sessionRef.session != "-")
     {
-        addToFilter(sessionRef.session, tr("<SESSION ID>"));
+        addToFilter(sessionRef.session, tr("<ID DA SESSÃO>"));
     }
-    addToFilter(sessionRef.access_token, tr("<ACCESS TOKEN>"));
+    addToFilter(sessionRef.access_token, tr("<TOKEN DE ACESSO>"));
     if(sessionRef.client_token.size()) {
-        addToFilter(sessionRef.client_token, tr("<CLIENT TOKEN>"));
+        addToFilter(sessionRef.client_token, tr("<TOKEN DO CLIENTE>"));
     }
-    addToFilter(sessionRef.uuid, tr("<PROFILE ID>"));
+    addToFilter(sessionRef.uuid, tr("<ID DO PERFIL>"));
 
     return filter;
 }
@@ -806,7 +806,7 @@ QString MinecraftInstance::getStatusbarDescription()
     QStringList traits;
     if (hasVersionBroken())
     {
-        traits.append(tr("broken"));
+        traits.append(tr("quebrada"));
     }
 
     QString description;
@@ -815,23 +815,23 @@ QString MinecraftInstance::getStatusbarDescription()
     {
         if (lastTimePlayed() > 0) {
             if (APPLICATION->settings()->get("ShowGameTimeHours").toBool()) {
-                description.append(tr(", last played for %1 hours").arg(Time::prettifyDurationHours(lastTimePlayed())));
+                description.append(tr(", jogado por último por %1 horas").arg(Time::prettifyDurationHours(lastTimePlayed())));
             } else {
-                description.append(tr(", last played for %1").arg(Time::prettifyDuration(lastTimePlayed())));
+                description.append(tr(", jogado por último por %1").arg(Time::prettifyDuration(lastTimePlayed())));
             }
         }
 
         if (totalTimePlayed() > 0) {
             if (APPLICATION->settings()->get("ShowGameTimeHours").toBool()) {
-                description.append(tr(", total played for %1 hours").arg(Time::prettifyDurationHours(totalTimePlayed())));
+                description.append(tr(", total jogado por %1 horas").arg(Time::prettifyDurationHours(totalTimePlayed())));
             } else {
-                description.append(tr(", total played for %1").arg(Time::prettifyDuration(totalTimePlayed())));
+                description.append(tr(", total jogado por %1").arg(Time::prettifyDuration(totalTimePlayed())));
             }
         }
     }
     if(hasCrashed())
     {
-        description.append(tr(", has crashed."));
+        description.append(tr(", travou."));
     }
     return description;
 }
@@ -963,7 +963,7 @@ shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPt
     if (!m_acct)
     {
         // emitFailed is protected, so we use QMetaObject::invokeMethod with queued connection
-        QString errorMsg = tr("Failed to launch: account '%1' not found.").arg(session->player_name);
+        QString errorMsg = tr("Falha ao iniciar: conta '%1' não encontrada.").arg(session->player_name);
         QMetaObject::invokeMethod(pptr, "emitFailed", Qt::QueuedConnection,
                                   Q_ARG(QString, errorMsg));
         return process;

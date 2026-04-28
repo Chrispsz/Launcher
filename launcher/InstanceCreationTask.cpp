@@ -13,7 +13,7 @@ InstanceCreationTask::InstanceCreationTask(BaseVersionPtr version)
 
 void InstanceCreationTask::executeTask()
 {
-    setStatus(tr("Creating instance from version %1").arg(m_version->name()));
+    setStatus(tr("Criando instância a partir da versão %1").arg(m_version->name()));
     {
         auto instanceSettings = std::make_shared<INISettingsObject>(FS::PathCombine(m_stagingPath, "instance.cfg"));
         instanceSettings->suspendSave();

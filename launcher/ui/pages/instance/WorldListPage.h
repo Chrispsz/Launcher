@@ -41,7 +41,7 @@ public:
 
     virtual QString displayName() const override
     {
-        return tr("Worlds");
+        return tr("Mundos");
     }
     virtual QIcon icon() const override
     {

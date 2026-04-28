@@ -38,19 +38,19 @@ QString AccountTask::getStateMessage() const
     case AccountTaskState::STATE_CREATED:
         return "Waiting...";
     case AccountTaskState::STATE_WORKING:
-        return tr("Sending request to auth servers...");
+        return tr("Enviando requisição para os servidores de autenticação...");
     case AccountTaskState::STATE_SUCCEEDED:
-        return tr("Authentication task succeeded.");
+        return tr("Tarefa de autenticação concluída com sucesso.");
     case AccountTaskState::STATE_OFFLINE:
-        return tr("Failed to contact the authentication server.");
+        return tr("Falha ao contatar o servidor de autenticação.");
     case AccountTaskState::STATE_FAILED_SOFT:
-        return tr("Encountered an error during authentication.");
+        return tr("Erro encontrado durante a autenticação.");
     case AccountTaskState::STATE_FAILED_MUST_MIGRATE:
-        return tr("Failed to authenticate. The account must be migrated to a Microsoft account to be usable.");
+        return tr("Falha na autenticação. A conta deve ser migrada para uma conta Microsoft para ser utilizada.");
     case AccountTaskState::STATE_FAILED_HARD:
-        return tr("Failed to authenticate. The session has expired.");
+        return tr("Falha na autenticação. A sessão expirou.");
     case AccountTaskState::STATE_FAILED_GONE:
-        return tr("Failed to authenticate. The account no longer exists.");
+        return tr("Falha na autenticação. A conta não existe mais.");
     default:
         return tr("...");
     }
@@ -105,7 +105,7 @@ bool AccountTask::changeState(AccountTaskState newState, QString reason)
             return false;
         }
         default: {
-            QString error = tr("Unknown account task state: %1").arg(int(newState));
+            QString error = tr("Estado de tarefa de conta desconhecido: %1").arg(int(newState));
             m_data->accountState = AccountState::Errored;
             emitFailed(error);
             return false;

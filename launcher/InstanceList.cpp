@@ -146,7 +146,7 @@ QVariant InstanceList::data(const QModelIndex &index, int role) const
     }
     case Qt::AccessibleTextRole:
     {
-        return tr("%1 Instance").arg(pdata->name());
+        return tr("Instância %1").arg(pdata->name());
     }
     case Qt::ToolTipRole:
     {
@@ -841,7 +841,7 @@ private slots:
         // we actually failed, retry?
         if(sleepTime == maxBackoff)
         {
-            emitFailed(tr("Failed to commit instance, even after multiple retries. It is being blocked by something."));
+            emitFailed(tr("Falha ao confirmar a instância, mesmo após várias tentativas. Está sendo bloqueada por algo."));
             return;
         }
         qDebug() << "Failed to commit instance" << m_instanceName << "Initiating backoff:" << sleepTime;

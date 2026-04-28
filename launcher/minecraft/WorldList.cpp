@@ -224,11 +224,11 @@ QVariant WorldList::headerData(int section, Qt::Orientation orientation, int rol
         switch (section)
         {
         case NameColumn:
-            return tr("Name");
+            return tr("Nome");
         case GameModeColumn:
-            return tr("Game Mode");
+            return tr("Modo de Jogo");
         case LastPlayedColumn:
-            return tr("Last Played");
+            return tr("Último Jogado");
         default:
             return QVariant();
         }
@@ -237,11 +237,11 @@ QVariant WorldList::headerData(int section, Qt::Orientation orientation, int rol
         switch (section)
         {
         case NameColumn:
-            return tr("The name of the world.");
+            return tr("O nome do mundo.");
         case GameModeColumn:
-            return tr("Game mode of the world.");
+            return tr("Modo de jogo do mundo.");
         case LastPlayedColumn:
-            return tr("Date and time the world was last played.");
+            return tr("Data e hora em que o mundo foi jogado pela última vez.");
         default:
             return QVariant();
         }

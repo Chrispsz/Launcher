@@ -35,7 +35,7 @@ public:
     virtual ~VersionPage();
     virtual QString displayName() const override
     {
-        return tr("Version");
+        return tr("Versão");
     }
     virtual QIcon icon() const override;
     virtual QString id() const override

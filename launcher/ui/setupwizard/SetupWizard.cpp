@@ -30,7 +30,7 @@ void SetupWizard::retranslate()
     setButtonText(QWizard::BackButton, tr("< &Voltar"));
     setButtonText(QWizard::FinishButton, tr("&Concluir"));
     setButtonText(QWizard::CustomButton1, tr("&Atualizar"));
-    setWindowTitle(tr("%1 Quick Setup").arg(BuildConfig.LAUNCHER_NAME));
+    setWindowTitle(tr("Configuração rápida do %1").arg(BuildConfig.LAUNCHER_NAME));
 }
 
 BaseWizardPage * SetupWizard::getBasePage(int id)

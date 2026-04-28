@@ -12,7 +12,7 @@ LibrariesTask::LibrariesTask(MinecraftInstance * inst)
 
 void LibrariesTask::executeTask()
 {
-    setStatus(tr("Getting the library files from Mojang..."));
+    setStatus(tr("Obtendo os arquivos de bibliotecas do Mojang..."));
     qDebug() << m_inst->name() << ": downloading libraries";
     MinecraftInstance *inst = (MinecraftInstance *)m_inst;
 
@@ -20,7 +20,7 @@ void LibrariesTask::executeTask()
     auto components = inst->getPackProfile();
     auto profile = components->getProfile();
 
-    auto job = new NetJob(tr("Libraries for instance %1").arg(inst->name()), APPLICATION->network());
+    auto job = new NetJob(tr("Bibliotecas para a instância %1").arg(inst->name()), APPLICATION->network());
     downloadJob.reset(job);
 
     auto metacache = APPLICATION->metacache();
@@ -31,7 +31,7 @@ void LibrariesTask::executeTask()
         {
             if(!lib)
             {
-                emitFailed(tr("Null jar is specified in the metadata, aborting."));
+                emitFailed(tr("Jar nulo especificado nos metadados, abortando."));
                 return false;
             }
             auto dls = lib->getDownloads(currentSystem, metacache.get(), errors, localPath);
@@ -58,7 +58,7 @@ void LibrariesTask::executeTask()
     {
         downloadJob.reset();
         QString failed_all = (failedLocalLibraries + failedLocalJarMods).join("\n");
-        emitFailed(tr("Some artifacts marked as 'local' are missing their files:\n%1\n\nYou need to either add the files, or removed the packages that require them.\nYou'll have to correct this problem manually.").arg(failed_all));
+        emitFailed(tr("Alguns artefatos marcados como 'locais' estão sem seus arquivos:\n%1\n\nVocê precisa adicionar os arquivos ou remover os pacotes que os requerem.\nVocê precisará corrigir este problema manualmente.").arg(failed_all));
         return;
     }
 
@@ -75,7 +75,7 @@ bool LibrariesTask::canAbort() const
 
 void LibrariesTask::jarlibFailed(QString reason)
 {
-    emitFailed(tr("Game update failed: it was impossible to fetch the required libraries.\nReason:\n%1").arg(reason));
+    emitFailed(tr("Falha na atualização do jogo: não foi possível obter as bibliotecas necessárias.\nMotivo:\n%1").arg(reason));
 }
 
 bool LibrariesTask::abort()

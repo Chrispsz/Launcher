@@ -245,7 +245,7 @@ public:
         else
         {
             actionLaunchInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Iniciar"));
-            actionLaunchInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Launch the selected instance."));
+            actionLaunchInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Iniciar a instância selecionada."));
         }
         actionLaunchInstance.retranslate();
     }
@@ -263,13 +263,13 @@ public:
         mainToolBar->setAllowedAreas(Qt::TopToolBarArea);
         mainToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         mainToolBar->setFloatable(false);
-        mainToolBar.setWindowTitleId(QT_TRANSLATE_NOOP("MainWindow", "Main Toolbar"));
+        mainToolBar.setWindowTitleId(QT_TRANSLATE_NOOP("MainWindow", "Barra de ferramentas principal"));
 
         actionAddInstance = TranslatedAction(MainWindow);
         actionAddInstance->setObjectName(QStringLiteral("actionAddInstance"));
         actionAddInstance->setIcon(APPLICATION->getThemedIcon("new"));
-        actionAddInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Add Instance"));
-        actionAddInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Add a new instance."));
+        actionAddInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Adicionar instância"));
+        actionAddInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Adicionar uma nova instância."));
         all_actions.append(&actionAddInstance);
         mainToolBar->addAction(actionAddInstance);
 
@@ -281,22 +281,22 @@ public:
         actionViewInstanceFolder = TranslatedAction(MainWindow);
         actionViewInstanceFolder->setObjectName(QStringLiteral("actionViewInstanceFolder"));
         actionViewInstanceFolder->setIcon(APPLICATION->getThemedIcon("viewfolder"));
-        actionViewInstanceFolder.setTextId(QT_TRANSLATE_NOOP("MainWindow", "View Instance Folder"));
-        actionViewInstanceFolder.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open the instance folder in a file browser."));
+        actionViewInstanceFolder.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Pasta da instância"));
+        actionViewInstanceFolder.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Abrir a pasta da instância no navegador de arquivos."));
         all_actions.append(&actionViewInstanceFolder);
         foldersMenu->addAction(actionViewInstanceFolder);
 
         actionViewCentralModsFolder = TranslatedAction(MainWindow);
         actionViewCentralModsFolder->setObjectName(QStringLiteral("actionViewCentralModsFolder"));
         actionViewCentralModsFolder->setIcon(APPLICATION->getThemedIcon("centralmods"));
-        actionViewCentralModsFolder.setTextId(QT_TRANSLATE_NOOP("MainWindow", "View Central Mods Folder"));
-        actionViewCentralModsFolder.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open the central mods folder in a file browser."));
+        actionViewCentralModsFolder.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Pasta central de mods"));
+        actionViewCentralModsFolder.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Abrir a pasta central de mods no navegador de arquivos."));
         all_actions.append(&actionViewCentralModsFolder);
         foldersMenu->addAction(actionViewCentralModsFolder);
 
         foldersMenuButton = TranslatedToolButton(MainWindow);
         foldersMenuButton.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Pastas"));
-        foldersMenuButton.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open one of the folders shared between instances."));
+        foldersMenuButton.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Abrir uma das pastas compartilhadas entre instâncias."));
         foldersMenuButton->setMenu(foldersMenu);
         foldersMenuButton->setPopupMode(QToolButton::InstantPopup);
         foldersMenuButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -311,8 +311,8 @@ public:
         actionSettings->setObjectName(QStringLiteral("actionSettings"));
         actionSettings->setIcon(APPLICATION->getThemedIcon("settings"));
         actionSettings->setMenuRole(QAction::PreferencesRole);
-        actionSettings.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Settings"));
-        actionSettings.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Change settings."));
+        actionSettings.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Configurações"));
+        actionSettings.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Alterar configurações."));
         all_actions.append(&actionSettings);
         mainToolBar->addAction(actionSettings);
 
@@ -349,7 +349,7 @@ public:
         // profile menu and its actions
         actionManageAccounts = TranslatedAction(MainWindow);
         actionManageAccounts->setObjectName(QStringLiteral("actionManageAccounts"));
-        actionManageAccounts.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Manage Accounts"));
+        actionManageAccounts.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Gerenciar contas"));
         // FIXME: no tooltip!
         actionManageAccounts->setCheckable(false);
         actionManageAccounts->setIcon(APPLICATION->getThemedIcon("accounts"));
@@ -377,15 +377,15 @@ public:
         instanceToolBar->setAllowedAreas(Qt::LeftToolBarArea | Qt::RightToolBarArea);
         instanceToolBar->setToolButtonStyle(Qt::ToolButtonTextOnly);
         instanceToolBar->setFloatable(false);
-        instanceToolBar->setWindowTitle(QT_TRANSLATE_NOOP("MainWindow", "Instance Toolbar"));
+        instanceToolBar->setWindowTitle(QT_TRANSLATE_NOOP("MainWindow", "Barra de ferramentas da instância"));
 
         // NOTE: not added to toolbar, but used for instance context menu (right click)
         actionChangeInstIcon = TranslatedAction(MainWindow);
         actionChangeInstIcon->setObjectName(QStringLiteral("actionChangeInstIcon"));
         actionChangeInstIcon->setIcon(QIcon(":/icons/instances/grass"));
         actionChangeInstIcon->setIconVisibleInMenu(true);
-        actionChangeInstIcon.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Change Icon"));
-        actionChangeInstIcon.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Change the selected instance's icon."));
+        actionChangeInstIcon.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Alterar ícone"));
+        actionChangeInstIcon.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Alterar o ícone da instância selecionada."));
         all_actions.append(&actionChangeInstIcon);
 
         changeIconButton = new LabeledToolButton(MainWindow);
@@ -398,8 +398,8 @@ public:
         // NOTE: not added to toolbar, but used for instance context menu (right click)
         actionRenameInstance = TranslatedAction(MainWindow);
         actionRenameInstance->setObjectName(QStringLiteral("actionRenameInstance"));
-        actionRenameInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Rename"));
-        actionRenameInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Rename the selected instance."));
+        actionRenameInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Renomear"));
+        actionRenameInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Renomear a instância selecionada."));
         all_actions.append(&actionRenameInstance);
 
         // the rename label is inside the rename tool button
@@ -419,7 +419,7 @@ public:
         actionLaunchInstanceOffline = TranslatedAction(MainWindow);
         actionLaunchInstanceOffline->setObjectName(QStringLiteral("actionLaunchInstanceOffline"));
         actionLaunchInstanceOffline.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Iniciar Offline"));
-        actionLaunchInstanceOffline.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Launch the selected instance in offline mode."));
+        actionLaunchInstanceOffline.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Iniciar a instância selecionada em modo offline."));
         all_actions.append(&actionLaunchInstanceOffline);
         instanceToolBar->addAction(actionLaunchInstanceOffline);
 
@@ -427,43 +427,43 @@ public:
 
         actionEditInstance = TranslatedAction(MainWindow);
         actionEditInstance->setObjectName(QStringLiteral("actionEditInstance"));
-        actionEditInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Edit Instance"));
-        actionEditInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Change the instance settings, mods and versions."));
+        actionEditInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Editar instância"));
+        actionEditInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Alterar as configurações, mods e versões da instância."));
         all_actions.append(&actionEditInstance);
         instanceToolBar->addAction(actionEditInstance);
 
         actionEditInstNotes = TranslatedAction(MainWindow);
         actionEditInstNotes->setObjectName(QStringLiteral("actionEditInstNotes"));
-        actionEditInstNotes.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Edit Notes"));
-        actionEditInstNotes.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Edit the notes for the selected instance."));
+        actionEditInstNotes.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Editar notas"));
+        actionEditInstNotes.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Editar as notas da instância selecionada."));
         all_actions.append(&actionEditInstNotes);
         instanceToolBar->addAction(actionEditInstNotes);
 
         actionMods = TranslatedAction(MainWindow);
         actionMods->setObjectName(QStringLiteral("actionMods"));
-        actionMods.setTextId(QT_TRANSLATE_NOOP("MainWindow", "View Mods"));
-        actionMods.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "View the mods of this instance."));
+        actionMods.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Ver mods"));
+        actionMods.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Ver os mods desta instância."));
         all_actions.append(&actionMods);
         instanceToolBar->addAction(actionMods);
 
         actionWorlds = TranslatedAction(MainWindow);
         actionWorlds->setObjectName(QStringLiteral("actionWorlds"));
-        actionWorlds.setTextId(QT_TRANSLATE_NOOP("MainWindow", "View Worlds"));
-        actionWorlds.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "View the worlds of this instance."));
+        actionWorlds.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Ver mundos"));
+        actionWorlds.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Ver os mundos desta instância."));
         all_actions.append(&actionWorlds);
         instanceToolBar->addAction(actionWorlds);
 
         actionScreenshots = TranslatedAction(MainWindow);
         actionScreenshots->setObjectName(QStringLiteral("actionScreenshots"));
-        actionScreenshots.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Manage Screenshots"));
-        actionScreenshots.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "View and upload screenshots for this instance."));
+        actionScreenshots.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Gerenciar capturas de tela"));
+        actionScreenshots.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Ver e enviar capturas de tela desta instância."));
         all_actions.append(&actionScreenshots);
         instanceToolBar->addAction(actionScreenshots);
 
         actionChangeInstGroup = TranslatedAction(MainWindow);
         actionChangeInstGroup->setObjectName(QStringLiteral("actionChangeInstGroup"));
-        actionChangeInstGroup.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Change Group"));
-        actionChangeInstGroup.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Change the selected instance's group."));
+        actionChangeInstGroup.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Alterar grupo"));
+        actionChangeInstGroup.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Alterar o grupo da instância selecionada."));
         all_actions.append(&actionChangeInstGroup);
         instanceToolBar->addAction(actionChangeInstGroup);
 
@@ -471,8 +471,8 @@ public:
 
         actionViewSelectedMCFolder = TranslatedAction(MainWindow);
         actionViewSelectedMCFolder->setObjectName(QStringLiteral("actionViewSelectedMCFolder"));
-        actionViewSelectedMCFolder.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Minecraft Folder"));
-        actionViewSelectedMCFolder.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open the selected instance's minecraft folder in a file browser."));
+        actionViewSelectedMCFolder.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Pasta do Minecraft"));
+        actionViewSelectedMCFolder.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Abrir a pasta do Minecraft da instância selecionada no navegador de arquivos."));
         all_actions.append(&actionViewSelectedMCFolder);
         instanceToolBar->addAction(actionViewSelectedMCFolder);
 
@@ -485,15 +485,15 @@ public:
 
         actionConfig_Folder = TranslatedAction(MainWindow);
         actionConfig_Folder->setObjectName(QStringLiteral("actionConfig_Folder"));
-        actionConfig_Folder.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Config Folder"));
-        actionConfig_Folder.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open the instance's config folder."));
+        actionConfig_Folder.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Pasta de configuração"));
+        actionConfig_Folder.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Abrir a pasta de configuração da instância."));
         all_actions.append(&actionConfig_Folder);
         instanceToolBar->addAction(actionConfig_Folder);
 
         actionViewSelectedInstFolder = TranslatedAction(MainWindow);
         actionViewSelectedInstFolder->setObjectName(QStringLiteral("actionViewSelectedInstFolder"));
-        actionViewSelectedInstFolder.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Instance Folder"));
-        actionViewSelectedInstFolder.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open the selected instance's root folder in a file browser."));
+        actionViewSelectedInstFolder.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Pasta da instância"));
+        actionViewSelectedInstFolder.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Abrir a pasta raiz da instância selecionada no navegador de arquivos."));
         all_actions.append(&actionViewSelectedInstFolder);
         instanceToolBar->addAction(actionViewSelectedInstFolder);
 
@@ -501,30 +501,30 @@ public:
 
         actionCreateShortcut = TranslatedAction(MainWindow);
         actionCreateShortcut->setObjectName(QStringLiteral("actionCreateShortcut"));
-        actionCreateShortcut.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Create Shortcut"));
-        actionCreateShortcut.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Create a shortcut that launches the selected instance"));
+        actionCreateShortcut.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Criar atalho"));
+        actionCreateShortcut.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Criar um atalho que inicia a instância selecionada"));
         all_actions.append(&actionCreateShortcut);
         instanceToolBar->addAction(actionCreateShortcut);
 
         actionExportInstance = TranslatedAction(MainWindow);
         actionExportInstance->setObjectName(QStringLiteral("actionExportInstance"));
-        actionExportInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Export Instance"));
-        actionExportInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Export the selected instance as a zip file."));
+        actionExportInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Exportar instância"));
+        actionExportInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Exportar a instância selecionada como arquivo zip."));
         all_actions.append(&actionExportInstance);
         instanceToolBar->addAction(actionExportInstance);
 
         actionDeleteInstance = TranslatedAction(MainWindow);
         actionDeleteInstance->setObjectName(QStringLiteral("actionDeleteInstance"));
-        actionDeleteInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Delete"));
-        actionDeleteInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Delete the selected instance."));
+        actionDeleteInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Excluir"));
+        actionDeleteInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Excluir a instância selecionada."));
         all_actions.append(&actionDeleteInstance);
         instanceToolBar->addAction(actionDeleteInstance);
 
         actionCopyInstance = TranslatedAction(MainWindow);
         actionCopyInstance->setObjectName(QStringLiteral("actionCopyInstance"));
         actionCopyInstance->setIcon(APPLICATION->getThemedIcon("copy"));
-        actionCopyInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Copy Instance"));
-        actionCopyInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Copy the selected instance."));
+        actionCopyInstance.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Copiar instância"));
+        actionCopyInstance.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Copiar a instância selecionada."));
         all_actions.append(&actionCopyInstance);
         instanceToolBar->addAction(actionCopyInstance);
 
@@ -822,7 +822,7 @@ void MainWindow::updateToolsMenu()
         exportMenu = new QMenu(this);
     }
 
-    exportMenu->addSeparator()->setText(tr("Format"));
+    exportMenu->addSeparator()->setText(tr("Formato"));
 
     QAction *mmcExport = exportMenu->addAction(BuildConfig.LAUNCHER_NAME);
     QAction *modrinthExport = exportMenu->addAction(tr("Modrinth"));

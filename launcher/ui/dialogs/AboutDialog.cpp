@@ -33,10 +33,10 @@ QString getCreditsHtml(QStringList patrons)
     stream.setCodec(QTextCodec::codecForName("UTF-8"));
     stream << "<center>\n";
 
-    stream << "<h3>" << QObject::tr("Original Author", "About Credits") << "</h3>\n";
+    stream << "<h3>" << QObject::tr("Autor original", "About Credits") << "</h3>\n";
     stream << "<p>Andrew Okin &lt;<a href='mailto:forkk@forkk.net'>forkk@forkk.net</a>&gt;</p>\n";
 
-    stream << "<h3>" << QObject::tr("Maintainer", "About Credits") << "</h3>\n";
+    stream << "<h3>" << QObject::tr("Mantenedor", "About Credits") << "</h3>\n";
     stream << "<p>Petr Mr&aacute;zek &lt;<a href='mailto:peterix@gmail.com'>peterix@gmail.com</a>&gt;</p>\n";
 
     // TODO: grab contributors from git history
@@ -51,7 +51,7 @@ QString getCreditsHtml(QStringList patrons)
     */
 
     if(!patrons.isEmpty()) {
-        stream << "<h3>" << QObject::tr("Patrons", "About Credits") << "</h3>\n";
+        stream << "<h3>" << QObject::tr("Patrocinadores", "About Credits") << "</h3>\n";
         for (QString patron : patrons)
         {
             stream << "<p>" << patron << "</p>\n";
@@ -92,26 +92,26 @@ AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent), ui(new Ui::AboutDia
     ui->icon->setPixmap(APPLICATION->getThemedIcon("logo").pixmap(64));
     ui->title->setText(launcherName);
 
-    ui->versionLabel->setText(tr("Version") +": " + BuildConfig.printableVersionString());
-    ui->platformLabel->setText(tr("Platform") +": " + BuildConfig.BUILD_PLATFORM);
+    ui->versionLabel->setText(tr("Versão") +": " + BuildConfig.printableVersionString());
+    ui->platformLabel->setText(tr("Plataforma") +": " + BuildConfig.BUILD_PLATFORM);
 
     if (BuildConfig.VERSION_BUILD >= 0)
-        ui->buildNumLabel->setText(tr("Build Number") +": " + QString::number(BuildConfig.VERSION_BUILD));
+        ui->buildNumLabel->setText(tr("Número do build") +": " + QString::number(BuildConfig.VERSION_BUILD));
     else
         ui->buildNumLabel->setVisible(false);
 
     if (!BuildConfig.VERSION_CHANNEL.isEmpty())
-        ui->channelLabel->setText(tr("Channel") +": " + BuildConfig.VERSION_CHANNEL);
+        ui->channelLabel->setText(tr("Canal") +": " + BuildConfig.VERSION_CHANNEL);
     else
         ui->channelLabel->setVisible(false);
 
     ui->redistributionText->setHtml(tr(
-"<p>We keep %1 open source because we think it's important to be able to see the source code for a project like this, and we do so using the Apache license.</p>\n"
-"<p>Part of the reason for using the Apache license is we don't want people using the &quot;%1&quot; name when redistributing the project. "
-"This means people must take the time to go through the source code and remove all references to &quot;%1&quot;, including but not limited to the project "
-"icon and the title of windows, (no <b>%1-fork</b> in the title).</p>\n"
-"<p>The Apache license covers reasonable use for the name - a mention of the project's origins in the About dialog and the license is acceptable. "
-"However, it should be abundantly clear that the project is a fork <b>without</b> implying that you have our blessing.</p>"
+"<p>Mantemos o %1 como código aberto porque achamos importante poder ver o código-fonte de um projeto como este, e fazemos isso usando a licença Apache.</p>\n"
+"<p>Parte do motivo para usar a licença Apache é que não queremos que as pessoas usem o nome &quot;%1&quot; ao redistribuir o projeto. "
+"Isso significa que as pessoas devem dedicar tempo para analisar o código-fonte e remover todas as referências a &quot;%1&quot;, incluindo, mas não se limitando ao ícone "
+"do projeto e ao título das janelas, (sem <b>%1-fork</b> no título).</p>\n"
+"<p>A licença Apache cobre o uso razoável do nome - uma menção às origens do projeto no diálogo Sobre e na licença é aceitável. "
+"No entanto, deve estar perfeitamente claro que o projeto é um fork <b>sem</b> implica que você tem nossa bênção.</p>"
     ).arg(launcherName));
 
     QString urlText("<html><head/><body><p><a href=\"%1\">%1</a></p></body></html>");

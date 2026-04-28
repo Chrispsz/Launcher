@@ -9,7 +9,7 @@ class ResourcePackPage : public ModFolderPage
 public:
     explicit ResourcePackPage(MinecraftInstance *instance, QWidget *parent = 0)
         : ModFolderPage(instance, instance->resourcePackList(), "resourcepacks",
-                        "resourcepacks", tr("Resource packs"), "Resource-packs", parent)
+                        "resourcepacks", tr("Pacotes de recursos"), "Resource-packs", parent)
     {
         ui->actionView_configs->setVisible(false);
     }

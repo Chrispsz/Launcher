@@ -246,7 +246,7 @@ const QList<PatchProblem> Component::getProblems() const
     {
         return file->getProblems();
     }
-    return {{ProblemSeverity::Error, QObject::tr("Patch is not loaded yet.")}};
+    return {{ProblemSeverity::Error, QObject::tr("O patch ainda não foi carregado.")}};
 }
 
 void Component::setVersion(const QString& version)

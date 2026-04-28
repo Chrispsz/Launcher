@@ -267,7 +267,7 @@ void ComponentUpdateTask::loadComponents()
         }
         case LoadResult::Failed:
         {
-            emitFailed(tr("Some component metadata load tasks failed."));
+            emitFailed(tr("Algumas tarefas de carregamento de metadados de componentes falharam."));
             break;
         }
     }
@@ -502,7 +502,7 @@ void ComponentUpdateTask::resolveDependencies(bool checkOnly)
 {
     qDebug() << "Resolving dependencies";
     if(m_resolveRecursionDepth > 20) {
-        emitFailed(tr("Dependency resolution failed: too many recursion steps"));
+        emitFailed(tr("Resolução de dependências falhou: muitos passos de recursão"));
         return;
     }
     m_resolveRecursionDepth++;
@@ -528,7 +528,7 @@ void ComponentUpdateTask::resolveDependencies(bool checkOnly)
         toRemove.clear();
         if(!gatherRequirementsFromComponents(components, allRequires))
         {
-            emitFailed(tr("Conflicting requirements detected during dependency checking!"));
+            emitFailed(tr("Requisitos conflitantes detectados durante a verificação de dependências!"));
             return;
         }
         getTrivialRemovals(components, allRequires, toRemove);
@@ -547,14 +547,14 @@ void ComponentUpdateTask::resolveDependencies(bool checkOnly)
     bool succeeded = getTrivialComponentChanges(componentIndex, allRequires, toAdd, toChange);
     if(!succeeded)
     {
-        emitFailed(tr("Instance has conflicting dependencies."));
+        emitFailed(tr("A instância tem dependências conflitantes."));
         return;
     }
     if(checkOnly)
     {
         if(toAdd.size() || toChange.size())
         {
-            emitFailed(tr("Instance has unresolved dependencies while loading/checking for launch."));
+            emitFailed(tr("A instância tem dependências não resolvidas ao carregar/verificar para inicialização."));
         }
         else
         {
@@ -704,7 +704,7 @@ void ComponentUpdateTask::checkIfAllFinished()
             }
         }
         auto allErrors = allErrorsList.join("\n");
-        emitFailed(tr("Component metadata update task failed while downloading from remote server:\n%1").arg(allErrors));
+        emitFailed(tr("A tarefa de atualização de metadados do componente falhou ao baixar do servidor remoto:\n%1").arg(allErrors));
         d->remoteLoadStatusList.clear();
     }
 }

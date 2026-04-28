@@ -32,7 +32,7 @@ public:
 
     QString displayName() const override
     {
-        return tr("Custom Commands");
+        return tr("Comandos personalizados");
     }
     QIcon icon() const override
     {

@@ -159,7 +159,7 @@ VersionFilePtr OneSixVersionFormat::versionFileFromJson(const QJsonDocument &doc
     if (hasPlusLibs && hasLibs)
     {
         out->addProblem(ProblemSeverity::Warning,
-                        QObject::tr("Version file has both '+libraries' and 'libraries'. This is no longer supported."));
+                        QObject::tr("O arquivo de versão tem ambos '+libraries' e 'libraries'. Isso não é mais suportado."));
         readLibs("libraries", out->libraries);
         readLibs("+libraries", out->libraries);
     }
@@ -199,7 +199,7 @@ VersionFilePtr OneSixVersionFormat::versionFileFromJson(const QJsonDocument &doc
         {
             out->addProblem(
                 ProblemSeverity::Error,
-                QObject::tr("URL for the main jar could not be determined - Mojang removed the server that we used as fallback.")
+                QObject::tr("Não foi possível determinar a URL do jar principal - Mojang removeu o servidor que usávamos como alternativa.")
             );
         }
         out->mainJar = lib;
@@ -232,23 +232,23 @@ VersionFilePtr OneSixVersionFormat::versionFileFromJson(const QJsonDocument &doc
     /* removed features that shouldn't be used */
     if (root.contains("tweakers"))
     {
-        out->addProblem(ProblemSeverity::Error, QObject::tr("Version file contains unsupported element 'tweakers'"));
+        out->addProblem(ProblemSeverity::Error, QObject::tr("O arquivo de versão contém elemento não suportado 'tweakers'"));
     }
     if (root.contains("-libraries"))
     {
-        out->addProblem(ProblemSeverity::Error, QObject::tr("Version file contains unsupported element '-libraries'"));
+        out->addProblem(ProblemSeverity::Error, QObject::tr("O arquivo de versão contém elemento não suportado '-libraries'"));
     }
     if (root.contains("-tweakers"))
     {
-        out->addProblem(ProblemSeverity::Error, QObject::tr("Version file contains unsupported element '-tweakers'"));
+        out->addProblem(ProblemSeverity::Error, QObject::tr("O arquivo de versão contém elemento não suportado '-tweakers'"));
     }
     if (root.contains("-minecraftArguments"))
     {
-        out->addProblem(ProblemSeverity::Error, QObject::tr("Version file contains unsupported element '-minecraftArguments'"));
+        out->addProblem(ProblemSeverity::Error, QObject::tr("O arquivo de versão contém elemento não suportado '-minecraftArguments'"));
     }
     if (root.contains("+minecraftArguments"))
     {
-        out->addProblem(ProblemSeverity::Error, QObject::tr("Version file contains unsupported element '+minecraftArguments'"));
+        out->addProblem(ProblemSeverity::Error, QObject::tr("O arquivo de versão contém elemento não suportado '+minecraftArguments'"));
     }
     return out;
 }

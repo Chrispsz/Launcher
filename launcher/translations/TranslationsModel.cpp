@@ -375,7 +375,7 @@ QVariant TranslationsModel::data(const QModelIndex& index, int role) const
     }
     case Qt::ToolTipRole:
     {
-        return tr("%1:\n%2 translated\n%3 fuzzy\n%4 total").arg(lang.key, QString::number(lang.translated), QString::number(lang.fuzzy), QString::number(lang.total));
+        return tr("%1:\n%2 traduzidos\n%3 aproximados\n%4 total").arg(lang.key, QString::number(lang.translated), QString::number(lang.fuzzy), QString::number(lang.total));
     }
     case Qt::UserRole:
         return lang.key;
@@ -393,11 +393,11 @@ QVariant TranslationsModel::headerData(int section, Qt::Orientation orientation,
         {
             case Column::Language:
             {
-                return tr("Language");
+                return tr("Idioma");
             }
             case Column::Completeness:
             {
-                return tr("Completeness");
+                return tr("Completude");
             }
         }
     }
@@ -407,11 +407,11 @@ QVariant TranslationsModel::headerData(int section, Qt::Orientation orientation,
         {
             case Column::Language:
             {
-                return tr("The native language name.");
+                return tr("O nome nativo do idioma.");
             }
             case Column::Completeness:
             {
-                return tr("Completeness is the percentage of fully translated strings, not counting automatically guessed ones.");
+                return tr("A completude é a porcentagem de strings totalmente traduzidas, sem contar as adivinhadas automaticamente.");
             }
         }
     }

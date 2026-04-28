@@ -73,19 +73,19 @@ QVariant VersionProxyModel::headerData(int section, Qt::Orientation orientation,
         switch(column)
         {
             case Name:
-                return tr("Version");
+                return tr("Versão");
             case ParentVersion:
                 return tr("Minecraft"); //FIXME: this should come from metadata
             case Branch:
                 return tr("Branch");
             case Type:
-                return tr("Type");
+                return tr("Tipo");
             case Architecture:
-                return tr("Architecture");
+                return tr("Arquitetura");
             case Path:
-                return tr("Path");
+                return tr("Caminho");
             case Time:
-                return tr("Released");
+                return tr("Lançamento");
         }
     }
     else if(role == Qt::ToolTipRole)
@@ -93,19 +93,19 @@ QVariant VersionProxyModel::headerData(int section, Qt::Orientation orientation,
         switch(column)
         {
             case Name:
-                return tr("The name of the version.");
+                return tr("O nome da versão.");
             case ParentVersion:
-                return tr("Minecraft version"); //FIXME: this should come from metadata
+                return tr("Versão do Minecraft"); //FIXME: this should come from metadata
             case Branch:
-                return tr("The version's branch");
+                return tr("O branch da versão");
             case Type:
-                return tr("The version's type");
+                return tr("O tipo da versão");
             case Architecture:
-                return tr("CPU Architecture");
+                return tr("Arquitetura da CPU");
             case Path:
-                return tr("Filesystem path to this version");
+                return tr("Caminho do sistema de arquivos para esta versão");
             case Time:
-                return tr("Release date of this version");
+                return tr("Data de lançamento desta versão");
         }
     }
     return QVariant();
@@ -161,19 +161,19 @@ QVariant VersionProxyModel::data(const QModelIndex &index, int role) const
                         auto value = sourceModel()->data(parentIndex, BaseVersionList::RecommendedRole);
                         if(value.toBool())
                         {
-                            return tr("Recommended");
+                            return tr("Recomendada");
                         }
                         else if(hasLatest)
                         {
                             auto value = sourceModel()->data(parentIndex, BaseVersionList::LatestRole);
                             if(value.toBool())
                             {
-                                return tr("Latest");
+                                return tr("Mais recente");
                             }
                         }
                         else if(index.row() == 0)
                         {
-                            return tr("Latest");
+                            return tr("Mais recente");
                         }
                     }
                 }

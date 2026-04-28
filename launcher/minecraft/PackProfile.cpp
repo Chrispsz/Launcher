@@ -189,7 +189,7 @@ static bool loadPackProfile(PackProfile * parent, const QString & filename, cons
         auto version = Json::requireValueInteger(obj.value("formatVersion"));
         if (version != currentComponentsFileVersion)
         {
-            throw JSONValidationError(QObject::tr("Invalid component file version, expected %1")
+            throw JSONValidationError(QObject::tr("Versão do arquivo de componente inválida, esperado %1")
                                           .arg(currentComponentsFileVersion));
         }
         auto orderArray = Json::requireValueArray(obj.value("components"));
@@ -785,7 +785,7 @@ QVariant PackProfile::data(const QModelIndex &index, int role) const
         {
             if(patch->isCustom())
             {
-                return QString("%1 (Custom)").arg(patch->getVersion());
+                return QString("%1 (Personalizado)").arg(patch->getVersion());
             }
             else
             {
@@ -850,9 +850,9 @@ QVariant PackProfile::headerData(int section, Qt::Orientation orientation, int r
             switch (section)
             {
             case NameColumn:
-                return tr("Name");
+                return tr("Nome");
             case VersionColumn:
-                return tr("Version");
+                return tr("Versão");
             default:
                 return QVariant();
             }

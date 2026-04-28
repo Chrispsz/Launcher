@@ -137,7 +137,7 @@ void parseIndex(const QJsonObject &obj, Index *ptr)
         ptr->merge(parseIndexInternal(obj));
         break;
     case MetadataVersion::Invalid:
-        throw ParseException(QObject::tr("Unknown format version!"));
+        throw ParseException(QObject::tr("Versão de formato desconhecida!"));
     }
 }
 
@@ -150,7 +150,7 @@ void parseVersionList(const QJsonObject &obj, VersionList *ptr)
         ptr->merge(parseVersionListInternal(obj));
         break;
     case MetadataVersion::Invalid:
-        throw ParseException(QObject::tr("Unknown format version!"));
+        throw ParseException(QObject::tr("Versão de formato desconhecida!"));
     }
 }
 
@@ -163,7 +163,7 @@ void parseVersion(const QJsonObject &obj, Version *ptr)
         ptr->merge(parseVersionInternal(obj));
         break;
     case MetadataVersion::Invalid:
-        throw ParseException(QObject::tr("Unknown format version!"));
+        throw ParseException(QObject::tr("Versão de formato desconhecida!"));
     }
 }
 

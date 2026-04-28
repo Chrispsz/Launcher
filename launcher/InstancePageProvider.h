@@ -35,7 +35,7 @@ public:
         if(onesix)
         {
             values.append(new VersionPage(onesix.get()));
-            auto modsPage = new ModFolderPage(onesix.get(), onesix->loaderModList(), "mods", "loadermods", tr("Loader mods"), "Loader-mods");
+            auto modsPage = new ModFolderPage(onesix.get(), onesix->loaderModList(), "mods", "loadermods", tr("Mods do loader"), "Loader-mods");
             modsPage->setFilter("%1 (*.zip *.jar *.litemod)");
             values.append(modsPage);
             values.append(new CoreModFolderPage(onesix.get(), onesix->coreModList(), "coremods", "coremods", tr("Core mods"), "Core-mods"));
@@ -65,7 +65,7 @@ public:
 
     virtual QString dialogTitle() override
     {
-        return tr("Edit Instance (%1)").arg(inst->name());
+        return tr("Editar instância (%1)").arg(inst->name());
     }
 protected:
     InstancePtr inst;

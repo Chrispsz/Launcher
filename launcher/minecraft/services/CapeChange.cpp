@@ -16,7 +16,7 @@ void CapeChange::setCape(QString& cape) {
     request.setRawHeader("Authorization", QString("Bearer %1").arg(m_token).toLocal8Bit());
     QNetworkReply *rep = APPLICATION->network()->put(request, requestString.toUtf8());
 
-    setStatus(tr("Equipping cape"));
+    setStatus(tr("Equipando capa"));
 
     m_reply = shared_qobject_ptr<QNetworkReply>(rep);
     connect(rep, &QNetworkReply::uploadProgress, this, &Task::setProgress);
@@ -30,7 +30,7 @@ void CapeChange::clearCape() {
     request.setRawHeader("Authorization", QString("Bearer %1").arg(m_token).toLocal8Bit());
     QNetworkReply *rep = APPLICATION->network()->deleteResource(request);
 
-    setStatus(tr("Removing cape"));
+    setStatus(tr("Removendo capa"));
 
     m_reply = shared_qobject_ptr<QNetworkReply>(rep);
     connect(rep, &QNetworkReply::uploadProgress, this, &Task::setProgress);

@@ -33,13 +33,13 @@ void ModMinecraftJar::executeTask()
     // nuke obsolete stripped jar(s) if needed
     if(!FS::ensureFolderPathExists(m_inst->binRoot()))
     {
-        emitFailed(tr("Couldn't create the bin folder for Minecraft.jar"));
+        emitFailed(tr("Não foi possível criar a pasta bin para Minecraft.jar"));
     }
 
     auto finalJarPath = QDir(m_inst->binRoot()).absoluteFilePath("minecraft.jar");
     if(!removeJar())
     {
-        emitFailed(tr("Couldn't remove stale jar file: %1").arg(finalJarPath));
+        emitFailed(tr("Não foi possível remover o arquivo jar obsoleto: %1").arg(finalJarPath));
     }
 
     // create temporary modded jar, if needed
@@ -54,7 +54,7 @@ void ModMinecraftJar::executeTask()
         auto sourceJarPath = jars[0];
         if(!MMCZip::createModdedJar(sourceJarPath, finalJarPath, jarMods))
         {
-            emitFailed(tr("Failed to create the custom Minecraft jar file."));
+            emitFailed(tr("Falha ao criar o arquivo jar personalizado do Minecraft."));
             return;
         }
     }

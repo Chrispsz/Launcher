@@ -132,7 +132,7 @@ void InstanceWindow::updateLaunchButtons()
         m_launchOfflineButton->setEnabled(false);
         m_killButton->setText(tr("Iniciar"));
         m_killButton->setObjectName("launchButton");
-        m_killButton->setToolTip(tr("Launch the instance"));
+        m_killButton->setToolTip(tr("Iniciar a instância"));
         m_killButton->setEnabled(false);
     }
     else
@@ -140,7 +140,7 @@ void InstanceWindow::updateLaunchButtons()
         m_launchOfflineButton->setEnabled(true);
         m_killButton->setText(tr("Iniciar"));
         m_killButton->setObjectName("launchButton");
-        m_killButton->setToolTip(tr("Launch the instance"));
+        m_killButton->setToolTip(tr("Iniciar a instância"));
     }
     m_killButton->style()->unpolish(m_killButton);
     m_killButton->style()->polish(m_killButton);

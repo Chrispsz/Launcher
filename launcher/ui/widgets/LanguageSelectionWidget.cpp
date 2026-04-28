@@ -47,7 +47,7 @@ QString LanguageSelectionWidget::getSelectedLanguageKey() const
 
 void LanguageSelectionWidget::retranslate()
 {
-    QString text = tr("Don't see your language or the quality is poor?<br/><a href=\"%1\">Help us with translations!</a>")
+    QString text = tr("Não encontra seu idioma ou a qualidade está ruim?<br/><a href=\"%1\">Ajude-nos com as traduções!</a>")
         .arg("https://github.com/MultiMC/Launcher/wiki/Translating-MultiMC");
     helpUsLabel->setText(text);
 

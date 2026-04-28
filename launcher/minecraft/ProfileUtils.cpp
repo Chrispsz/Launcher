@@ -48,7 +48,7 @@ bool readOverrideOrders(QString path, PatchOrder &order)
         auto version = Json::requireValueInteger(obj.value("version"));
         if (version != currentOrderFileVersion)
         {
-            throw JSONValidationError(QObject::tr("Invalid order file version, expected %1")
+            throw JSONValidationError(QObject::tr("Versão do arquivo de ordem inválida, esperado %1")
                                           .arg(currentOrderFileVersion));
         }
         auto orderArray = Json::requireValueArray(obj.value("order"));
@@ -93,7 +93,7 @@ VersionFilePtr parseJsonFile(const QFileInfo &fileInfo, const bool requireOrder)
     QFile file(fileInfo.absoluteFilePath());
     if (!file.open(QFile::ReadOnly))
     {
-        auto errorStr = QObject::tr("Unable to open the version file %1: %2.").arg(fileInfo.fileName(), file.errorString());
+        auto errorStr = QObject::tr("Não foi possível abrir o arquivo de versão %1: %2.").arg(fileInfo.fileName(), file.errorString());
         return createErrorVersionFile(fileInfo.completeBaseName(), fileInfo.absoluteFilePath(), errorStr);
     }
     QJsonParseError error;
@@ -114,7 +114,7 @@ VersionFilePtr parseJsonFile(const QFileInfo &fileInfo, const bool requireOrder)
             }
             column++;
         }
-        auto errorStr = QObject::tr("Unable to process the version file %1: %2 at line %3 column %4.")
+        auto errorStr = QObject::tr("Não foi possível processar o arquivo de versão %1: %2 na linha %3 coluna %4.")
                 .arg(fileInfo.fileName(), error.errorString())
                 .arg(line).arg(column);
         return createErrorVersionFile(fileInfo.completeBaseName(), fileInfo.absoluteFilePath(), errorStr);
@@ -146,7 +146,7 @@ VersionFilePtr parseBinaryJsonFile(const QFileInfo &fileInfo)
     QFile file(fileInfo.absoluteFilePath());
     if (!file.open(QFile::ReadOnly))
     {
-        auto errorStr = QObject::tr("Unable to open the version file %1: %2.").arg(fileInfo.fileName(), file.errorString());
+        auto errorStr = QObject::tr("Não foi possível abrir o arquivo de versão %1: %2.").arg(fileInfo.fileName(), file.errorString());
         return createErrorVersionFile(fileInfo.completeBaseName(), fileInfo.absoluteFilePath(), errorStr);
     }
     QJsonDocument doc = QJsonDocument::fromBinaryData(file.readAll());
@@ -154,7 +154,7 @@ VersionFilePtr parseBinaryJsonFile(const QFileInfo &fileInfo)
     if (doc.isNull())
     {
         file.remove();
-        throw JSONValidationError(QObject::tr("Unable to process the version file %1.").arg(fileInfo.fileName()));
+        throw JSONValidationError(QObject::tr("Não foi possível processar o arquivo de versão %1.").arg(fileInfo.fileName()));
     }
     return guardedParseJson(doc, fileInfo.completeBaseName(), fileInfo.absoluteFilePath(), false);
 }

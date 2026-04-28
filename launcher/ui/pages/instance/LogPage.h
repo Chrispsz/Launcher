@@ -38,7 +38,7 @@ public:
     virtual ~LogPage();
     virtual QString displayName() const override
     {
-        return tr("Minecraft Log");
+        return tr("Log do Minecraft");
     }
     virtual QIcon icon() const override
     {

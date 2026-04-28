@@ -17,7 +17,7 @@ void SkinDelete::executeTask()
     QNetworkReply *rep = APPLICATION->network()->deleteResource(request);
     m_reply = shared_qobject_ptr<QNetworkReply>(rep);
 
-    setStatus(tr("Deleting skin"));
+    setStatus(tr("Excluindo skin"));
     connect(rep, &QNetworkReply::uploadProgress, this, &Task::setProgress);
     connect(rep, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(downloadError(QNetworkReply::NetworkError)));
     connect(rep, SIGNAL(finished()), this, SLOT(downloadFinished()));

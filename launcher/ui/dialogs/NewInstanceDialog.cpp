@@ -174,8 +174,11 @@ void NewInstanceDialog::setSuggestedIconFromFile(const QString &path, const QStr
     importIconPath = path;
     importIconName = name;
 
+    QIcon testIcon(path);
+    if (testIcon.isNull())
+        return;
     //Hmm, for some reason they can be to small
-    ui->iconButton->setIcon(QIcon(path));
+    ui->iconButton->setIcon(testIcon);
 }
 
 void NewInstanceDialog::setSuggestedIcon(const QString &key)

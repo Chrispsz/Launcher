@@ -42,7 +42,7 @@ public:
 
     virtual QString displayName() const override
     {
-        return tr("Game Options");
+        return tr("Opções do jogo");
     }
     virtual QIcon icon() const override
     {

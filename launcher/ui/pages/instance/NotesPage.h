@@ -35,7 +35,7 @@ public:
     virtual ~NotesPage();
     virtual QString displayName() const override
     {
-        return tr("Notes");
+        return tr("Notas");
     }
     virtual QIcon icon() const override
     {

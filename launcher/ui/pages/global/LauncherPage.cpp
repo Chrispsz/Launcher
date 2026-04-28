@@ -93,13 +93,13 @@ void LauncherPage::on_instDirBrowseBtn_clicked()
         if (FS::checkProblemticPathJava(QDir(cooked_dir)))
         {
             QMessageBox warning;
-            warning.setText(tr("You're trying to specify an instance folder which\'s path "
-                               "contains at least one \'!\'. "
-                               "Java is known to cause problems if that is the case, your "
-                               "instances (probably) won't start!"));
+            warning.setText(tr("Você está tentando especificar uma pasta de instâncias cujo caminho "
+                               "contém pelo menos um '!'. "
+                               "O Java é conhecido por causar problemas nesse caso, suas "
+                               "instâncias (provavelmente) não vão iniciar!"));
             warning.setInformativeText(
-                tr("Do you really want to use this path? "
-                   "Selecting \"No\" will close this and not alter your instance path."));
+                tr("Você realmente deseja usar este caminho? "
+                   "Selecionar \"Não\" fechará isso e não alterará o caminho da instância."));
             warning.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
             int result = warning.exec();
             if (result == QMessageBox::Yes)

@@ -66,7 +66,7 @@ void DirectJavaLaunch::executeTask()
         auto realWrapperCommand = QStandardPaths::findExecutable(wrapperCommand);
         if (realWrapperCommand.isEmpty())
         {
-            const char *reason = QT_TR_NOOP("The wrapper command \"%1\" couldn't be found.");
+            const char *reason = QT_TR_NOOP("O comando wrapper \"%1\" não pôde ser encontrado.");
             emit logLine(QString(reason).arg(wrapperCommand), MessageLevel::Fatal);
             emitFailed(tr(reason).arg(wrapperCommand));
             return;
@@ -88,7 +88,7 @@ void DirectJavaLaunch::on_state(LoggedProcess::State state)
         case LoggedProcess::FailedToStart:
         {
             //: Error message displayed if instance can't start
-            const char *reason = QT_TR_NOOP("Could not launch minecraft!");
+            const char *reason = QT_TR_NOOP("Não foi possível iniciar o Minecraft!");
             emit logLine(reason, MessageLevel::Fatal);
             emitFailed(tr(reason));
             return;
@@ -97,7 +97,7 @@ void DirectJavaLaunch::on_state(LoggedProcess::State state)
         case LoggedProcess::Crashed:
         {
             m_parent->setPid(-1);
-            emitFailed(tr("Game crashed."));
+            emitFailed(tr("O jogo crashou."));
             return;
         }
         case LoggedProcess::Finished:
@@ -107,7 +107,7 @@ void DirectJavaLaunch::on_state(LoggedProcess::State state)
             auto exitCode = m_process.exitCode();
             if(exitCode != 0)
             {
-                emitFailed(tr("Game crashed."));
+                emitFailed(tr("O jogo crashou."));
                 return;
             }
             //FIXME: make this work again

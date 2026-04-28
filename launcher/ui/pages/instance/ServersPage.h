@@ -43,7 +43,7 @@ public:
 
     virtual QString displayName() const override
     {
-        return tr("Servers");
+        return tr("Servidores");
     }
     virtual QIcon icon() const override
     {

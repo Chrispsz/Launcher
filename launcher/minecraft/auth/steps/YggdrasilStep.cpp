@@ -14,7 +14,7 @@ YggdrasilStep::YggdrasilStep(AccountData* data, QString password) : AuthStep(dat
 YggdrasilStep::~YggdrasilStep() noexcept = default;
 
 QString YggdrasilStep::describe() {
-    return tr("Logging in with Mojang account.");
+    return tr("Fazendo login com conta Mojang.");
 }
 
 void YggdrasilStep::rehydrate() {
@@ -31,7 +31,7 @@ void YggdrasilStep::perform() {
 }
 
 void YggdrasilStep::onAuthSucceeded() {
-    emit finished(AccountTaskState::STATE_WORKING, tr("Logged in with Mojang"));
+    emit finished(AccountTaskState::STATE_WORKING, tr("Conectado com Mojang"));
 }
 
 void YggdrasilStep::onAuthFailed() {
@@ -40,12 +40,12 @@ void YggdrasilStep::onAuthFailed() {
     // m_aborted = m_yggdrasil->m_aborted;
 
     auto state = m_yggdrasil->taskState();
-    QString errorMessage = tr("Mojang user authentication failed.");
+    QString errorMessage = tr("Autenticação de usuário Mojang falhou.");
 
     // NOTE: soft error in the first step means 'offline'
     if(state == AccountTaskState::STATE_FAILED_SOFT) {
         state = AccountTaskState::STATE_OFFLINE;
-        errorMessage = tr("Mojang user authentication ended with a network error.");
+        errorMessage = tr("Autenticação de usuário Mojang terminou com um erro de rede.");
     }
     emit finished(state, errorMessage);
 }

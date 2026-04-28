@@ -280,7 +280,7 @@ QVariant AccountList::data(const QModelIndex &index, int role) const
             case StatusColumn: {
                 switch(account->accountState()) {
                     case AccountState::Unchecked: {
-                        return tr("Unchecked", "Account status");
+                        return tr("Não verificado", "Account status");
                     }
                     case AccountState::Offline: {
                         return tr("Offline", "Account status");
@@ -289,19 +289,19 @@ QVariant AccountList::data(const QModelIndex &index, int role) const
                         return tr("Online", "Account status");
                     }
                     case AccountState::Working: {
-                        return tr("Working", "Account status");
+                        return tr("Em progresso", "Account status");
                     }
                     case AccountState::Errored: {
-                        return tr("Errored", "Account status");
+                        return tr("Com erro", "Account status");
                     }
                     case AccountState::Expired: {
-                        return tr("Expired", "Account status");
+                        return tr("Expirado", "Account status");
                     }
                     case AccountState::Gone: {
-                        return tr("Gone", "Account status");
+                        return tr("Inexistente", "Account status");
                     }
                     case AccountState::MustMigrate: {
-                        return tr("Must Migrate", "Account status");
+                        return tr("Deve migrar", "Account status");
                     }
                 }
             }
@@ -315,10 +315,10 @@ QVariant AccountList::data(const QModelIndex &index, int role) const
                     return tr("N/A", "Can Migrate?");
                 }
                 if (account->canMigrate()) {
-                    return tr("Yes", "Can Migrate?");
+                    return tr("Sim", "Can Migrate?");
                 }
                 else {
-                    return tr("No", "Can Migrate?");
+                    return tr("Não", "Can Migrate?");
                 }
             }
 
@@ -352,15 +352,15 @@ QVariant AccountList::headerData(int section, Qt::Orientation orientation, int r
         switch (section)
         {
         case NameColumn:
-            return tr("Account");
+            return tr("Conta");
         case TypeColumn:
-            return tr("Type");
+            return tr("Tipo");
         case StatusColumn:
             return tr("Status");
         case MigrationColumn:
-            return tr("Can Migrate?");
+            return tr("Pode migrar?");
         case ProfileNameColumn:
-            return tr("Profile");
+            return tr("Perfil");
         default:
             return QVariant();
         }
@@ -369,15 +369,15 @@ QVariant AccountList::headerData(int section, Qt::Orientation orientation, int r
         switch (section)
         {
         case NameColumn:
-            return tr("User name of the account.");
+            return tr("Nome de usuário da conta.");
         case TypeColumn:
-            return tr("Type of the account - Mojang or MSA.");
+            return tr("Tipo da conta - Mojang ou MSA.");
         case StatusColumn:
-            return tr("Current status of the account.");
+            return tr("Status atual da conta.");
         case MigrationColumn:
-            return tr("Can this account migrate to Microsoft account?");
+            return tr("Esta conta pode migrar para uma conta Microsoft?");
         case ProfileNameColumn:
-            return tr("Name of the Minecraft profile associated with the account.");
+            return tr("Nome do perfil Minecraft associado à conta.");
         default:
             return QVariant();
         }

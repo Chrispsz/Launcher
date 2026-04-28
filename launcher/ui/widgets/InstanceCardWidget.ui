@@ -24,7 +24,7 @@
    <item row="0" column="1">
     <widget class="QLabel" name="nameLabel">
      <property name="text">
-      <string>&amp;Name:</string>
+      <string>&amp;Nome:</string>
      </property>
      <property name="buddy">
       <cstring>instNameTextBox</cstring>
@@ -37,7 +37,7 @@
    <item row="1" column="1">
     <widget class="QLabel" name="groupLabel">
      <property name="text">
-      <string>&amp;Group:</string>
+      <string>&amp;Grupo:</string>
      </property>
      <property name="buddy">
       <cstring>groupBox</cstring>

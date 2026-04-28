@@ -217,12 +217,12 @@ std::shared_ptr<WorldList> LegacyInstance::worldList() const
 
 QString LegacyInstance::typeName() const
 {
-    return tr("Legacy");
+    return tr("Legado");
 }
 
 QString LegacyInstance::getStatusbarDescription()
 {
-    return tr("Instance from previous versions.");
+    return tr("Instância de versões anteriores.");
 }
 
 QStringList LegacyInstance::verboseDescription(AuthSessionPtr session, QuickPlayTargetPtr quickPlayTarget)

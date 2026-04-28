@@ -727,7 +727,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
 
         // Init page provider
         {
-            m_globalSettingsProvider = std::make_shared<GenericPageProvider>(tr("Settings"));
+            m_globalSettingsProvider = std::make_shared<GenericPageProvider>(tr("Configurações"));
             m_globalSettingsProvider->addPage<LauncherPage>();
             m_globalSettingsProvider->addPage<MinecraftPage>();
             m_globalSettingsProvider->addPage<JavaPage>();

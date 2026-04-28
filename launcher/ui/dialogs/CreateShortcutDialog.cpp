@@ -98,7 +98,7 @@ void CreateShortcutDialog::on_shortcutPathBrowse_clicked()
 #ifdef Q_OS_WIN
     linkExtension = ui->createScriptCheckBox->isChecked() ? "bat" : "lnk";
 #endif
-    QFileDialog fileDialog(this, tr("Select shortcut path"), QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+    QFileDialog fileDialog(this, tr("Selecionar caminho do atalho"), QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
     fileDialog.setDefaultSuffix(linkExtension);
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
     fileDialog.setFileMode(QFileDialog::AnyFile);

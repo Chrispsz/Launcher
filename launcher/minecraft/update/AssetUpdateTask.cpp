@@ -18,14 +18,14 @@ AssetUpdateTask::~AssetUpdateTask()
 
 void AssetUpdateTask::executeTask()
 {
-    setStatus(tr("Updating assets index..."));
+    setStatus(tr("Atualizando índice de recursos..."));
     auto components = m_inst->getPackProfile();
     auto profile = components->getProfile();
     auto assets = profile->getMinecraftAssets();
     QUrl indexUrl = assets->url;
     QString localPath = assets->id + ".json";
     auto job = new NetJob(
-        tr("Asset index for %1").arg(m_inst->name()),
+        tr("Índice de recursos para %1").arg(m_inst->name()),
         APPLICATION->network()
     );
 
@@ -72,14 +72,14 @@ void AssetUpdateTask::assetIndexFinished()
         auto metacache = APPLICATION->metacache();
         auto entry = metacache->resolveEntry("asset_indexes", assets->id + ".json");
         metacache->evictEntry(entry);
-        emitFailed(tr("Failed to read the assets index!"));
+        emitFailed(tr("Falha ao ler o índice de recursos!"));
         return;
     }
 
     auto job = index.getDownloadJob();
     if(job)
     {
-        setStatus(tr("Getting the assets files from Mojang..."));
+        setStatus(tr("Obtendo os arquivos de recursos do Mojang..."));
         downloadJob = job;
         connect(downloadJob.get(), &NetJob::succeeded, this, &AssetUpdateTask::emitSucceeded);
         connect(downloadJob.get(), &NetJob::failed, this, &AssetUpdateTask::assetsFailed);
@@ -93,12 +93,12 @@ void AssetUpdateTask::assetIndexFinished()
 void AssetUpdateTask::assetIndexFailed(QString reason)
 {
     qDebug() << m_inst->name() << ": Failed asset index download";
-    emitFailed(tr("Failed to download the assets index:\n%1").arg(reason));
+    emitFailed(tr("Falha ao baixar o índice de recursos:\n%1").arg(reason));
 }
 
 void AssetUpdateTask::assetsFailed(QString reason)
 {
-    emitFailed(tr("Failed to download assets:\n%1").arg(reason));
+    emitFailed(tr("Falha ao baixar recursos:\n%1").arg(reason));
 }
 
 bool AssetUpdateTask::abort()

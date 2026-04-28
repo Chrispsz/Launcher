@@ -432,7 +432,7 @@ QString AccountData::profileId() const {
 
 QString AccountData::profileName() const {
     if(minecraftProfile.name.size() == 0) {
-        return QObject::tr("No profile (%1)").arg(accountDisplayString());
+        return QObject::tr("Sem perfil (%1)").arg(accountDisplayString());
     }
     else {
         return minecraftProfile.name;

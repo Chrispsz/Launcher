@@ -319,6 +319,11 @@ void ModrinthModBrowserNS::ModListModel::requestLogo(const QString& id, const QU
     auto fullPath = entry->getFullPath();
     QObject::connect(job, &NetJob::succeeded, this, [this, id, fullPath] {
         QIcon icon(fullPath);
+        if (icon.isNull()) {
+            m_loadingLogos.removeAll(id);
+            m_failedLogos.append(id);
+            return;
+        }
         QSize size = icon.actualSize(QSize(48, 48));
         if (size.width() < 48 && size.height() < 48) {
             icon = icon.pixmap(48, 48).scaled(48, 48, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);

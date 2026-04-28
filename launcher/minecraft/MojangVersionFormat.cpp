@@ -151,7 +151,7 @@ void MojangVersionFormat::readVersionProperties(const QJsonObject &in, VersionFi
         }
         else if (!toCompare.isEmpty())
         {
-            out->addProblem(ProblemSeverity::Error, QObject::tr("processArguments is set to unknown value '%1'").arg(processArguments));
+            out->addProblem(ProblemSeverity::Error, QObject::tr("processArguments está definido com um valor desconhecido '%1'").arg(processArguments));
         }
     }
     Bits::readString(in, "type", out->type);
@@ -176,7 +176,7 @@ void MojangVersionFormat::readVersionProperties(const QJsonObject &in, VersionFi
         {
             out->addProblem(
                 ProblemSeverity::Warning,
-                QObject::tr("The 'minimumLauncherVersion' value of this version (%1) is higher than supported by %3 (%2). It might not work properly!")
+                QObject::tr("O valor de 'minimumLauncherVersion' desta versão (%1) é maior que o suportado por %3 (%2). Pode não funcionar corretamente!")
                     .arg(out->minimumLauncherVersion)
                     .arg(CURRENT_MINIMUM_LAUNCHER_VERSION)
                     .arg(BuildConfig.LAUNCHER_NAME)
@@ -296,7 +296,7 @@ LibraryPtr MojangVersionFormat::libraryFromJson(ProblemContainer & problems, con
     auto rawName = libObj.value("name").toString();
     out->m_name = rawName;
     if(!out->m_name.valid()) {
-        problems.addProblem(ProblemSeverity::Error, QObject::tr("Library %1 name is broken and cannot be processed.").arg(rawName));
+        problems.addProblem(ProblemSeverity::Error, QObject::tr("O nome da biblioteca %1 está quebrado e não pode ser processado.").arg(rawName));
     }
 
     Bits::readString(libObj, "url", out->m_repositoryURL);

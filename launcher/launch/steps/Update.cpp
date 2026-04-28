@@ -20,7 +20,7 @@ void Update::executeTask()
 {
     if(m_aborted)
     {
-        emitFailed(tr("Task aborted."));
+        emitFailed(tr("Tarefa abortada."));
         return;
     }
     m_updateTask.reset(m_parent->instance()->createUpdateTask(m_mode));
@@ -49,7 +49,7 @@ void Update::updateFinished()
     }
     else
     {
-        QString reason = tr("Instance update failed because: %1\n\n").arg(m_updateTask->failReason());
+        QString reason = tr("A atualização da instância falhou porque: %1\n\n").arg(m_updateTask->failReason());
         m_updateTask.reset();
         emit logLine(reason, MessageLevel::Fatal);
         emitFailed(reason);

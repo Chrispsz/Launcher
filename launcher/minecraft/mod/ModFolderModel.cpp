@@ -365,9 +365,9 @@ QVariant ModFolderModel::data(const QModelIndex &index, int role) const
         case VersionColumn: {
             switch(mods[row].type()) {
                 case Mod::MOD_FOLDER:
-                    return tr("Folder");
+                    return tr("Pasta");
                 case Mod::MOD_SINGLEFILE:
-                    return tr("File");
+                    return tr("Arquivo");
                 default:
                     break;
             }
@@ -461,11 +461,11 @@ QVariant ModFolderModel::headerData(int section, Qt::Orientation orientation, in
         case ActiveColumn:
             return QString();
         case NameColumn:
-            return tr("Name");
+            return tr("Nome");
         case VersionColumn:
-            return tr("Version");
+            return tr("Versão");
         case DateColumn:
-            return tr("Last changed");
+            return tr("Última alteração");
         default:
             return QVariant();
         }
@@ -474,13 +474,13 @@ QVariant ModFolderModel::headerData(int section, Qt::Orientation orientation, in
         switch (section)
         {
         case ActiveColumn:
-            return tr("Is the mod enabled?");
+            return tr("O mod está ativado?");
         case NameColumn:
-            return tr("The name of the mod.");
+            return tr("O nome do mod.");
         case VersionColumn:
-            return tr("The version of the mod.");
+            return tr("A versão do mod.");
         case DateColumn:
-            return tr("The date and time this mod was last changed (or added).");
+            return tr("A data e hora em que este mod foi alterado (ou adicionado) pela última vez.");
         default:
             return QVariant();
         }

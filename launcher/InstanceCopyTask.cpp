@@ -21,7 +21,7 @@ InstanceCopyTask::InstanceCopyTask(InstancePtr origInstance, bool copySaves, boo
 
 void InstanceCopyTask::executeTask()
 {
-    setStatus(tr("Copying instance %1").arg(m_origInstance->name()));
+    setStatus(tr("Copiando instância %1").arg(m_origInstance->name()));
 
     FS::copy folderCopy(m_origInstance->instanceRoot(), m_stagingPath);
     folderCopy.followSymlinks(false).blacklist(m_matcher.get());
@@ -37,7 +37,7 @@ void InstanceCopyTask::copyFinished()
     auto successful = m_copyFuture.result();
     if(!successful)
     {
-        emitFailed(tr("Instance folder copy failed."));
+        emitFailed(tr("Falha ao copiar a pasta da instância."));
         return;
     }
     // FIXME: shouldn't this be able to report errors?
@@ -55,6 +55,6 @@ void InstanceCopyTask::copyFinished()
 
 void InstanceCopyTask::copyAborted()
 {
-    emitFailed(tr("Instance folder copy has been aborted."));
+    emitFailed(tr("A cópia da pasta da instância foi abortada."));
     return;
 }

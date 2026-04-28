@@ -17,7 +17,7 @@ LegacyUpgradeTask::LegacyUpgradeTask(InstancePtr origInstance)
 
 void LegacyUpgradeTask::executeTask()
 {
-    setStatus(tr("Copying instance %1").arg(m_origInstance->name()));
+    setStatus(tr("Copiando instância %1").arg(m_origInstance->name()));
 
     FS::copy folderCopy(m_origInstance->instanceRoot(), m_stagingPath);
     folderCopy.followSymlinks(true);
@@ -56,7 +56,7 @@ void LegacyUpgradeTask::copyFinished()
     auto successful = m_copyFuture.result();
     if(!successful)
     {
-        emitFailed(tr("Instance folder copy failed."));
+        emitFailed(tr("Falha ao copiar a pasta da instância."));
         return;
     }
     auto legacyInst = std::dynamic_pointer_cast<LegacyInstance>(m_origInstance);
@@ -79,7 +79,7 @@ void LegacyUpgradeTask::copyFinished()
                 preferredVersionNumber = classparser::GetMinecraftJarVersion(legacyInst->runnableJar());
                 if(preferredVersionNumber.isNull())
                 {
-                    emitFailed(tr("Could not decide Minecraft version."));
+                    emitFailed(tr("Não foi possível determinar a versão do Minecraft."));
                     return;
                 }
             }
@@ -132,7 +132,7 @@ void LegacyUpgradeTask::copyFinished()
 
 void LegacyUpgradeTask::copyAborted()
 {
-    emitFailed(tr("Instance folder copy has been aborted."));
+    emitFailed(tr("A cópia da pasta da instância foi cancelada."));
     return;
 }
 

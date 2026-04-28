@@ -7,13 +7,13 @@ QVariant ResourcePackFolderModel::headerData(int section, Qt::Orientation orient
     if (role == Qt::ToolTipRole) {
         switch (section) {
             case ActiveColumn:
-                return tr("Is the resource pack enabled?");
+                return tr("O pacote de recursos está ativado?");
             case NameColumn:
-                return tr("The name of the resource pack.");
+                return tr("O nome do pacote de recursos.");
             case VersionColumn:
-                return tr("The version of the resource pack.");
+                return tr("A versão do pacote de recursos.");
             case DateColumn:
-                return tr("The date and time this resource pack was last changed (or added).");
+                return tr("A data e hora em que este pacote de recursos foi alterado (ou adicionado) pela última vez.");
             default:
                 return QVariant();
         }

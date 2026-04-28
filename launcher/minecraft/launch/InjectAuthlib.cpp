@@ -14,7 +14,7 @@ void InjectAuthlib::executeTask()
 {
     if (m_aborted)
     {
-        emitFailed(tr("Task aborted."));
+        emitFailed(tr("Tarefa abortada."));
         return;
     }
 

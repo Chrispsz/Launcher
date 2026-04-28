@@ -125,7 +125,7 @@ void VersionSelectWidget::onTaskSucceeded()
 
 void VersionSelectWidget::onTaskFailed(const QString& reason)
 {
-    CustomMessageBox::selectable(this, tr("Error"), tr("List update failed:\n%1").arg(reason), QMessageBox::Warning)->show();
+    CustomMessageBox::selectable(this, tr("Erro"), tr("Falha na atualização da lista:\n%1").arg(reason), QMessageBox::Warning)->show();
     onTaskSucceeded();
 }
 
