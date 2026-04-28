@@ -9,7 +9,7 @@
 
 #include <QMessageBox>
 #include <QFileInfo>
-#include <QOverload>
+#include <QObject>
 #include <QIcon>
 #include <QStandardPaths>
 #include <QDir>

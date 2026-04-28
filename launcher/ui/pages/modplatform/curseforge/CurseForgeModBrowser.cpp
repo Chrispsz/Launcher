@@ -11,7 +11,7 @@
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QIcon>
-#include <QOverload>
+#include <QObject>
 #include <QStandardPaths>
 #include <QDir>
 
