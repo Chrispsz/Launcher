@@ -23,6 +23,7 @@
 #include <Application.h>
 
 class ModFolderModel;
+class ModrinthModBrowser;
 namespace Ui
 {
 class ModFolderPage;
@@ -104,6 +105,7 @@ slots:
     void on_actionDisable_triggered();
     void on_actionView_Folder_triggered();
     void on_actionView_configs_triggered();
+    void on_actionBrowseMods_triggered();
     void ShowContextMenu(const QPoint &pos);
 };
 

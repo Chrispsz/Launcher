@@ -27,11 +27,13 @@
 
 #include "ui/dialogs/CustomMessageBox.h"
 #include "ui/GuiUtil.h"
+#include "ui/pages/modplatform/modrinth/ModrinthModBrowser.h"
 
 #include "DesktopServices.h"
 
 #include "minecraft/mod/ModFolderModel.h"
 #include "minecraft/mod/Mod.h"
+#include "minecraft/MinecraftInstance.h"
 #include "minecraft/VersionFilterData.h"
 #include "minecraft/PackProfile.h"
 
@@ -142,6 +144,10 @@ ModFolderPage::ModFolderPage(
 {
     ui->setupUi(this);
     ui->actionsToolbar->insertSpacer(ui->actionView_configs);
+
+    auto actionBrowseMods = ui->actionsToolbar->addAction(APPLICATION->getThemedIcon("modrinth"), tr("Buscar mods"));
+    actionBrowseMods->setToolTip(tr("Buscar mods no Modrinth"));
+    connect(actionBrowseMods, &QAction::triggered, this, &ModFolderPage::on_actionBrowseMods_triggered);
 
     m_inst = inst;
     on_RunningState_changed(m_inst && m_inst->isRunning());
@@ -350,6 +356,20 @@ void ModFolderPage::on_actionView_configs_triggered()
 void ModFolderPage::on_actionView_Folder_triggered()
 {
     DesktopServices::openDirectory(m_mods->dir().absolutePath(), true);
+}
+
+void ModFolderPage::on_actionBrowseMods_triggered()
+{
+    if(!m_controlsEnabled) {
+        return;
+    }
+    auto mcInst = dynamic_cast<MinecraftInstance*>(m_inst);
+    if (!mcInst) {
+        QMessageBox::warning(this, tr("Erro"), tr("Esta instância não suporta busca de mods."));
+        return;
+    }
+    ModrinthModBrowser browser(mcInst, m_mods, this);
+    browser.exec();
 }
 
 void ModFolderPage::modCurrent(const QModelIndex &current, const QModelIndex &previous)

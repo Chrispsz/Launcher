@@ -591,6 +591,9 @@ SET(LAUNCHER_SOURCES
     ui/pages/modplatform/modrinth/ModrinthPage.cpp
     ui/pages/modplatform/modrinth/ModrinthPage.h
 
+    ui/pages/modplatform/modrinth/ModrinthModBrowser.cpp
+    ui/pages/modplatform/modrinth/ModrinthModBrowser.h
+
     ui/pages/modplatform/curseforge/CurseForgeData.h
     ui/pages/modplatform/curseforge/CurseForgePage.cpp
     ui/pages/modplatform/curseforge/CurseForgePage.h
@@ -695,6 +698,7 @@ qt5_wrap_ui(LAUNCHER_UI
     ui/pages/modplatform/VanillaPage.ui
     ui/pages/modplatform/ImportPage.ui
     ui/pages/modplatform/modrinth/ModrinthPage.ui
+    ui/pages/modplatform/modrinth/ModrinthModBrowser.ui
     ui/pages/modplatform/curseforge/CurseForgePage.ui
     ui/widgets/InstanceCardWidget.ui
     ui/widgets/CustomCommands.ui
