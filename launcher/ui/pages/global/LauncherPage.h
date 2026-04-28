@@ -17,6 +17,7 @@
 
 #include <memory>
 #include <QDialog>
+#include <QTextCharFormat>
 
 #include "java/JavaChecker.h"
 #include "ui/pages/BasePage.h"
@@ -24,7 +25,6 @@
 #include "ui/ColorCache.h"
 #include <translations/TranslationsModel.h>
 
-class QTextCharFormat;
 class SettingsObject;
 
 namespace Ui

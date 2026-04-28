@@ -964,7 +964,10 @@ shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPt
 
     if (!m_acct)
     {
-        pptr->emitFailed(tr("Failed to launch: account '%1' not found.").arg(session->player_name));
+        // Use QMetaObject to call protected emitFailed
+        QMetaObject::invokeMethod(pptr, [pptr, msg = tr("Failed to launch: account '%1' not found.").arg(session->player_name)]() {
+            pptr->emitFailed(msg);
+        });
         return process;
     }
 
