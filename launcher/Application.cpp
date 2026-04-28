@@ -113,45 +113,6 @@ void appDebugOutput(QtMsgType type, const QMessageLogContext &context, const QSt
     }
 }
 
-QString getIdealPlatform(QString currentPlatform) {
-    auto info = Sys::getKernelInfo();
-    switch(info.kernelType) {
-        case Sys::KernelType::Darwin: {
-            if(info.kernelMajor >= 17) {
-                // macOS 10.13 or newer
-                return "osx64-5.15.2";
-            }
-            else {
-                // macOS 10.12 or older
-                return "osx64";
-            }
-        }
-        case Sys::KernelType::Windows: {
-            // FIXME: 5.15.2 is not stable on Windows, due to a large number of completely unpredictable and hard to reproduce issues
-            break;
-/*
-            if(info.kernelMajor == 6 && info.kernelMinor >= 1) {
-                // Windows 7
-                return "win32-5.15.2";
-            }
-            else if (info.kernelMajor > 6) {
-                // Above Windows 7
-                return "win32-5.15.2";
-            }
-            else {
-                // Below Windows 7
-                return "win32";
-            }
-*/
-        }
-        case Sys::KernelType::Undetermined:
-        case Sys::KernelType::Linux: {
-            break;
-        }
-    }
-    return currentPlatform;
-}
-
 }
 
 Application::Application(int &argc, char **argv) : QApplication(argc, argv)
@@ -795,6 +756,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         QString proxyTypeStr = settings()->get("ProxyType").toString();
         QString addr = settings()->get("ProxyAddr").toString();
         int port = settings()->get("ProxyPort").value<qint16>();
+        Q_UNUSED(port)
         QString user = settings()->get("ProxyUser").toString();
         QString pass = settings()->get("ProxyPass").toString();
         qDebug() << "<> Network done.";

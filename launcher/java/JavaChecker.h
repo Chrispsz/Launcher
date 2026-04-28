@@ -36,6 +36,7 @@ public:
     explicit JavaChecker(QObject *parent = 0);
     ~JavaChecker();
     void performCheck();
+    void killProcess();
 
     QString m_path;
     QString m_args;
@@ -47,7 +48,6 @@ public:
 signals:
     void checkFinished(JavaCheckResult result);
 private:
-    void killProcess();
     // Raw pointer — shared_qobject_ptr uses deleteLater() which cannot
     // synchronously kill QProcess in a destructor or timeout.
     // We need immediate destruction to prevent
