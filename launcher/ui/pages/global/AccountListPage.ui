@@ -53,8 +53,6 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionAddLocal"/>
-   <addaction name="actionAddMojang"/>
-   <addaction name="actionAddMicrosoft"/>
    <addaction name="actionRefresh"/>
    <addaction name="actionRemove"/>
    <addaction name="actionSetDefault"/>
@@ -68,11 +66,7 @@
     <string>Adicionar local</string>
    </property>
   </action>
-  <action name="actionAddMojang">
-   <property name="text">
-    <string>Adicionar Ely.by</string>
-   </property>
-  </action>
+
   <action name="actionRemove">
    <property name="text">
     <string>Remover</string>
@@ -104,11 +98,7 @@
     <string>Excluir a skin atual e voltar para a padrão</string>
    </property>
   </action>
-  <action name="actionAddMicrosoft">
-   <property name="text">
-    <string>Adicionar Microsoft</string>
-   </property>
-  </action>
+
   <action name="actionRefresh">
    <property name="text">
     <string>Atualizar</string>

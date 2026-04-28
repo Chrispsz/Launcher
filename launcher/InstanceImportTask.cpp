@@ -460,12 +460,12 @@ void InstanceImportTask::processModrinth() {
         m_filesNetJob.reset();
         emitSucceeded();
     });
-    connect(m_filesNetJob.get(), &NetJob::failed, [&](const QString &reason)
+    connect(m_filesNetJob.get(), &NetJob::failed, this, [&](const QString &reason)
     {
         m_filesNetJob.reset();
         emitFailed(reason);
     });
-    connect(m_filesNetJob.get(), &NetJob::progress, [&](qint64 current, qint64 total)
+    connect(m_filesNetJob.get(), &NetJob::progress, this, [&](qint64 current, qint64 total)
     {
         setProgress(current, total);
     });
@@ -684,73 +684,17 @@ void InstanceImportTask::processCurseForge() {
                     downloadJob->start();
                 };
 
-                // If all files have URLs, proceed directly to downloads
-                if (filesNeedingUrl.isEmpty()) {
-                    startDownloads(filesWithUrl);
-                    return;
+                // For files without download URLs, construct CDN URL from file ID and file name.
+                // The /download-url API endpoint returns 403 ContentAccessDenied for most API keys,
+                // so we use the well-known CurseForge CDN URL pattern instead.
+                for (auto& rf : filesNeedingUrl) {
+                    QUrl cdnUrl = CurseForge::buildCDNUrl(rf.fileID.toInt(), rf.fileName);
+                    qDebug() << "Constructed CDN URL for file" << rf.fileID << ":" << cdnUrl.toString();
+                    rf.downloadUrl = cdnUrl.toString();
+                    filesWithUrl.append(rf);
                 }
 
-                // Some files are missing download URLs — use the /download-url endpoint as fallback
-                qDebug() << "Fetching fallback download URLs for" << filesNeedingUrl.size() << "CurseForge file(s)";
-                setStatus(tr("Obtendo URLs de download faltantes (%1 arquivos)...").arg(filesNeedingUrl.size()));
-
-                auto* urlJob = new NetJob(tr("Obtenção de URLs de download CurseForge"), APPLICATION->network());
-
-                struct UrlResponse {
-                    ResolvedFile file;
-                    QByteArray* response;
-                };
-                auto* urlResponses = new QVector<UrlResponse>();
-
-                for (const auto& rf : filesNeedingUrl) {
-                    QUrl url = CurseForge::buildFileDownloadUrlEndpoint(rf.projectID.toInt(), rf.fileID.toInt());
-                    auto* buf = new QByteArray();
-                    auto dl = Net::Download::makeByteArray(url, buf);
-                    CurseForge::addApiKeyHeader(dl.get(), apiKey);
-                    urlJob->addNetAction(dl);
-                    urlResponses->push_back({rf, buf});
-                }
-
-                connect(urlJob, &NetJob::succeeded, this,
-                        [this, urlResponses, filesWithUrl, startDownloads]() {
-                    m_filesNetJob.reset();
-
-                    QVector<ResolvedFile> allFiles = filesWithUrl;
-                    for (const auto& resp : *urlResponses) {
-                        QJsonDocument doc = QJsonDocument::fromJson(*resp.response);
-                        if (!doc.isNull()) {
-                            auto data = doc.object().value("data");
-                            if (data.isString() && !data.toString().isEmpty()) {
-                                ResolvedFile rf = resp.file;
-                                rf.downloadUrl = data.toString();
-                                qDebug() << "Got fallback download URL for file" << rf.fileID << ":" << rf.downloadUrl;
-                                allFiles.append(rf);
-                                delete resp.response;
-                                continue;
-                            }
-                        }
-                        qWarning() << "No download URL for CurseForge file" << resp.file.fileID
-                                   << "(fallback endpoint also returned empty)";
-                        delete resp.response;
-                    }
-                    delete urlResponses;
-                    startDownloads(allFiles);
-                });
-
-                connect(urlJob, &NetJob::failed, this,
-                        [this, urlResponses, filesWithUrl, startDownloads](const QString& reason) {
-                    qWarning() << "Failed to fetch CurseForge download URLs:" << reason;
-                    m_filesNetJob.reset();
-                    for (auto& resp : *urlResponses) {
-                        delete resp.response;
-                    }
-                    delete urlResponses;
-                    // Proceed with files we already have URLs for
-                    startDownloads(filesWithUrl);
-                });
-
-                m_filesNetJob = urlJob;
-                urlJob->start();
+                startDownloads(filesWithUrl);
             });
 
             connect(m_filesNetJob.get(), &NetJob::failed, this, [this, responses](const QString& reason) {

@@ -1,8 +1,7 @@
 #pragma once
 #include <QString>
-#include <cstdint>
 
 namespace Secrets {
-bool hasMSAClientID();
-QString getMSAClientID(uint8_t separator);
+// MSA account support has been removed — this module is kept as a stub
+// in case it's needed in the future for other API keys.
 }

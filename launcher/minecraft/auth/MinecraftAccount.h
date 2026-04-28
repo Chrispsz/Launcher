@@ -72,8 +72,6 @@ public: /* construction */
     //! Default constructor
     explicit MinecraftAccount(QObject *parent = 0);
 
-    static MinecraftAccountPtr createFromUsername(const QString &username);
-
     static MinecraftAccountPtr createLocal(const QString &username);
 
     static MinecraftAccountPtr loadFromJsonV2(const QJsonObject &json);
@@ -112,10 +110,6 @@ public: /* queries */
         return data.accountDisplayString();
     }
 
-    QString mojangUserName() const {
-        return data.userName();
-    }
-
     QString accessToken() const {
         return data.accessToken();
     }
@@ -129,14 +123,6 @@ public: /* queries */
     }
 
     bool isActive() const;
-
-    bool canMigrate() const {
-        return data.canMigrateToMSA;
-    }
-
-    bool isMSA() const {
-        return data.type == AccountType::MSA;
-    }
 
     bool ownsMinecraft() const {
         return data.minecraftEntitlement.ownsMinecraft;

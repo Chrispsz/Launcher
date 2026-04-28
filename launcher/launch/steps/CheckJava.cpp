@@ -33,22 +33,21 @@ void CheckJava::executeTask()
         if (perInstance)
         {
             emit logLine(
-                QString("The java binary \"%1\" couldn't be found. Please fix the java path "
-                   "override in the instance's settings or disable it.").arg(m_javaPath),
+                tr("O binário Java \"%1\" não foi encontrado. Corrija o caminho do Java "
+                   "nas configurações da instância ou desative a substituição.").arg(m_javaPath),
                 MessageLevel::Warning);
         }
         else
         {
-            emit logLine(QString("The java binary \"%1\" couldn't be found. Please set up java in "
-                            "the settings.").arg(m_javaPath),
+            emit logLine(tr("O binário Java \"%1\" não foi encontrado. Configure o Java nas configurações.").arg(m_javaPath),
                          MessageLevel::Warning);
         }
-        emitFailed(QString("Java path is not valid."));
+        emitFailed(tr("Caminho do Java inválido."));
         return;
     }
     else
     {
-        emit logLine("Java path is:\n" + m_javaPath + "\n\n", MessageLevel::Launcher);
+        emit logLine(tr("Caminho do Java:\n%1\n\n").arg(m_javaPath), MessageLevel::Launcher);
     }
 
     QFileInfo javaInfo(realJavaPath);
@@ -62,7 +61,7 @@ void CheckJava::executeTask()
     if (javaUnixTime != storedUnixTime || storedVersion.size() == 0 || storedArchitecture.size() == 0 || storedVendor.size() == 0)
     {
         m_JavaChecker = new JavaChecker();
-        emit logLine(QString("Checking Java version..."), MessageLevel::Launcher);
+        emit logLine(tr("Verificando versão do Java..."), MessageLevel::Launcher);
         connect(m_JavaChecker.get(), &JavaChecker::checkFinished, this, &CheckJava::checkJavaFinished);
         m_JavaChecker->m_path = realJavaPath;
         m_JavaChecker->performCheck();
@@ -84,19 +83,18 @@ void CheckJava::checkJavaFinished(JavaCheckResult result)
     {
         case JavaCheckResult::Validity::Errored:
         {
-            // Error message displayed if java can't start
-            emit logLine(QString("Could not start java:"), MessageLevel::Error);
+            emit logLine(tr("Não foi possível iniciar o Java:"), MessageLevel::Error);
             emit logLines(result.errorLog.split('\n'), MessageLevel::Error);
-            emit logLine("\nCheck your MultiMC Java settings.", MessageLevel::Launcher);
+            emit logLine(tr("\nVerifique as configurações de Java do launcher."), MessageLevel::Launcher);
             printSystemInfo(false, false);
-            emitFailed(QString("Could not start java!"));
+            emitFailed(tr("Não foi possível iniciar o Java!"));
             return;
         }
         case JavaCheckResult::Validity::ReturnedInvalidData:
         {
-            emit logLine(QString("Java checker returned some invalid data MultiMC doesn't understand:"), MessageLevel::Error);
+            emit logLine(tr("O verificador de Java retornou dados inválidos:"), MessageLevel::Error);
             emit logLines(result.outLog.split('\n'), MessageLevel::Warning);
-            emit logLine("\nMinecraft might not start properly.", MessageLevel::Launcher);
+            emit logLine(tr("\nO Minecraft pode não iniciar corretamente."), MessageLevel::Launcher);
             printSystemInfo(false, false);
             emitSucceeded();
             return;
@@ -117,7 +115,7 @@ void CheckJava::checkJavaFinished(JavaCheckResult result)
 
 void CheckJava::printJavaInfo(const QString& version, const QString& architecture, const QString & vendor)
 {
-    emit logLine(QString("Java is version %1, using %2-bit architecture, from %3.\n\n").arg(version, architecture, vendor), MessageLevel::Launcher);
+    emit logLine(tr("Java versão %1, arquitetura %2-bit, de %3.\n\n").arg(version, architecture, vendor), MessageLevel::Launcher);
     printSystemInfo(true, architecture == "64");
 }
 
@@ -127,13 +125,13 @@ void CheckJava::printSystemInfo(bool javaIsKnown, bool javaIs64bit)
     auto system64 = Sys::isSystem64bit();
     if(cpu64 != system64)
     {
-        emit logLine(QString("Your CPU architecture is not matching your system architecture. You might want to install a 64bit Operating System.\n\n"), MessageLevel::Error);
+        emit logLine(tr("A arquitetura da CPU não corresponde à arquitetura do sistema. Considere instalar um sistema operacional de 64 bits.\n\n"), MessageLevel::Error);
     }
     if(javaIsKnown)
     {
         if(javaIs64bit != system64)
         {
-            emit logLine(QString("Your Java architecture is not matching your system architecture. You might want to install a 64bit Java version.\n\n"), MessageLevel::Error);
+            emit logLine(tr("A arquitetura do Java não corresponde à arquitetura do sistema. Considere instalar uma versão do Java de 64 bits.\n\n"), MessageLevel::Error);
         }
     }
 }

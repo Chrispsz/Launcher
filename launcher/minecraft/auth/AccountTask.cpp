@@ -36,7 +36,7 @@ QString AccountTask::getStateMessage() const
     switch (m_taskState)
     {
     case AccountTaskState::STATE_CREATED:
-        return "Waiting...";
+        return tr("Aguardando...");
     case AccountTaskState::STATE_WORKING:
         return tr("Enviando requisição para os servidores de autenticação...");
     case AccountTaskState::STATE_SUCCEEDED:

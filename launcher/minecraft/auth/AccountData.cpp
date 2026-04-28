@@ -328,6 +328,13 @@ bool AccountData::resumeStateFromV3(QJsonObject data) {
         return false;
     }
 
+    // If the provider lookup returned null (e.g. MSA/Mojang/Elyby are no longer registered),
+    // fall back to the local provider so the account can still be loaded without crashing.
+    if (!provider) {
+        qWarning() << "Provider not found for type" << typeS << "- falling back to local provider.";
+        provider = AuthProviders::lookup("local");
+    }
+
     if(type == AccountType::Mojang) {
         legacy = data.value("legacy").toBool(false);
         canMigrateToMSA = data.value("canMigrateToMSA").toBool(false);
@@ -449,13 +456,13 @@ QString AccountData::accountDisplayString() const {
             if(xboxApiToken.extra.contains("gtg")) {
                 return xboxApiToken.extra["gtg"].toString();
             }
-            return "Xbox profile missing";
+            return QObject::tr("Perfil Xbox ausente");
         }
         case AccountType::Local: {
-            return "<Local>";
+            return QObject::tr("<Local>");
         }
         default: {
-            return "Invalid Account";
+            return QObject::tr("Conta inválida");
         }
     }
 }

@@ -65,18 +65,9 @@ inline QString getApiKey()
 }
 
 /*
- * Append the API key as a query parameter to the given URL (DEPRECATED).
- * Use addApiKeyHeader() instead — CurseForge API requires x-api-key header.
+ * Append the API key as a query parameter to the given URL (DEPRECATED - REMOVED).
+ * CurseForge API requires x-api-key header. Use addApiKeyHeader() instead.
  */
-inline QUrl addApiKey(const QUrl &url, const QString &apiKey)
-{
-    if (apiKey.isEmpty())
-        return url;
-
-    QString urlString = url.toString();
-    urlString += (urlString.contains("?") ? QStringLiteral("&") : QStringLiteral("?")) + QStringLiteral("apiKey=") + apiKey;
-    return QUrl(urlString);
-}
 
 /*
  * Add the x-api-key header to a Net::Download action.
@@ -149,6 +140,9 @@ inline QUrl buildModFilesUrl(int modId)
  * when the file's downloadUrl field is null/empty in the file info response.
  * Response: { "data": "https://edge.forgecdn.net/files/..." }
  *
+ * NOTE: This endpoint requires specific API key permissions that may not be
+ * available. As a fallback, use buildCDNUrl() which constructs the URL directly.
+ *
  * @param modId  The CurseForge project/mod ID
  * @param fileId The CurseForge file ID
  * @return QUrl  The download-url API URL
@@ -156,6 +150,26 @@ inline QUrl buildModFilesUrl(int modId)
 inline QUrl buildFileDownloadUrlEndpoint(int modId, int fileId)
 {
     return QUrl(QString("%1/mods/%2/files/%3/download-url").arg(API_BASE).arg(modId).arg(fileId));
+}
+
+/*
+ * Construct a direct CDN download URL from file ID and file name.
+ * This is the standard CurseForge CDN URL pattern:
+ *   https://edge.forgecdn.net/files/{fileId/1000}/{fileId%1000}/{fileName}
+ *
+ * Use this as a fallback when the /download-url endpoint is unavailable
+ * (returns 403 ContentAccessDenied) and the file's downloadUrl is null.
+ *
+ * @param fileId   The CurseForge file ID
+ * @param fileName The file name (e.g. "modname-1.0.jar")
+ * @return QUrl    The direct CDN download URL
+ */
+inline QUrl buildCDNUrl(int fileId, const QString &fileName)
+{
+    return QUrl(QString("https://edge.forgecdn.net/files/%1/%2/%3")
+                    .arg(fileId / 1000)
+                    .arg(fileId % 1000)
+                    .arg(fileName));
 }
 
 }  // namespace CurseForge

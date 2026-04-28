@@ -52,15 +52,6 @@ MinecraftAccountPtr MinecraftAccount::loadFromJsonV3(const QJsonObject& json) {
     return nullptr;
 }
 
-MinecraftAccountPtr MinecraftAccount::createFromUsername(const QString &username)
-{
-    MinecraftAccountPtr account = new MinecraftAccount();
-    account->data.type = AccountType::Mojang;
-    account->data.yggdrasilToken.extra["userName"] = username;
-    account->data.yggdrasilToken.extra["clientToken"] = QUuid::createUuid().toString().remove(QRegExp("[{}-]"));
-    return account;
-}
-
 // Taken from Prism Launcher, just for compatibility with their UUIDs
 static QUuid uuidFromUsername(QString username)
 {
@@ -169,17 +160,9 @@ void MinecraftAccount::authFailed(QString reason)
         }
         break;
         case AccountTaskState::STATE_FAILED_HARD: {
-            if(isMSA()) {
-                data.msaToken.token = QString();
-                data.msaToken.refresh_token = QString();
-                data.msaToken.validity = Katabasis::Validity::None;
-                data.validity_ = Katabasis::Validity::None;
-            }
-            else {
-                data.yggdrasilToken.token = QString();
-                data.yggdrasilToken.validity = Katabasis::Validity::None;
-                data.validity_ = Katabasis::Validity::None;
-            }
+            data.yggdrasilToken.token = QString();
+            data.yggdrasilToken.validity = Katabasis::Validity::None;
+            data.validity_ = Katabasis::Validity::None;
             emit changed();
         }
         break;

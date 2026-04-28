@@ -212,9 +212,9 @@ shared_qobject_ptr<LogModel> LaunchTask::getLogModel()
         m_logModel->setMaxLines(m_instance->getConsoleMaxLines());
         m_logModel->setStopOnOverflow(m_instance->shouldStopOnConsoleOverflow());
         // FIXME: should this really be here?
-        m_logModel->setOverflowMessage(tr("MultiMC stopped watching the game log because the log length surpassed %1 lines.\n"
-            "You may have to fix your mods because the game is still logging to files and"
-            " likely wasting harddrive space at an alarming rate!").arg(m_logModel->getMaxLines()));
+        m_logModel->setOverflowMessage(tr("O launcher parou de monitorar o log do jogo porque o tamanho ultrapassou %1 linhas.\n"
+            "Pode ser necessário corrigir seus mods, pois o jogo ainda está salvando logs em arquivos e"
+            " provavelmente desperdiçando espaço no disco em ritmo acelerado!").arg(m_logModel->getMaxLines()));
     }
     return m_logModel;
 }

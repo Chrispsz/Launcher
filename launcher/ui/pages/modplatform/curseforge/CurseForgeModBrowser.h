@@ -120,5 +120,4 @@ private:
     int m_selectedModId = 0;
 
     NetJob::Ptr m_downloadJob;
-    QByteArray m_downloadUrlResponse;
 };

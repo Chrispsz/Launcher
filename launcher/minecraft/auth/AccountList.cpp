@@ -310,18 +310,6 @@ QVariant AccountList::data(const QModelIndex &index, int role) const
                 return account->profileName();
             }
 
-            case MigrationColumn: {
-                if(account->isMSA()) {
-                    return tr("N/A", "Can Migrate?");
-                }
-                if (account->canMigrate()) {
-                    return tr("Sim", "Can Migrate?");
-                }
-                else {
-                    return tr("Não", "Can Migrate?");
-                }
-            }
-
             default:
                 return QVariant();
             }
@@ -357,8 +345,6 @@ QVariant AccountList::headerData(int section, Qt::Orientation orientation, int r
             return tr("Tipo");
         case StatusColumn:
             return tr("Status");
-        case MigrationColumn:
-            return tr("Pode migrar?");
         case ProfileNameColumn:
             return tr("Perfil");
         default:
@@ -371,11 +357,9 @@ QVariant AccountList::headerData(int section, Qt::Orientation orientation, int r
         case NameColumn:
             return tr("Nome de usuário da conta.");
         case TypeColumn:
-            return tr("Tipo da conta - Mojang ou MSA.");
+            return tr("Tipo da conta.");
         case StatusColumn:
             return tr("Status atual da conta.");
-        case MigrationColumn:
-            return tr("Esta conta pode migrar para uma conta Microsoft?");
         case ProfileNameColumn:
             return tr("Nome do perfil Minecraft associado à conta.");
         default:
@@ -513,7 +497,7 @@ bool AccountList::loadV2(QJsonObject& root) {
             connect(account.get(), &MinecraftAccount::changed, this, &AccountList::accountChanged);
             connect(account.get(), &MinecraftAccount::activityChanged, this, &AccountList::accountActivityChanged);
             m_accounts.append(account);
-            if (defaultUserName.size() && account->mojangUserName() == defaultUserName) {
+            if (defaultUserName.size() && account->accountData()->userName() == defaultUserName) {
                 m_defaultAccount = account;
             }
         }

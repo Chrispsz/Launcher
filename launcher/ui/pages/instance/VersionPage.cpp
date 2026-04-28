@@ -396,8 +396,8 @@ void VersionPage::on_actionDownload_All_triggered()
     {
         CustomMessageBox::selectable(
             this, tr("Erro"),
-            tr("MultiMC cannot download Minecraft or update instances unless you have at least "
-               "one account added.\nPlease add your Mojang or Minecraft account."),
+            tr("O launcher não pode baixar o Minecraft ou atualizar instâncias sem pelo menos "
+               "uma conta adicionada.\nPor favor, adicione sua conta nas configurações."),
             QMessageBox::Warning)->show();
         return;
     }

@@ -32,6 +32,6 @@ bool AuthSession::MakeOffline(QString offline_playername)
 }
 
 void AuthSession::MakeDemo() {
-    player_name = "Player";
+    player_name = tr("Jogador");
     demo = true;
 }

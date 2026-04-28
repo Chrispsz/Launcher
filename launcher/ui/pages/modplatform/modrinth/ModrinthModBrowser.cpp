@@ -535,6 +535,11 @@ ModrinthModBrowser::ModrinthModBrowser(BaseInstance* instance, std::shared_ptr<M
 
 ModrinthModBrowser::~ModrinthModBrowser()
 {
+    if (m_downloadJob) {
+        m_downloadJob->abort();
+        m_downloadJob.reset();
+    }
+    m_model->reset();
     delete ui;
 }
 

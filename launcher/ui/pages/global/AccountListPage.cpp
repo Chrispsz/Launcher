@@ -24,10 +24,8 @@
 #include "net/NetJob.h"
 
 #include "ui/dialogs/ProgressDialog.h"
-// LoginDialog has been removed
 #include "ui/dialogs/LocalLoginDialog.h"
 #include "ui/dialogs/CustomMessageBox.h"
-// SkinUploadDialog has been removed
 
 #include "tasks/Task.h"
 #include "minecraft/auth/AccountTask.h"
@@ -35,18 +33,13 @@
 
 #include "Application.h"
 
-#include "BuildConfig.h"
-
-#include "Secrets.h"
-
 AccountListPage::AccountListPage(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::AccountListPage)
 {
     ui->setupUi(this);
     ui->listView->setEmptyString(tr(
-        "Welcome!\n"
-        "If you're new here, you can click the \"Add Local\" button to add your local account.\n"
-        "Or click the \"Add Ely.by\" button to add your Ely.by account."
+        "Bem-vindo!\n"
+        "Clique no botão \"Adicionar local\" para adicionar sua conta local."
     ));
     ui->listView->setEmptyMode(VersionListView::String);
     ui->listView->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -58,8 +51,6 @@ AccountListPage::AccountListPage(QWidget *parent)
     ui->listView->header()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->listView->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
     ui->listView->setSelectionMode(QAbstractItemView::SingleSelection);
-
-    // Expand the account column
 
     QItemSelectionModel *selectionModel = ui->listView->selectionModel();
 
@@ -73,9 +64,6 @@ AccountListPage::AccountListPage(QWidget *parent)
     connect(m_accounts.get(), &AccountList::defaultAccountChanged, this, &AccountListPage::listChanged);
 
     updateButtonStates();
-
-    // Xbox authentication won't work without a client identifier, so disable the button if it is missing
-    ui->actionAddMicrosoft->setVisible(Secrets::hasMSAClientID());
 }
 
 AccountListPage::~AccountListPage()
@@ -128,46 +116,6 @@ void AccountListPage::on_actionAddLocal_triggered()
     }
 }
 
-void AccountListPage::on_actionAddMojang_triggered()
-{
-    // LoginDialog has been removed
-    MinecraftAccountPtr account = nullptr;
-
-    if (account)
-    {
-        m_accounts->addAccount(account);
-        if (m_accounts->count() == 1) {
-            m_accounts->setDefaultAccount(account);
-        }
-    }
-}
-
-void AccountListPage::on_actionAddMicrosoft_triggered()
-{
-    if(BuildConfig.BUILD_PLATFORM == "osx64") {
-        CustomMessageBox::selectable(
-            this,
-            tr("Contas Microsoft não disponíveis"),
-            tr(
-                "Microsoft accounts are only usable on macOS 10.13 or newer, with fully updated MultiMC.\n\n"
-                "Please update both your operating system and MultiMC."
-            ),
-            QMessageBox::Warning
-        )->exec();
-        return;
-    }
-    // MSALoginDialog has been removed
-    MinecraftAccountPtr account = nullptr;
-
-    if (account)
-    {
-        m_accounts->addAccount(account);
-        if (m_accounts->count() == 1) {
-            m_accounts->setDefaultAccount(account);
-        }
-    }
-}
-
 void AccountListPage::on_actionRemove_triggered()
 {
     QModelIndexList selection = ui->listView->selectionModel()->selectedIndexes();
@@ -206,22 +154,19 @@ void AccountListPage::on_actionNoDefault_triggered()
 
 void AccountListPage::updateButtonStates()
 {
-    // If there is no selection, disable buttons that require something selected.
     QModelIndexList selection = ui->listView->selectionModel()->selectedIndexes();
     bool hasSelection = selection.size() > 0;
     bool accountIsReady = false;
-    bool accountIsOnline = false;
     if (hasSelection)
     {
         QModelIndex selected = selection.first();
         MinecraftAccountPtr account = selected.data(AccountList::PointerRole).value<MinecraftAccountPtr>();
         accountIsReady = !account->isActive();
-        accountIsOnline = account->typeString() != "local" && account->typeString() != "elyby";
     }
     ui->actionRemove->setEnabled(accountIsReady);
     ui->actionSetDefault->setEnabled(accountIsReady);
-    ui->actionUploadSkin->setEnabled(accountIsReady && accountIsOnline);
-    ui->actionDeleteSkin->setEnabled(accountIsReady && accountIsOnline);
+    ui->actionUploadSkin->setEnabled(false);
+    ui->actionDeleteSkin->setEnabled(false);
     ui->actionRefresh->setEnabled(accountIsReady);
 
     if(m_accounts->defaultAccount().get() == nullptr) {
@@ -236,29 +181,10 @@ void AccountListPage::updateButtonStates()
 
 void AccountListPage::on_actionUploadSkin_triggered()
 {
-    QModelIndexList selection = ui->listView->selectionModel()->selectedIndexes();
-    if (selection.size() > 0)
-    {
-        QModelIndex selected = selection.first();
-        MinecraftAccountPtr account = selected.data(AccountList::PointerRole).value<MinecraftAccountPtr>();
-        // SkinUploadDialog has been removed
-        // SkinUploadDialog dialog(account, this);
-        // dialog.exec();
-    }
+    // Skin upload removed — not supported for local accounts
 }
 
 void AccountListPage::on_actionDeleteSkin_triggered()
 {
-    QModelIndexList selection = ui->listView->selectionModel()->selectedIndexes();
-    if (selection.size() <= 0)
-        return;
-
-    QModelIndex selected = selection.first();
-    MinecraftAccountPtr account = selected.data(AccountList::PointerRole).value<MinecraftAccountPtr>();
-    ProgressDialog prog(this);
-    auto deleteSkinTask = std::make_shared<SkinDelete>(this, account->accessToken());
-    if (prog.execWithTask((Task*)deleteSkinTask.get()) != QDialog::Accepted) {
-        CustomMessageBox::selectable(this, tr("Excluir skin"), tr("Falha ao excluir a skin atual!"), QMessageBox::Warning)->exec();
-        return;
-    }
+    // Skin delete removed — not supported for local accounts
 }

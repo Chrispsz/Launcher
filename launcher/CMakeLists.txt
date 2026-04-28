@@ -177,8 +177,6 @@ set(MINECRAFT_SOURCES
     minecraft/auth/MinecraftAccount.h
     minecraft/auth/Parsers.cpp
     minecraft/auth/Parsers.h
-    minecraft/auth/Yggdrasil.cpp
-    minecraft/auth/Yggdrasil.h
 
     minecraft/auth/providers/BaseAuthProvider.h
     minecraft/auth/providers/LocalAuthProvider.h
@@ -188,14 +186,8 @@ set(MINECRAFT_SOURCES
     minecraft/auth/flows/Local.cpp
     minecraft/auth/flows/Local.h
 
-    minecraft/auth/steps/GetSkinStep.cpp
-    minecraft/auth/steps/GetSkinStep.h
-    minecraft/auth/steps/LauncherLoginStep.cpp
-    minecraft/auth/steps/LauncherLoginStep.h
     minecraft/auth/steps/LocalStep.cpp
     minecraft/auth/steps/LocalStep.h
-    minecraft/auth/steps/YggdrasilStep.cpp
-    minecraft/auth/steps/YggdrasilStep.h
 
     minecraft/gameoptions/GameOptions.h
     minecraft/gameoptions/GameOptions.cpp

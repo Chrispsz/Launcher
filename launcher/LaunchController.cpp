@@ -52,7 +52,7 @@ void LaunchController::decideAccount()
         auto reply = CustomMessageBox::selectable(
             m_parentWidget,
             tr("Sem contas"),
-            tr("Para jogar Minecraft, você deve ter pelo menos uma conta Mojang ou Minecraft "
+            tr("Para jogar Minecraft, você deve ter pelo menos uma conta "
                "conectada."
                "Gostaria de abrir o gerenciador de contas para adicionar uma conta agora?"),
             QMessageBox::Information,
@@ -101,7 +101,7 @@ void LaunchController::login() {
         m_session->wants_online = m_online;
         m_accountToUse->fillSession(m_session);
 
-        if (m_accountToUse->typeString() == "local" || m_accountToUse->typeString() == "elyby") {
+        if (m_accountToUse->typeString() == "local") {
             launchInstance();
             return;
         }
