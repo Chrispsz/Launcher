@@ -134,7 +134,7 @@ void JavaChecker::finished(int exitcode, QProcess::ExitStatus status)
     bool success = true;
 
     QMap<QString, QString> results;
-    QStringList lines = m_stdout.split("\n", Qt::SkipEmptyParts);
+    QStringList lines = m_stdout.split("\n", QString::SkipEmptyParts);
     for(QString line : lines)
     {
         line = line.trimmed();
@@ -142,7 +142,7 @@ void JavaChecker::finished(int exitcode, QProcess::ExitStatus status)
             continue;
         }
 
-        auto parts = line.split('=', Qt::SkipEmptyParts);
+        auto parts = line.split('=', QString::SkipEmptyParts);
         if(parts.size() != 2 || parts[0].isEmpty() || parts[1].isEmpty())
         {
             continue;
