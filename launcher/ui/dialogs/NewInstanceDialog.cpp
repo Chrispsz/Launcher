@@ -69,7 +69,7 @@ NewInstanceDialog::NewInstanceDialog(const QString & initialGroup, const QString
 
 
     // NOTE: m_buttons must be initialized before PageContainer, because it indirectly accesses m_buttons through setSuggestedPack! Do not move this below.
-    m_buttons = new QDialogButtonBox(QDialogButtonBox::Help | QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    m_buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
     m_container = new PageContainer(this);
     m_container->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Expanding);
@@ -89,11 +89,6 @@ NewInstanceDialog::NewInstanceDialog(const QString & initialGroup, const QString
     CancelButton->setDefault(false);
     CancelButton->setAutoDefault(false);
     connect(CancelButton, &QPushButton::clicked, this, &NewInstanceDialog::reject);
-
-    auto HelpButton = m_buttons->button(QDialogButtonBox::Help);
-    HelpButton->setDefault(false);
-    HelpButton->setAutoDefault(false);
-    connect(HelpButton, &QPushButton::clicked, m_container, &PageContainer::help);
 
     if(!url.isEmpty())
     {

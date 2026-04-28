@@ -2,7 +2,6 @@
 
 #include <QDialog>
 #include <QAbstractListModel>
-#include <QSortFilterProxyModel>
 #include "net/NetJob.h"
 
 class ModFolderModel;
@@ -24,8 +23,6 @@ struct ModInfo {
 
     bool operator==(const ModInfo& other) const { return id == other.id; }
 };
-
-enum class LoadState { NotLoaded, Loaded, Errored };
 
 struct VersionInfo {
     int fileId = 0;
@@ -86,7 +83,6 @@ private:
     enum SearchState {
         None,
         CanFetchMore,
-        ResetRequested,
         Finished
     } m_searchState = None;
 

@@ -2,7 +2,6 @@
 
 #include <QDialog>
 #include <QAbstractListModel>
-#include <QSortFilterProxyModel>
 #include "net/NetJob.h"
 
 class ModFolderModel;
@@ -20,14 +19,10 @@ struct ModInfo {
     QString author;
     QString description;
     QUrl iconUrl;
-    QString downloadUrl;
-    QString fileName;
     uint64_t downloadCount = 0;
 
     bool operator==(const ModInfo& other) const { return id == other.id; }
 };
-
-enum class LoadState { NotLoaded, Loaded, Errored };
 
 struct VersionInfo {
     QString name;
@@ -80,12 +75,12 @@ private:
     QString m_loader;
     int m_nextSearchOffset = 0;
     int m_searchGeneration = 0;
+    int m_versionsGeneration = 0;
 
     // Proven state machine — same pattern as CurseForgeModel
     enum SearchState {
         None,
         CanFetchMore,
-        ResetRequested,
         Finished
     } m_searchState = None;
 

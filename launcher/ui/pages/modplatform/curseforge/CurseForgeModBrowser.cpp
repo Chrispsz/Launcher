@@ -12,7 +12,6 @@
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QIcon>
-#include <QStandardPaths>
 #include <QDir>
 
 // ─── ModListModel ────────────────────────────────────────────────────────────
@@ -87,12 +86,10 @@ void CurseForgeModBrowserNS::ModListModel::search(const QString& term, const QSt
 {
     m_searchGeneration++;
 
-    // Abort in-flight search
+    // Abort in-flight jobs immediately and reset pointers
     if (m_searchJob) {
         m_searchJob->abort();
-        m_searchState = ResetRequested;
-        // onSearchFailed will restart the search after abort completes
-        return;
+        m_searchJob.reset();
     }
     if (m_versionsJob) {
         m_versionsJob->abort();
@@ -243,20 +240,6 @@ void CurseForgeModBrowserNS::ModListModel::onSearchSucceeded()
 void CurseForgeModBrowserNS::ModListModel::onSearchFailed()
 {
     m_searchJob.reset();
-
-    // If a reset was requested while a search was in-flight, restart now
-    if (m_searchState == ResetRequested) {
-        beginResetModel();
-        m_mods.clear();
-        m_versions.clear();
-        m_nextSearchOffset = 0;
-        endResetModel();
-
-        m_searchState = None;
-        performPaginatedSearch();
-        return;
-    }
-
     m_searchState = Finished;
     emit errorOccurred(tr("Falha na busca. Verifique sua conexão com a internet e a chave de API."));
 }
@@ -276,10 +259,25 @@ void CurseForgeModBrowserNS::ModListModel::getVersions(int modId, const QString&
 
     QString apiKey = CurseForge::getApiKey();
 
-    // Build version list URL with game version filter
+    // Build version list URL with game version and loader filters
     QString versionsUrl = QString(
-        "%1/mods/%2/files?gameVersion=%3&pageSize=50"
-    ).arg(CurseForge::API_BASE).arg(modId).arg(gameVersion);
+        "%1/mods/%2/files?pageSize=50"
+    ).arg(CurseForge::API_BASE).arg(modId);
+
+    if (!gameVersion.isEmpty())
+        versionsUrl += "&gameVersion=" + QUrl::toPercentEncoding(gameVersion);
+
+    if (!loader.isEmpty()) {
+        int loaderTypeId = 0;
+        if (loader == "Forge")
+            loaderTypeId = static_cast<int>(CurseForge::ModLoaderTypeId::Forge);
+        else if (loader == "Fabric")
+            loaderTypeId = static_cast<int>(CurseForge::ModLoaderTypeId::Fabric);
+        else if (loader == "NeoForge")
+            loaderTypeId = static_cast<int>(CurseForge::ModLoaderTypeId::NeoForge);
+        if (loaderTypeId > 0)
+            versionsUrl += QString("&modLoaderType=%1").arg(loaderTypeId);
+    }
 
     m_versionsJob = NetJob::Ptr(new NetJob("CurseForge::ModVersions", APPLICATION->network()));
     auto dl = Net::Download::makeByteArray(QUrl(versionsUrl), &m_versionsResponse);
@@ -621,7 +619,8 @@ void CurseForgeModBrowser::onModSelected(const QModelIndex& index)
         m_selectedModId = mod.id;
         ui->statusLabel->setText(tr("Carregando versões de '%1'...").arg(mod.name));
         ui->downloadButton->setEnabled(false);
-        m_model->getVersions(mod.id, gameVersion, {});
+        QString loader = ui->loaderComboBox->currentData().toString();
+    m_model->getVersions(mod.id, gameVersion, loader);
     }
 }
 
@@ -633,6 +632,12 @@ void CurseForgeModBrowser::onVersionSelected(int index)
 
 void CurseForgeModBrowser::onDownloadClicked()
 {
+    // Abort any existing download before starting a new one
+    if (m_downloadJob) {
+        m_downloadJob->abort();
+        m_downloadJob.reset();
+    }
+
     auto mcInst = dynamic_cast<MinecraftInstance*>(m_instance);
     if (!mcInst) {
         QMessageBox::warning(this, tr("Erro"), tr("Instância inválida."));

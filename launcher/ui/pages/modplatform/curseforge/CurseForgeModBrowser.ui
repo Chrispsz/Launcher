@@ -67,7 +67,7 @@
      <item>
       <widget class="QLabel" name="loaderLabel">
        <property name="text">
-        <string>Loader:</string>
+        <string>Carregador:</string>
        </property>
       </widget>
      </item>

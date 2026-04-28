@@ -120,7 +120,7 @@ void CurseForgePage::onPackDataChanged(int id)
 static QString versionToString(const CurseForge::ModVersion& version) {
     switch(version.type) {
         case CurseForge::VersionType::Alpha: {
-            return QString("%1 (Alpha)").arg(version.displayName);
+            return QString("%1 (Alfa)").arg(version.displayName);
         }
         case CurseForge::VersionType::Beta: {
             return QString("%1 (Beta)").arg(version.displayName);

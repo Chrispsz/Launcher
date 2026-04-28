@@ -10,7 +10,7 @@
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QIcon>
-#include <QStandardPaths>
+#include <QUrlQuery>
 #include <QDir>
 
 // ─── ModListModel ────────────────────────────────────────────────────────────
@@ -85,11 +85,10 @@ void ModrinthModBrowserNS::ModListModel::search(const QString& term, const QStri
 {
     m_searchGeneration++;
 
-    // Abort in-flight search
+    // Abort in-flight jobs immediately and reset pointers
     if (m_searchJob) {
         m_searchJob->abort();
-        m_searchState = ResetRequested;
-        return;
+        m_searchJob.reset();
     }
     if (m_versionsJob) {
         m_versionsJob->abort();
@@ -181,7 +180,7 @@ void ModrinthModBrowserNS::ModListModel::onSearchSucceeded()
                 mod.description = Json::ensureString(hitObj, "description", "");
                 mod.author = Json::ensureString(hitObj, "author", "Desconhecido");
                 mod.iconUrl = Json::ensureUrl(hitObj, "icon_url", QUrl());
-                mod.downloadCount = Json::ensureInteger(hitObj, "downloads", 0);
+                mod.downloadCount = hitObj["downloads"].toVariant().toULongLong();
                 newMods.append(mod);
             } catch (const JSONValidationError& e) {
                 qWarning() << "Erro ao carregar mod do Modrinth:" << e.cause();
@@ -214,20 +213,6 @@ void ModrinthModBrowserNS::ModListModel::onSearchSucceeded()
 void ModrinthModBrowserNS::ModListModel::onSearchFailed()
 {
     m_searchJob.reset();
-
-    // If a reset was requested while a search was in-flight, restart now
-    if (m_searchState == ResetRequested) {
-        beginResetModel();
-        m_mods.clear();
-        m_versions.clear();
-        m_nextSearchOffset = 0;
-        endResetModel();
-
-        m_searchState = None;
-        performPaginatedSearch();
-        return;
-    }
-
     m_searchState = Finished;
     emit errorOccurred(tr("Falha na busca. Verifique sua conexão com a internet."));
 }
@@ -239,29 +224,32 @@ void ModrinthModBrowserNS::ModListModel::getVersions(const QString& projectId, c
         m_versionsJob.reset();
     }
 
+    m_versionsGeneration++;
+    int gen = m_versionsGeneration;
+
     m_versions.clear();
     m_versionsResponse.clear();
 
-    // Build version list URL with optional filters
-    QString versionsUrl = QString("https://api.modrinth.com/v2/project/%1/version").arg(projectId);
-
-    QStringList queryParts;
-    if (!gameVersion.isEmpty()) {
-        queryParts << QString("game_versions=[\"%1\"]").arg(gameVersion);
-    }
-    if (!loader.isEmpty()) {
-        queryParts << QString("loaders=[\"%1\"]").arg(loader);
-    }
-    if (!queryParts.isEmpty()) {
-        versionsUrl += "?" + queryParts.join("&");
-    }
+    // Build version list URL with proper URL encoding
+    QUrl versionsApiUrl(QString("https://api.modrinth.com/v2/project/%1/version").arg(projectId));
+    QUrlQuery query;
+    if (!gameVersion.isEmpty())
+        query.addQueryItem("game_versions", QString("[\"%1\"]").arg(gameVersion));
+    if (!loader.isEmpty())
+        query.addQueryItem("loaders", QString("[\"%1\"]").arg(loader));
+    if (!query.isEmpty())
+        versionsApiUrl.setQuery(query);
 
     m_versionsJob = NetJob::Ptr(new NetJob("Modrinth::ModVersions", APPLICATION->network()));
-    m_versionsJob->addNetAction(Net::Download::makeByteArray(QUrl(versionsUrl), &m_versionsResponse));
+    m_versionsJob->addNetAction(Net::Download::makeByteArray(versionsApiUrl, &m_versionsResponse));
     m_versionsJob->start();
 
-    QObject::connect(m_versionsJob.get(), &NetJob::succeeded, this, &ModListModel::onVersionsSucceeded);
-    QObject::connect(m_versionsJob.get(), &NetJob::failed, this, &ModListModel::onVersionsFailed);
+    QObject::connect(m_versionsJob.get(), &NetJob::succeeded, this, [this, gen]() {
+        if (gen == m_versionsGeneration) onVersionsSucceeded();
+    });
+    QObject::connect(m_versionsJob.get(), &NetJob::failed, this, [this, gen]() {
+        if (gen == m_versionsGeneration) onVersionsFailed();
+    });
 }
 
 void ModrinthModBrowserNS::ModListModel::reset()
@@ -601,6 +589,12 @@ void ModrinthModBrowser::onVersionSelected(int index)
 
 void ModrinthModBrowser::onDownloadClicked()
 {
+    // Abort any existing download before starting a new one
+    if (m_downloadJob) {
+        m_downloadJob->abort();
+        m_downloadJob.reset();
+    }
+
     auto mcInst = dynamic_cast<MinecraftInstance*>(m_instance);
     if (!mcInst) {
         QMessageBox::warning(this, tr("Erro"), tr("Instância inválida."));

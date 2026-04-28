@@ -136,7 +136,7 @@ void ModrinthPage::onPackDataChanged(const QString& id)
 QString versionToString(const Modrinth::Version& version) {
     switch(version.type) {
         case Modrinth::VersionType::Alpha: {
-            return QString("%1 (Alpha)").arg(version.name);
+            return QString("%1 (Alfa)").arg(version.name);
         }
         case Modrinth::VersionType::Beta: {
             return QString("%1 (Beta)").arg(version.name);
