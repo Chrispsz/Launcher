@@ -6,6 +6,7 @@
 #include <QUrl>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QVector>
 
 namespace CurseForge {
 struct File {
