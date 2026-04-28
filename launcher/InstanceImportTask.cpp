@@ -584,11 +584,12 @@ void InstanceImportTask::processCurseForge() {
 
             for (const auto& file : requiredFiles) {
                 QString fileInfoUrl = QString(
-                    "https://api.curseforge.com/v1/mods/%1/files/%2?apiKey=%3"
-                ).arg(file.projectID).arg(file.fileID).arg(apiKey);
+                    "https://api.curseforge.com/v1/mods/%1/files/%2"
+                ).arg(file.projectID).arg(file.fileID);
 
                 auto* buf = new QByteArray();
                 auto dl = Net::Download::makeByteArray(QUrl(fileInfoUrl), buf);
+                CurseForge::addApiKeyHeader(dl.get(), apiKey);
                 m_filesNetJob->addNetAction(dl);
                 responses->push_back({file, buf});
             }
