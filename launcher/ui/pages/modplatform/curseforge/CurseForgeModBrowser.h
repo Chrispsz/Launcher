@@ -115,6 +115,8 @@ private slots:
     void onSearchError(const QString& msg);
 
 private:
+    void startModDownload(const QUrl& url, const QString& targetPath);
+
     Ui::CurseForgeModBrowser* ui;
     BaseInstance* m_instance;
     std::shared_ptr<ModFolderModel> m_modModel;
@@ -122,4 +124,5 @@ private:
     int m_selectedModId = 0;
 
     NetJob::Ptr m_downloadJob;
+    QByteArray m_downloadUrlResponse;
 };

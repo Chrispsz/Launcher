@@ -173,7 +173,7 @@ void ModrinthModBrowserNS::ModListModel::onSearchSucceeded()
                 mod.name = Json::requireString(hitObj, "title");
                 mod.description = Json::ensureString(hitObj, "description", "");
                 mod.author = Json::ensureString(hitObj, "author", "Desconhecido");
-                mod.iconUrl = Json::requireUrl(hitObj, "icon_url");
+                mod.iconUrl = Json::ensureUrl(hitObj, "icon_url", QUrl());
                 mod.downloadCount = Json::ensureInteger(hitObj, "downloads", 0);
                 newMods.append(mod);
             } catch (const JSONValidationError& e) {

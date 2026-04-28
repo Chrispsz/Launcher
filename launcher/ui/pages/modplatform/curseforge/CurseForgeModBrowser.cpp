@@ -350,8 +350,9 @@ void CurseForgeModBrowserNS::ModListModel::onVersionsSucceeded()
                     }
                 }
 
-                if (!vi.downloadUrl.isEmpty())
-                    m_versions.append(vi);
+                // Include all versions — downloadUrl may be null due to CurseForge redistribution policy,
+                // but can be resolved at download time via /download-url endpoint.
+                m_versions.append(vi);
             } catch (const JSONValidationError& e) {
                 qWarning() << "Erro ao carregar versão do CurseForge:" << e.cause();
                 continue;
@@ -640,10 +641,6 @@ void CurseForgeModBrowser::onDownloadClicked()
     }
 
     const auto& version = versions[versionIndex];
-    if (version.downloadUrl.isEmpty()) {
-        QMessageBox::warning(this, tr("Erro"), tr("URL de download inválida."));
-        return;
-    }
 
     // Determine target path in the instance's mod folder
     QString modDir = m_modModel->dir().absolutePath();
@@ -661,11 +658,65 @@ void CurseForgeModBrowser::onDownloadClicked()
     }
 
     ui->downloadButton->setEnabled(false);
-    ui->statusLabel->setText(tr("Baixando '%1'...").arg(version.fileName));
 
-    // Use Net::Download::makeFile to download the mod file
+    // If downloadUrl is available directly, download immediately.
+    // Otherwise, resolve it via the /download-url endpoint (same pattern as InstanceImportTask).
+    if (!version.downloadUrl.isEmpty()) {
+        startModDownload(QUrl(version.downloadUrl), targetPath);
+    } else {
+        ui->statusLabel->setText(tr("Resolvendo URL de download..."));
+
+        QString apiKey = CurseForge::getApiKey();
+        QUrl fallbackUrl = CurseForge::buildFileDownloadUrlEndpoint(m_selectedModId, version.fileId);
+
+        m_downloadJob = NetJob::Ptr(new NetJob("CurseForge::ResolveURL", APPLICATION->network()));
+        auto dl = Net::Download::makeByteArray(fallbackUrl, &m_downloadUrlResponse);
+        CurseForge::addApiKeyHeader(dl.get(), apiKey);
+        m_downloadJob->addNetAction(dl);
+
+        QObject::connect(m_downloadJob.get(), &NetJob::succeeded, this, [this, targetPath]() {
+            m_downloadJob.reset();
+
+            QJsonParseError parse_error;
+            QJsonDocument doc = QJsonDocument::fromJson(m_downloadUrlResponse, &parse_error);
+            if (parse_error.error != QJsonParseError::NoError) {
+                ui->statusLabel->setText(tr("Erro ao resolver URL de download."));
+                ui->downloadButton->setEnabled(true);
+                return;
+            }
+
+            try {
+                auto obj = Json::requireObject(doc);
+                QString resolvedUrl = Json::requireString(obj, "data");
+                if (resolvedUrl.isEmpty()) {
+                    ui->statusLabel->setText(tr("URL de download inválida."));
+                    ui->downloadButton->setEnabled(true);
+                    return;
+                }
+                startModDownload(QUrl(resolvedUrl), targetPath);
+            } catch (const JSONValidationError& e) {
+                qWarning() << "Erro ao resolver URL de download do CurseForge:" << e.cause();
+                ui->statusLabel->setText(tr("Erro ao resolver URL de download."));
+                ui->downloadButton->setEnabled(true);
+            }
+        });
+
+        QObject::connect(m_downloadJob.get(), &NetJob::failed, this, [this](const QString& reason) {
+            m_downloadJob.reset();
+            ui->statusLabel->setText(tr("Falha ao resolver URL: %1").arg(reason));
+            ui->downloadButton->setEnabled(true);
+        });
+
+        m_downloadJob->start();
+    }
+}
+
+void CurseForgeModBrowser::startModDownload(const QUrl& url, const QString& targetPath)
+{
+    ui->statusLabel->setText(tr("Baixando..."));
+
     m_downloadJob = NetJob::Ptr(new NetJob("CurseForge::DownloadMod", APPLICATION->network()));
-    m_downloadJob->addNetAction(Net::Download::makeFile(QUrl(version.downloadUrl), targetPath));
+    m_downloadJob->addNetAction(Net::Download::makeFile(url, targetPath));
 
     QObject::connect(m_downloadJob.get(), &NetJob::succeeded, this, [this]() {
         m_downloadJob.reset();
