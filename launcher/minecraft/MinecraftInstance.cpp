@@ -964,8 +964,8 @@ shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPt
 
     if (!m_acct)
     {
-        emitFailed(tr("Failed to launch: account '%1' not found.").arg(session->player_name));
-        return;
+        pptr->emitFailed(tr("Failed to launch: account '%1' not found.").arg(session->player_name));
+        return process;
     }
 
     // authlib patch

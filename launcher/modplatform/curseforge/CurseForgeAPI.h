@@ -9,8 +9,7 @@
 
 #include <QString>
 #include <QUrl>
-
-class Application;
+#include "Application.h"
 
 namespace CurseForge {
 
@@ -74,7 +73,7 @@ inline QUrl addApiKey(const QUrl &url, const QString &apiKey)
         return url;
 
     QString urlString = url.toString();
-    urlString += (urlString.contains("?") ? "&" : "?") + "apiKey=" + apiKey;
+    urlString += (urlString.contains("?") ? QStringLiteral("&") : QStringLiteral("?")) + QStringLiteral("apiKey=") + apiKey;
     return QUrl(urlString);
 }
 
