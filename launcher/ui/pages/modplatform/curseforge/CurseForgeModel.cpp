@@ -106,11 +106,6 @@ void CurseForge::ListModel::searchWithTerm(const QString &term, int sortField)
 void CurseForge::ListModel::performPaginatedSearch()
 {
     QString apiKey = CurseForge::getApiKey();
-    if (apiKey.isEmpty()) {
-        qWarning() << "CurseForge API key is not set. Cannot perform search.";
-        searchState = Finished;
-        return;
-    }
 
     auto *netJob = new NetJob("CurseForge::Search", APPLICATION->network());
     QUrl searchUrl = CurseForge::buildSearchUrl(currentSearchTerm, CurseForge::CLASS_ID_MODPACKS,
@@ -291,10 +286,6 @@ void CurseForge::ListModel::getPackDetails(int id)
     currentPackDetailRequest = id;
 
     QString apiKey = CurseForge::getApiKey();
-    if (apiKey.isEmpty()) {
-        qWarning() << "CurseForge API key is not set. Cannot fetch pack details.";
-        return;
-    }
 
     auto &modpack = modpacks[*index];
 

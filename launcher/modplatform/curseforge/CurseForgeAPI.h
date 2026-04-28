@@ -22,6 +22,10 @@ namespace CurseForge {
 // API base URL
 static const QString API_BASE = QStringLiteral("https://api.curseforge.com/v1");
 
+// Default (shared) API key — used when no user-configured key is set.
+// Users can override this in Settings → Minecraft → CurseForge.
+static const QString DEFAULT_API_KEY = QStringLiteral("$2a$10$7sbUGEKY9ZLpEEEsjDrMHej9u6zK57n7qXpAkpTF4gcu0Y5fXmotm");
+
 // Game ID for Minecraft
 static const int MINECRAFT_GAME_ID = 432;
 
@@ -48,12 +52,16 @@ enum class SortFieldId {
 };
 
 /*
- * Retrieve the CurseForge API key from application settings.
- * Returns an empty string if no key is configured.
+ * Retrieve the CurseForge API key.
+ * Returns the user-configured key from settings if set,
+ * otherwise falls back to the built-in default key.
  */
 inline QString getApiKey()
 {
-    return APPLICATION->settings()->get("CurseForgeAPIKey").toString();
+    QString userKey = APPLICATION->settings()->get("CurseForgeAPIKey").toString();
+    if (!userKey.isEmpty())
+        return userKey;
+    return DEFAULT_API_KEY;
 }
 
 /*

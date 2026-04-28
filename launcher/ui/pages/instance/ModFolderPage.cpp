@@ -387,14 +387,6 @@ void ModFolderPage::on_actionBrowseCurseForge_triggered()
         QMessageBox::warning(this, tr("Erro"), tr("Esta instância não suporta busca de mods."));
         return;
     }
-    QString apiKey = APPLICATION->settings()->get("CurseForgeAPIKey").toString();
-    if (apiKey.isEmpty()) {
-        QMessageBox::warning(this, tr("CurseForge API Key"),
-            tr("Configure sua chave de API do CurseForge nas configurações:\n\n"
-               "Minecraft → CurseForge\n\n"
-               "Obtenha sua chave em console.curseforge.com"));
-        return;
-    }
     CurseForgeModBrowser browser(mcInst, m_mods, this);
     browser.exec();
 }

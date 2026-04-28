@@ -3,6 +3,7 @@
 
 #include "Application.h"
 #include "Json.h"
+#include "modplatform/curseforge/CurseForgeAPI.h"
 #include "minecraft/MinecraftInstance.h"
 #include "minecraft/PackProfile.h"
 #include "minecraft/mod/ModFolderModel.h"
@@ -69,11 +70,7 @@ void CurseForgeModBrowserNS::ModListModel::fetchMore(const QModelIndex& parent)
     if (parent.isValid() || !m_canFetchMore || m_searchInProgress)
         return;
 
-    QString apiKey = getApiKey();
-    if (apiKey.isEmpty()) {
-        emit errorOccurred(tr("Configure sua chave de API do CurseForge nas configurações do launcher."));
-        return;
-    }
+    QString apiKey = CurseForge::getApiKey();
 
     // Build search URL with pagination
     QString searchUrl = QString(
@@ -95,13 +92,6 @@ void CurseForgeModBrowserNS::ModListModel::fetchMore(const QModelIndex& parent)
 
 void CurseForgeModBrowserNS::ModListModel::search(const QString& term, const QString& gameVersion, const QString& loader)
 {
-    // Check API key first
-    QString apiKey = getApiKey();
-    if (apiKey.isEmpty()) {
-        emit errorOccurred(tr("Configure sua chave de API do CurseForge nas configurações do launcher."));
-        return;
-    }
-
     // Abort in-flight search
     if (m_searchJob) {
         m_searchJob->abort();
@@ -138,11 +128,7 @@ void CurseForgeModBrowserNS::ModListModel::getVersions(int modId, const QString&
     m_versions.clear();
     m_versionsResponse.clear();
 
-    QString apiKey = getApiKey();
-    if (apiKey.isEmpty()) {
-        emit errorOccurred(tr("Configure sua chave de API do CurseForge nas configurações do launcher."));
-        return;
-    }
+    QString apiKey = CurseForge::getApiKey();
 
     // Build version list URL with game version filter
     QString versionsUrl = QString(
@@ -367,7 +353,7 @@ void CurseForgeModBrowserNS::ModListModel::requestLogo(int id, const QUrl& url)
 
 QString CurseForgeModBrowserNS::ModListModel::getApiKey() const
 {
-    return APPLICATION->settings()->get("CurseForgeAPIKey").toString();
+    return CurseForge::getApiKey();
 }
 
 // ─── CurseForgeModBrowser ────────────────────────────────────────────────────

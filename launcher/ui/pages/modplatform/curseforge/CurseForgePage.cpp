@@ -38,21 +38,6 @@ CurseForgePage::~CurseForgePage()
 void CurseForgePage::openedImpl()
 {
     BasePage::openedImpl();
-
-    // Check if API key is configured
-    QString apiKey = APPLICATION->settings()->get("CurseForgeAPIKey").toString();
-    if (apiKey.isEmpty()) {
-        ui->packDescription->setHtml(
-            tr("<html><body style='font-family: sans-serif;'>"
-               "<h3>CurseForge API Key Required</h3>"
-               "<p>Configure sua chave de API do CurseForge nas configurações:</p>"
-               "<p><b>Minecraft → CurseForge</b></p>"
-               "<p>Obtenha sua chave em <a href='https://console.curseforge.com/'>console.curseforge.com</a></p>"
-               "</body></html>")
-        );
-        return;
-    }
-
     triggerSearch();
 }
 

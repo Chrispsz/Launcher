@@ -143,14 +143,14 @@
           <item>
            <widget class="QLabel" name="cfApiKeyLabel">
             <property name="text">
-             <string>Chave de API do CurseForge:</string>
+             <string>Chave de API do CurseForge (opcional):</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLineEdit" name="cfApiKeyEdit">
             <property name="placeholderText">
-             <string>$2y$10$...</string>
+             <string>Deixe vazio para usar a chave padrão</string>
             </property>
            </widget>
           </item>
@@ -160,7 +160,7 @@
              <bool>true</bool>
             </property>
             <property name="text">
-             <string>&lt;small&gt;Obtenha sua chave em &lt;a href="https://console.curseforge.com/"&gt;console.curseforge.com&lt;/a&gt;&lt;/small&gt;</string>
+             <string>&lt;small&gt;Uma chave integrada já está incluída. Cole aqui a sua própria chave em &lt;a href="https://console.curseforge.com/"&gt;console.curseforge.com&lt;/a&gt; se necessário.&lt;/small&gt;</string>
             </property>
             <property name="openExternalLinks">
              <bool>true</bool>

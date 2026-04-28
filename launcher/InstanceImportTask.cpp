@@ -30,6 +30,7 @@
 #include <quazipdir.h>
 #include "modplatform/modrinth/ModrinthPackManifest.h"
 #include "modplatform/curseforge/CurseForgePackManifest.h"
+#include "modplatform/curseforge/CurseForgeAPI.h"
 
 #include "icons/IconList.h"
 #include "Application.h"
@@ -571,7 +572,7 @@ void InstanceImportTask::processCurseForge() {
     instance.saveNow();
 
     // Download mod files using CurseForge API if API key is available
-    QString apiKey = APPLICATION->settings()->get("CurseForgeAPIKey").toString();
+    QString apiKey = CurseForge::getApiKey();
     if (!apiKey.isEmpty() && !files.empty()) {
         // Filter only required files
         QVector<CurseForge::File> requiredFiles;
