@@ -96,6 +96,7 @@ MinecraftInstance::MinecraftInstance(SettingsObjectPtr globalSettings, SettingsO
     m_settings->registerPassthrough(globalSettings->getSetting("JavaTimestamp"), javaOrLocation);
     m_settings->registerPassthrough(globalSettings->getSetting("JavaVersion"), javaOrLocation);
     m_settings->registerPassthrough(globalSettings->getSetting("JavaArchitecture"), javaOrLocation);
+    m_settings->registerPassthrough(globalSettings->getSetting("JavaVendor"), javaOrLocation);
 
     // Window Size
     auto windowSetting = m_settings->registerSetting("OverrideWindow", false);
@@ -966,7 +967,7 @@ shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPt
     if (m_acct->provider()->injectorEndpoint() != "")
     {
         auto step = new InjectAuthlib(pptr, &m_injector);
-        step->setAuthServer(m_acct->provider()->injectorEndpoint().arg(localAuthServerPort));
+        step->setAuthServer(m_acct->provider()->injectorEndpoint());
         step->setOfflineMode(!session->wants_online);
         process->appendStep(step);
     }

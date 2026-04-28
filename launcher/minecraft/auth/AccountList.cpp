@@ -433,10 +433,11 @@ bool AccountList::loadList()
     QFile file(m_listFilePath);
 
     // Try to open the file and fail if we can't.
-    // TODO: We should probably report this error to the user.
+    // NOTE: On first run, accounts.json doesn't exist yet — this is expected.
     if (!file.open(QIODevice::ReadOnly))
     {
-        qCritical() << QString("Failed to read the account list file (%1).").arg(m_listFilePath);
+        if (QFile::exists(m_listFilePath))
+            qCritical() << QString("Failed to read the account list file (%1).").arg(m_listFilePath);
         return false;
     }
 

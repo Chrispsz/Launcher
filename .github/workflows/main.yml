@@ -137,6 +137,8 @@ jobs:
           export LD_LIBRARY_PATH="$SCRIPT_DIR/bin${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
           export QT_PLUGIN_PATH="$SCRIPT_DIR/bin/plugins"
           export QT_QPA_PLATFORM_PLUGIN_PATH="$SCRIPT_DIR/bin/plugins/platforms"
+          # Force X11/Xcb — Qt 5.6 does not support Wayland natively
+          export QT_QPA_PLATFORM=xcb
           exec "$SCRIPT_DIR/bin/LauncherMC" "$@"
           EOF
           chmod +x LauncherMC

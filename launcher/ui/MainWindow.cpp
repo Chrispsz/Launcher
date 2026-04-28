@@ -1231,13 +1231,8 @@ void MainWindow::droppedURLs(QList<QUrl> urls)
     }
 }
 
-void MainWindow::on_actionREDDIT_triggered()
-{
-}
-
-void MainWindow::on_actionDISCORD_triggered()
-{
-}
+// LAUNCHERMC: on_actionREDDIT_triggered removed (action does not exist)
+// LAUNCHERMC: on_actionDISCORD_triggered removed (action does not exist)
 
 void MainWindow::on_actionChangeInstIcon_triggered()
 {
@@ -1373,10 +1368,7 @@ void MainWindow::globalSettingsClosed()
     update();
 }
 
-void MainWindow::on_actionInstanceSettings_triggered()
-{
-    APPLICATION->showInstanceWindow(m_selectedInstance, "settings");
-}
+// LAUNCHERMC: on_actionInstanceSettings_triggered removed (action does not exist)
 
 void MainWindow::on_actionEditInstNotes_triggered()
 {
@@ -1410,15 +1402,8 @@ void MainWindow::on_actionManageAccounts_triggered()
 
 // LAUNCHERMC: on_actionReportBug_triggered removed
 
-void MainWindow::on_actionPatreon_triggered()
-{
-    DesktopServices::openUrl(QUrl("https://www.patreon.com/multimc"));
-}
-
-void MainWindow::on_actionMoreNews_triggered()
-{
-    DesktopServices::openUrl(QUrl("https://multimc.org/posts.html"));
-}
+// LAUNCHERMC: on_actionPatreon_triggered removed (action does not exist)
+// LAUNCHERMC: on_actionMoreNews_triggered removed (action does not exist)
 
 // LAUNCHERMC: newsButtonClicked removed (no news feature)
 

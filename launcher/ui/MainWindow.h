@@ -67,9 +67,8 @@ private slots:
 
     void on_actionAddInstance_triggered();
 
-    void on_actionREDDIT_triggered();
-
-    void on_actionDISCORD_triggered();
+    // LAUNCHERMC: on_actionREDDIT_triggered removed
+    // LAUNCHERMC: on_actionDISCORD_triggered removed
 
     void on_actionCopyInstance_triggered();
 
@@ -100,16 +99,15 @@ private slots:
 
     void on_actionSettings_triggered();
 
-    void on_actionInstanceSettings_triggered();
+    // LAUNCHERMC: on_actionInstanceSettings_triggered removed
 
     void on_actionManageAccounts_triggered();
 
     // LAUNCHERMC: on_actionReportBug_triggered removed
     // void on_actionReportBug_triggered();
 
-    void on_actionPatreon_triggered();
-
-    void on_actionMoreNews_triggered();
+    // LAUNCHERMC: on_actionPatreon_triggered removed
+    // LAUNCHERMC: on_actionMoreNews_triggered removed
 
     // LAUNCHERMC: newsButtonClicked removed (no news feature)
     // void newsButtonClicked();
