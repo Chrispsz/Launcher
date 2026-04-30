@@ -897,7 +897,7 @@ shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPt
 
     // print a header
     {
-        process->appendStep(new TextPrint(pptr, "Minecraft folder is:\n" + gameRoot() + "\n\n", MessageLevel::Launcher));
+        process->appendStep(new TextPrint(pptr, tr("Pasta do Minecraft:\n") + gameRoot() + "\n\n", MessageLevel::Launcher));
     }
 
     // check java
@@ -910,7 +910,7 @@ shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPt
     QString method = launchMethod();
     if(!validMethods.contains(method))
     {
-        process->appendStep(new TextPrint(pptr, "Selected launch method \"" + method + "\" is not valid.\n", MessageLevel::Fatal));
+        process->appendStep(new TextPrint(pptr, tr("Método de lançamento selecionado \"%1\" não é válido.\n").arg(method), MessageLevel::Fatal));
         return process;
     }
 

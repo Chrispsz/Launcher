@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@main
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
 
@@ -151,7 +151,7 @@ jobs:
         run: ccache --show-stats
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v4
         with:
           name: LauncherMC-linux64
           path: AppDir/
@@ -161,19 +161,19 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      - uses: actions/checkout@main
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
 
       - name: Cache Qt
-        uses: actions/cache@main
+        uses: actions/cache@v4
         id: qt-cached
         with:
           path: "D:/Qt"
           key: ${{ runner.os }}-qt563-mingw492-v3
 
       - name: Cache Qt Installer
-        uses: actions/cache@main
+        uses: actions/cache@v4
         if: steps.qt-cached.outputs.cache-hit != 'true'
         id: installer-cached
         with:
@@ -309,7 +309,7 @@ jobs:
           copy D:\Qt\5.6.3\mingw49_32\plugins\iconengines\qsvgicon.dll %DEST%\iconengines\
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v4
         with:
           name: LauncherMC-win32
           path: "D:/LauncherMC"

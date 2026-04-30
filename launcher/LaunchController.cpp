@@ -267,10 +267,10 @@ void LaunchController::launchInstance()
         online_mode = "offline";
     }
 
-    m_launcher->prependStep(new TextPrint(m_launcher.get(), "Launched instance in " + online_mode + " mode\n", MessageLevel::Launcher));
+    m_launcher->prependStep(new TextPrint(m_launcher.get(), tr("Instância iniciada no modo %1\n").arg(online_mode), MessageLevel::Launcher));
 
     // Prepend Version
-    m_launcher->prependStep(new TextPrint(m_launcher.get(), BuildConfig.LAUNCHER_NAME + " version: " + BuildConfig.printableVersionString() + "\n\n", MessageLevel::Launcher));
+    m_launcher->prependStep(new TextPrint(m_launcher.get(), BuildConfig.LAUNCHER_NAME + tr(" versão: ") + BuildConfig.printableVersionString() + "\n\n", MessageLevel::Launcher));
     m_launcher->start();
 }
 
