@@ -285,31 +285,12 @@ set(MINECRAFT_SOURCES
     # Assets
     minecraft/AssetsUtils.h
     minecraft/AssetsUtils.cpp
-
-    mojang/PackageManifest.h
-    mojang/PackageManifest.cpp
     )
 
 add_unit_test(GradleSpecifier
     SOURCES minecraft/GradleSpecifier_test.cpp
     LIBS Launcher_logic
     )
-
-add_executable(PackageManifest
-    mojang/PackageManifest_test.cpp
-)
-target_link_libraries(PackageManifest
-    Launcher_logic
-    Qt5::Test
-)
-target_include_directories(PackageManifest
-    PRIVATE ../cmake/UnitTest/
-)
-add_test(
-    NAME PackageManifest
-    COMMAND PackageManifest
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-)
 
 add_unit_test(MojangVersionFormat
     SOURCES minecraft/MojangVersionFormat_test.cpp
@@ -502,6 +483,7 @@ SET(LAUNCHER_SOURCES
     # GUI - themes
     ui/themes/DarkTheme.cpp
     ui/themes/DarkTheme.h
+    ui/themes/FusionTheme.h
     ui/themes/ITheme.cpp
     ui/themes/ITheme.h
 

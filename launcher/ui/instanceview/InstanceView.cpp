@@ -524,34 +524,8 @@ void InstanceView::paintEvent(QPaintEvent *event)
 
     /*
      * Drop indicators for manual reordering...
+     * (removido — código morto atrás de #if 0)
      */
-#if 0
-    if (!m_lastDragPosition.isNull())
-    {
-        QPair<Group *, int> pair = rowDropPos(m_lastDragPosition);
-        Group *category = pair.first;
-        int row = pair.second;
-        if (category)
-        {
-            int internalRow = row - category->firstItemIndex;
-            QLine line;
-            if (internalRow >= category->numItems())
-            {
-                QRect toTheRightOfRect = visualRect(category->lastItem());
-                line = QLine(toTheRightOfRect.topRight(), toTheRightOfRect.bottomRight());
-            }
-            else
-            {
-                QRect toTheLeftOfRect = visualRect(model()->index(row, 0));
-                line = QLine(toTheLeftOfRect.topLeft(), toTheLeftOfRect.bottomLeft());
-            }
-            painter.save();
-            painter.setPen(QPen(Qt::black, 3));
-            painter.drawLine(line);
-            painter.restore();
-        }
-    }
-#endif
 }
 
 void InstanceView::resizeEvent(QResizeEvent *event)

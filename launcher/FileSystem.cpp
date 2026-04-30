@@ -439,23 +439,7 @@ bool createShortCut(QString location, QString dest, QStringList args, QString na
 
     return true;
 #elif defined Q_OS_WIN
-    // TODO: Fix
-    //    QFile file(PathCombine(location, name + ".lnk"));
-    //    WCHAR *file_w;
-    //    WCHAR *dest_w;
-    //    WCHAR *args_w;
-    //    file.fileName().toWCharArray(file_w);
-    //    dest.toWCharArray(dest_w);
-
-    //    QString argStr;
-    //    for (int i = 0; i < args.count(); i++)
-    //    {
-    //        argStr.append(args[i]);
-    //        argStr.append(" ");
-    //    }
-    //    argStr.toWCharArray(args_w);
-
-    //    return SUCCEEDED(CreateLink(file_w, dest_w, args_w));
+    // Atalhos Windows não implementados ainda
     return false;
 #else
     qWarning("Desktop Shortcuts not supported on your platform!");
