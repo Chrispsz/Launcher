@@ -101,8 +101,8 @@ void processRequest(AuthServer *authServer, Request *request, Response *response
         uuid.remove('-');
 
         // Use the profile info stored by LaunchController before launch
-        QString profileId = authServer->m_profileId.isEmpty() ? uuid : authServer->m_profileId;
-        QString profileName = authServer->m_profileName.isEmpty() ? "Player" : authServer->m_profileName;
+        QString profileId = authServer->profileId().isEmpty() ? uuid : authServer->profileId();
+        QString profileName = authServer->profileName().isEmpty() ? "Player" : authServer->profileName();
 
         // Build the profile response matching Mojang's session server format
         // {"id":"<uuid>","name":"<name>","properties":[{"name":"textures","value":"<base64>"}]}

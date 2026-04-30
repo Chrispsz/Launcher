@@ -16,6 +16,9 @@ public:
     /// Called before launching the game so profile lookups return the correct player.
     void setProfileInfo(const QString &profileId, const QString &profileName);
 
+    QString profileId() const { return m_profileId; }
+    QString profileName() const { return m_profileName; }
+
 private:
     void newConnection();
 
