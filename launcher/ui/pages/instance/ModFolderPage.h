@@ -99,15 +99,15 @@ private
 slots:
     void modItemActivated(const QModelIndex &index);
     void on_filterTextChanged(const QString & newContents);
-    void on_RunningState_changed(bool running);
+    void runningStateChanged(bool running);
     void on_actionAdd_triggered();
     void on_actionRemove_triggered();
     void on_actionEnable_triggered();
     void on_actionDisable_triggered();
     void on_actionView_Folder_triggered();
     void on_actionView_configs_triggered();
-    void on_actionBrowseMods_triggered();
-    void on_actionBrowseCurseForge_triggered();
+    void browseMods();
+    void browseCurseForge();
     void ShowContextMenu(const QPoint &pos);
 };
 

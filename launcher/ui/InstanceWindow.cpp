@@ -99,7 +99,7 @@ InstanceWindow::InstanceWindow(InstancePtr instance, QWidget *parent)
         auto launchTask = m_instance->getLaunchTask();
         on_InstanceLaunchTask_changed(launchTask);
         connect(m_instance.get(), &BaseInstance::launchTaskChanged, this, &InstanceWindow::on_InstanceLaunchTask_changed);
-        connect(m_instance.get(), &BaseInstance::runningStatusChanged, this, &InstanceWindow::on_RunningState_changed);
+        connect(m_instance.get(), &BaseInstance::runningStatusChanged, this, &InstanceWindow::runningStateChanged);
     }
 
     // set up instance destruction detection
@@ -156,7 +156,7 @@ void InstanceWindow::on_InstanceLaunchTask_changed(shared_qobject_ptr<LaunchTask
     m_proc = proc;
 }
 
-void InstanceWindow::on_RunningState_changed(bool running)
+void InstanceWindow::runningStateChanged(bool running)
 {
     updateLaunchButtons();
     m_container->refreshContainer();
@@ -227,7 +227,7 @@ InstanceWindow::~InstanceWindow()
     if (m_instance)
     {
         disconnect(m_instance.get(), &BaseInstance::launchTaskChanged, this, &InstanceWindow::on_InstanceLaunchTask_changed);
-        disconnect(m_instance.get(), &BaseInstance::runningStatusChanged, this, &InstanceWindow::on_RunningState_changed);
+        disconnect(m_instance.get(), &BaseInstance::runningStatusChanged, this, &InstanceWindow::runningStateChanged);
         disconnect(m_instance.get(), &BaseInstance::statusChanged, this, &InstanceWindow::on_instanceStatusChanged);
     }
 }

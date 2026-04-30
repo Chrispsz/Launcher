@@ -364,6 +364,12 @@ QStringList MinecraftInstance::javaArguments() const
 
     args << "-Duser.language=en";
 
+    // JDK 22+ requer permissão explícita para acesso nativo (LWJGL, JOML, etc.)
+    if(javaVersion.major() >= 22)
+    {
+        args << "--enable-native-access=ALL-UNNAMED";
+    }
+
     if (m_injector) {
         args << m_injector->javaArg;
         args << "-Dauthlibinjector.noShowServerName";

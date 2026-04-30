@@ -149,16 +149,16 @@ ModFolderPage::ModFolderPage(
 
     auto actionBrowseMods = new QAction(APPLICATION->getThemedIcon("modrinth"), tr("Buscar mods"), this);
     actionBrowseMods->setToolTip(tr("Buscar mods no Modrinth"));
-    connect(actionBrowseMods, &QAction::triggered, this, &ModFolderPage::on_actionBrowseMods_triggered);
+    connect(actionBrowseMods, &QAction::triggered, this, &ModFolderPage::browseMods);
     ui->actionsToolbar->addAction(actionBrowseMods);
 
     auto actionBrowseCurseForge = new QAction(APPLICATION->getThemedIcon("flame"), tr("CurseForge"), this);
     actionBrowseCurseForge->setToolTip(tr("Buscar mods no CurseForge"));
-    connect(actionBrowseCurseForge, &QAction::triggered, this, &ModFolderPage::on_actionBrowseCurseForge_triggered);
+    connect(actionBrowseCurseForge, &QAction::triggered, this, &ModFolderPage::browseCurseForge);
     ui->actionsToolbar->addAction(actionBrowseCurseForge);
 
     m_inst = inst;
-    on_RunningState_changed(m_inst && m_inst->isRunning());
+    runningStateChanged(m_inst && m_inst->isRunning());
     m_mods = mods;
     m_id = id;
     m_displayName = displayName;
@@ -181,7 +181,7 @@ ModFolderPage::ModFolderPage(
     auto smodel = ui->modTreeView->selectionModel();
     connect(smodel, &QItemSelectionModel::currentChanged, this, &ModFolderPage::modCurrent);
     connect(ui->filterEdit, &QLineEdit::textChanged, this, &ModFolderPage::on_filterTextChanged);
-    connect(m_inst, &BaseInstance::runningStatusChanged, this, &ModFolderPage::on_RunningState_changed);
+    connect(m_inst, &BaseInstance::runningStatusChanged, this, &ModFolderPage::runningStateChanged);
 }
 
 void ModFolderPage::modItemActivated(const QModelIndex&)
@@ -237,7 +237,7 @@ ModFolderPage::~ModFolderPage()
     delete ui;
 }
 
-void ModFolderPage::on_RunningState_changed(bool running)
+void ModFolderPage::runningStateChanged(bool running)
 {
     if(m_controlsEnabled == !running) {
         return;
@@ -366,7 +366,7 @@ void ModFolderPage::on_actionView_Folder_triggered()
     DesktopServices::openDirectory(m_mods->dir().absolutePath(), true);
 }
 
-void ModFolderPage::on_actionBrowseMods_triggered()
+void ModFolderPage::browseMods()
 {
     if(!m_controlsEnabled) {
         return;
@@ -380,7 +380,7 @@ void ModFolderPage::on_actionBrowseMods_triggered()
     browser.exec();
 }
 
-void ModFolderPage::on_actionBrowseCurseForge_triggered()
+void ModFolderPage::browseCurseForge()
 {
     if(!m_controlsEnabled) {
         return;
