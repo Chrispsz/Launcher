@@ -34,40 +34,44 @@ void VerifyJavaInstall::executeTask() {
     auto javaVersion = m_inst->getJavaVersion();
     auto minecraftComponent = m_inst->getPackProfile()->getComponent("net.minecraft");
 
-    // Requisito Java 21
-    if (minecraftComponent->getReleaseDateTime() >= g_VersionFilterData.java21BeginsDate) {
+    // Requisito Java 25 (26.1+)
+    if (minecraftComponent->getReleaseDateTime() >= g_VersionFilterData.java25BeginsDate) {
+        if (javaVersion.major() < 25) {
+            emit logLine(tr("Minecraft 26.1 e superior requerem Java 25 (detectado: Java %1)")
+                            .arg(javaVersion.toString()),
+                         MessageLevel::Fatal);
+            emitFailed(tr("Minecraft 26.1 e superior requerem Java 25. "
+                          "Java %1 detectado — instale JDK 25 ou superior.")
+                            .arg(javaVersion.toString()));
+            return;
+        }
+        // Aviso: JDK muito acima de 25 pode causar problemas
+        if (javaVersion.major() > 25) {
+            emit logLine(tr("AVISO: Java %1 detectado. Minecraft 26.1+ é compatível com Java 25. "
+                            "JDKs mais novos podem causar instabilidade.")
+                            .arg(javaVersion.toString()),
+                         MessageLevel::Warning);
+        }
+    }
+    // Requisito Java 21 (24w14a+)
+    else if (minecraftComponent->getReleaseDateTime() >= g_VersionFilterData.java21BeginsDate) {
         if (javaVersion.major() < 21) {
             emit logLine("Minecraft 24w14a e superior requerem Java 21",
                          MessageLevel::Fatal);
             emitFailed(tr("Minecraft 24w14a e superior requerem Java 21"));
             return;
         }
-        // Aviso: JDK acima de 21 pode causar crashes (SIGSEGV) — Minecraft é feito para JDK 21
-        if (javaVersion.major() > 21) {
-            emit logLine(tr("AVISO: Java %1 detectado, mas Minecraft é compatível com Java 21. "
-                            "JDKs mais novos podem causar crashes (SIGSEGV/exit code 11). "
-                            "Recomendamos usar Java 21 LTS.")
-                            .arg(javaVersion.toString()),
-                         MessageLevel::Warning);
-        }
     }
-    // Requisito Java 17
-    if (minecraftComponent->getReleaseDateTime() >= g_VersionFilterData.java17BeginsDate) {
+    // Requisito Java 17 (1.18 Pre-Release 2+)
+    else if (minecraftComponent->getReleaseDateTime() >= g_VersionFilterData.java17BeginsDate) {
         if (javaVersion.major() < 17) {
             emit logLine("Minecraft 1.18 Pre-Release 2 e superior requerem Java 17",
                          MessageLevel::Fatal);
             emitFailed(tr("Minecraft 1.18 Pre-Release 2 e superior requerem Java 17"));
             return;
         }
-        // Aviso para versões que requerem Java 17 mas usam JDK mais novo
-        if (minecraftComponent->getReleaseDateTime() < g_VersionFilterData.java21BeginsDate && javaVersion.major() > 17) {
-            emit logLine(tr("AVISO: Java %1 detectado, mas esta versão do Minecraft é compatível com Java 17. "
-                            "Recomendamos usar Java 17 LTS.")
-                            .arg(javaVersion.toString()),
-                         MessageLevel::Warning);
-        }
     }
-    // Requisito Java 16
+    // Requisito Java 16 (21w19a+)
     else if (minecraftComponent->getReleaseDateTime() >= g_VersionFilterData.java16BeginsDate) {
         if (javaVersion.major() < 16) {
             emit logLine("Minecraft 21w19a e superior requerem Java 16",
@@ -76,7 +80,7 @@ void VerifyJavaInstall::executeTask() {
             return;
         }
     }
-    // Requisito Java 8
+    // Requisito Java 8 (17w13a+)
     else if (minecraftComponent->getReleaseDateTime() >= g_VersionFilterData.java8BeginsDate) {
         if (javaVersion.major() < 8) {
             emit logLine("Minecraft 17w13a e superior requerem Java 8",

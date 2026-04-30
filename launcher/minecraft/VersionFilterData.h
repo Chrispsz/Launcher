@@ -29,6 +29,8 @@ struct VersionFilterData
     QDateTime java17BeginsDate;
     // Release data of the first version to require java 21 (24w14a)
     QDateTime java21BeginsDate;
+    // Release date of the first version to require Java 25 (26.1-snapshot-1)
+    QDateTime java25BeginsDate;
     // release date of first version to use --quickPlayMultiplayer instead of --server/--port for directly joining servers
     QDateTime quickPlayBeginsDate;
     // release date of first version supported by Fabric/Quilt (1.14)
