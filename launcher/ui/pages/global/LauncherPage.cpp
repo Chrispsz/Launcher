@@ -58,8 +58,6 @@ LauncherPage::LauncherPage(QWidget *parent) : QWidget(parent), ui(new Ui::Launch
     // Updater - BuildConfig.UPDATER_ENABLED has been removed, always hide updater settings
     ui->updateSettingsBox->setHidden(true);
 
-    // Analytics - BuildConfig.ANALYTICS_ID has been removed
-    ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->analyticsTab));
     connect(ui->fontSizeBox, SIGNAL(valueChanged(int)), SLOT(refreshFontPreview()));
     connect(ui->consoleFont, SIGNAL(currentFontChanged(QFont)), SLOT(refreshFontPreview()));
 
@@ -231,7 +229,6 @@ void LauncherPage::applySettings()
     }
 
     // Analytics has been removed
-    // s->set("Analytics", ui->analyticsCheck->isChecked());
 }
 void LauncherPage::loadSettings()
 {
@@ -328,7 +325,6 @@ void LauncherPage::loadSettings()
     }
 
     // Analytics has been removed
-    // ui->analyticsCheck->setChecked(s->get("Analytics").toBool());
 }
 
 void LauncherPage::refreshFontPreview()

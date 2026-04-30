@@ -4,7 +4,7 @@
 #include "QObjectPtr.h"
 #include "minecraft/auth/AuthStep.h"
 
-#include <katabasis/DeviceFlow.h>
+#include <katabasis/Bits.h>
 
 class LocalStep : public AuthStep {
     Q_OBJECT

@@ -83,7 +83,7 @@ struct AccountData {
 
     QString lastError() const;
 
-    AccountType type = AccountType::MSA;
+    AccountType type = AccountType::Local;
     bool legacy = false;
     bool canMigrateToMSA = false;
     bool mustMigrateToMSA = false;

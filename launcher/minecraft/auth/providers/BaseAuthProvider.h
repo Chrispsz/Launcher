@@ -13,11 +13,8 @@ typedef std::shared_ptr<BaseAuthProvider> AuthProviderPtr;
 
 /*!
  * \brief Base class for auth provider.
- * This class implements many functions that are common between providers and
- * provides a standard interface for all providers.
- *
- * To create a new provider, create a new class inheriting from this class,
- * implement the pure virtual functions, and
+ * Only LocalAuthProvider exists now. This interface is kept for
+ * extensibility in case future providers are added.
  */
 class BaseAuthProvider : public QObject
 {
@@ -43,30 +40,6 @@ public:
     {
         return "";
     };
-
-    // Endpoint for authentication
-    virtual QString authEndpoint()
-    {
-        return "";
-    };
-
-    // Function to get url of skin to display in launcher
-    virtual QUrl resolveSkinUrl(QString id, QString name)
-    {
-        return QUrl(((QString) "https://crafatar.com/skins/%1.png").arg(id));
-    };
-
-    // Can change skin (currently only mojang support)
-    virtual bool canChangeSkin()
-    {
-        return false;
-    }
-
-    // Use legacy yggdrasil auth, (get profile from refresh and login)
-    virtual bool useYggdrasil()
-    {
-        return false;
-    }
 
     bool setAuthServer(std::shared_ptr<AuthServer> authServer)
     {

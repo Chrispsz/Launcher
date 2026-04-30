@@ -167,8 +167,6 @@ set(MINECRAFT_SOURCES
     minecraft/auth/AccountTask.h
     minecraft/auth/AuthProviders.cpp
     minecraft/auth/AuthProviders.h
-    minecraft/auth/AuthRequest.cpp
-    minecraft/auth/AuthRequest.h
     minecraft/auth/AuthSession.cpp
     minecraft/auth/AuthSession.h
     minecraft/auth/AuthStep.cpp
@@ -287,14 +285,6 @@ set(MINECRAFT_SOURCES
     # Assets
     minecraft/AssetsUtils.h
     minecraft/AssetsUtils.cpp
-
-    # Minecraft services
-    minecraft/services/CapeChange.cpp
-    minecraft/services/CapeChange.h
-    minecraft/services/SkinUpload.cpp
-    minecraft/services/SkinUpload.h
-    minecraft/services/SkinDelete.cpp
-    minecraft/services/SkinDelete.h
 
     mojang/PackageManifest.h
     mojang/PackageManifest.cpp

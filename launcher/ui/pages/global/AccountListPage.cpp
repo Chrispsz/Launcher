@@ -29,7 +29,6 @@
 
 #include "tasks/Task.h"
 #include "minecraft/auth/AccountTask.h"
-#include "minecraft/services/SkinDelete.h"
 
 #include "Application.h"
 
@@ -165,8 +164,6 @@ void AccountListPage::updateButtonStates()
     }
     ui->actionRemove->setEnabled(accountIsReady);
     ui->actionSetDefault->setEnabled(accountIsReady);
-    ui->actionUploadSkin->setEnabled(false);
-    ui->actionDeleteSkin->setEnabled(false);
     ui->actionRefresh->setEnabled(accountIsReady);
 
     if(m_accounts->defaultAccount().get() == nullptr) {
@@ -177,14 +174,4 @@ void AccountListPage::updateButtonStates()
         ui->actionNoDefault->setEnabled(true);
         ui->actionNoDefault->setChecked(false);
     }
-}
-
-void AccountListPage::on_actionUploadSkin_triggered()
-{
-    // Skin upload removed — not supported for local accounts
-}
-
-void AccountListPage::on_actionDeleteSkin_triggered()
-{
-    // Skin delete removed — not supported for local accounts
 }

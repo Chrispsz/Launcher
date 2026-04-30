@@ -1,12 +1,5 @@
 #pragma once
 
-#include <QObject>
-#include "QObjectPtr.h"
-#include <QDateTime>
-#include <QSet>
-#include <QProcess>
-#include <QDebug>
-
 #include "BaseAuthProvider.h"
 
 class LocalAuthProvider : public BaseAuthProvider
@@ -14,33 +7,18 @@ class LocalAuthProvider : public BaseAuthProvider
     Q_OBJECT
 
 public:
-    QString id()
+    QString id() override
     {
         return "local";
     }
 
-    QString displayName()
+    QString displayName() override
     {
         return "Local";
     }
 
-    bool localAuth()
-    {
-        return true;
-    }
-
-    QString injectorEndpoint()
+    QString injectorEndpoint() override
     {
         return ((QString)"http://127.0.0.1:%1").arg(m_authServer->port());
     };
-
-    QString authEndpoint()
-    {
-        return ((QString) "http://127.0.0.1:%1/auth/").arg(m_authServer->port());
-    };
-
-    virtual bool useYggdrasil()
-    {
-        return true;
-    }
 };

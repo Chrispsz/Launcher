@@ -19,14 +19,11 @@
 #include "Application.h"
 #include "BuildConfig.h"
 
-#include <net/NetJob.h>
-
 #include "HoeDown.h"
 
 namespace {
 // Credits
-// This is a hack, but I can't think of a better way to do this easily without screwing with QTextDocument...
-QString getCreditsHtml(QStringList patrons)
+QString getCreditsHtml()
 {
     QString output;
     QTextStream stream(&output);
@@ -38,25 +35,6 @@ QString getCreditsHtml(QStringList patrons)
 
     stream << "<h3>" << QObject::tr("Mantenedor", "About Credits") << "</h3>\n";
     stream << "<p>Petr Mr&aacute;zek &lt;<a href='mailto:peterix@gmail.com'>peterix@gmail.com</a>&gt;</p>\n";
-
-    // TODO: grab contributors from git history
-    /*
-    if(!contributors.isEmpty()) {
-        stream << "<h3>" << QObject::tr("Contributors", "About Credits") << "</h3>\n";
-        for (auto &contributor : contributors)
-        {
-            stream << "<p>" << contributor << "</p>\n";
-        }
-    }
-    */
-
-    if(!patrons.isEmpty()) {
-        stream << "<h3>" << QObject::tr("Patrocinadores", "About Credits") << "</h3>\n";
-        for (QString patron : patrons)
-        {
-            stream << "<p>" << patron << "</p>\n";
-        }
-    }
 
     stream << "</center>\n";
     return output;
@@ -81,7 +59,7 @@ AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent), ui(new Ui::AboutDia
 
     setWindowTitle(tr("Sobre %1").arg(launcherName));
 
-    QString chtml = getCreditsHtml(QStringList());
+    QString chtml = getCreditsHtml();
     ui->creditsText->setHtml(chtml);
 
     QString lhtml = getLicenseHtml();
@@ -123,31 +101,9 @@ AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent), ui(new Ui::AboutDia
     connect(ui->closeButton, SIGNAL(clicked()), SLOT(close()));
 
     connect(ui->aboutQt, &QPushButton::clicked, &QApplication::aboutQt);
-
-    loadPatronList();
 }
 
 AboutDialog::~AboutDialog()
 {
-    if (netJob) {
-        netJob->abort();
-    }
     delete ui;
 }
-
-void AboutDialog::loadPatronList()
-{
-    netJob = new NetJob("Patreon Patron List", APPLICATION->network());
-    netJob->addNetAction(Net::Download::makeByteArray(QUrl("https://files.multimc.org/patrons.txt"), &dataSink));
-    connect(netJob.get(), &NetJob::succeeded, this, &AboutDialog::patronListLoaded);
-    netJob->start();
-}
-
-void AboutDialog::patronListLoaded()
-{
-    QString patronListStr(dataSink);
-    dataSink.clear();
-    QString html = getCreditsHtml(patronListStr.split("\n", QString::SkipEmptyParts));
-    ui->creditsText->setHtml(html);
-}
-

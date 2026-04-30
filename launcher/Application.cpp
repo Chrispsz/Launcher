@@ -925,15 +925,13 @@ bool Application::createSetupWizard()
         }
         return false;
     }();
-    // Analytics (GAnalytics) has been removed
-    bool analyticsRequired = false;
     bool languageRequired = [&]()
     {
         if (settings()->get("Language").toString().isEmpty())
             return true;
         return false;
     }();
-    bool wizardRequired = javaRequired || analyticsRequired || languageRequired;
+    bool wizardRequired = javaRequired || languageRequired;
 
     if(wizardRequired)
     {

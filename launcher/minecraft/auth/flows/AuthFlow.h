@@ -7,7 +7,7 @@
 #include <QNetworkReply>
 #include <QImage>
 
-#include <katabasis/DeviceFlow.h>
+#include <katabasis/Bits.h>
 
 #include "minecraft/auth/AccountData.h"
 #include "minecraft/auth/AccountTask.h"

@@ -18,12 +18,9 @@ struct AuthSession
     enum Status
     {
         Undetermined,
-        RequiresOAuth,
-        RequiresPassword,
         RequiresProfileSetup,
         PlayableOffline,
-        PlayableOnline,
-        GoneOrMigrated
+        PlayableOnline
     } status = Undetermined;
 
     // client token
@@ -40,9 +37,6 @@ struct AuthSession
     QString uuid;
     // 'legacy' or 'mojang', depending on account type
     QString user_type;
-    // FIXME: unused — auth_server_online is declared but never written to.
-    // Did the auth server reply?
-    bool auth_server_online = false;
     // Did the user request online mode?
     bool wants_online = true;
 
