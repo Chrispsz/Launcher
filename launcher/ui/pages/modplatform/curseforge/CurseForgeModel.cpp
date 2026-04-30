@@ -9,7 +9,7 @@
 #include "CurseForgeModel.h"
 #include "Application.h"
 #include "Json.h"
-#include "CurseForgeAPI.h"
+#include "modplatform/curseforge/CurseForgeAPI.h"
 
 #include <QIcon>
 
