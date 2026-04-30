@@ -40,7 +40,7 @@ void LookupServerAddress::setOutputAddressPtr(QuickPlayTargetPtr output)
 bool LookupServerAddress::abort()
 {
     m_dnsLookup->abort();
-    emitFailed("Aborted");
+    emitFailed(tr("Abortado"));
     return true;
 }
 
@@ -59,7 +59,7 @@ void LookupServerAddress::on_dnsLookupFinished()
 
     if (m_dnsLookup->error() != QDnsLookup::NoError)
     {
-        emit logLine(QString("Failed to resolve server address (this is NOT an error!) %1: %2\n")
+        emit logLine(tr("Falha ao resolver endereço do servidor (isso NÃO é um erro!) %1: %2\n")
             .arg(m_dnsLookup->name(), m_dnsLookup->errorString()), MessageLevel::Launcher);
         resolve(m_lookupAddress, 25565); // Technically the task failed, however, we don't abort the launch
                                                       // and leave it up to minecraft to fail (or maybe not) when connecting
@@ -70,7 +70,7 @@ void LookupServerAddress::on_dnsLookupFinished()
     if (records.empty())
     {
         emit logLine(
-                QString("Failed to resolve server address %1: the DNS lookup succeeded, but no records were returned.\n")
+                tr("Falha ao resolver endereço do servidor %1: lookup DNS bem-sucedido, mas nenhum registro retornado.\n")
                 .arg(m_dnsLookup->name()), MessageLevel::Warning);
         resolve(m_lookupAddress, 25565); // Technically the task failed, however, we don't abort the launch
                                                       // and leave it up to minecraft to fail (or maybe not) when connecting
@@ -80,7 +80,7 @@ void LookupServerAddress::on_dnsLookupFinished()
     const auto &firstRecord = records.at(0);
     quint16 port = firstRecord.port();
 
-    emit logLine(QString("Resolved server address %1 to %2 with port %3\n").arg(
+    emit logLine(tr("Endereço do servidor resolvido %1 para %2 na porta %3\n").arg(
             m_dnsLookup->name(), firstRecord.target(), QString::number(port)),MessageLevel::Launcher);
     resolve(firstRecord.target(), port);
 }

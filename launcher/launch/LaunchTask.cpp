@@ -181,7 +181,7 @@ bool LaunchTask::abort()
         case LaunchTask::NotStarted:
         {
             state = LaunchTask::Aborted;
-            emitFailed("Aborted");
+            emitFailed(tr("Abortado"));
             return true;
         }
         case LaunchTask::Running:

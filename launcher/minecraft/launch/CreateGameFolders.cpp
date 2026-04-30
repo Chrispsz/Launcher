@@ -14,15 +14,15 @@ void CreateGameFolders::executeTask()
 
     if(!FS::ensureFolderPathExists(minecraftInstance->gameRoot()))
     {
-        emit logLine("Couldn't create the main game folder", MessageLevel::Error);
-        emitFailed(tr("Couldn't create the main game folder"));
+        emit logLine(tr("Não foi possível criar a pasta principal do jogo"), MessageLevel::Error);
+        emitFailed(tr("Não foi possível criar a pasta principal do jogo"));
         return;
     }
 
     // HACK: this is a workaround for MCL-3732 - 'server-resource-packs' folder is created.
     if(!FS::ensureFolderPathExists(FS::PathCombine(minecraftInstance->gameRoot(), "server-resource-packs")))
     {
-        emit logLine("Couldn't create the 'server-resource-packs' folder", MessageLevel::Error);
+        emit logLine(tr("Não foi possível criar a pasta 'server-resource-packs'"), MessageLevel::Error);
     }
     emitSucceeded();
 }

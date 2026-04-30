@@ -369,18 +369,28 @@ QStringList MinecraftInstance::javaArguments() const
     {
         args << "--add-opens" << "java.base/java.lang=ALL-UNNAMED";
         args << "--add-opens" << "java.base/java.lang.invoke=ALL-UNNAMED";
-        args << "--add-opens" << "java.base/java.util=ALL-UNNAMED";
         args << "--add-opens" << "java.base/java.io=ALL-UNNAMED";
         args << "--add-opens" << "java.base/java.nio=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/java.security=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/java.util=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/java.util.jar=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/jdk.internal.loader=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/jdk.internal.math=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/jdk.internal.module=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/jdk.internal.ref=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/jdk.internal.util=ALL-UNNAMED";
         args << "--add-opens" << "java.base/sun.nio.ch=ALL-UNNAMED";
         args << "--add-opens" << "java.base/sun.nio.fs=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/sun.reflect=ALL-UNNAMED";
         args << "--add-opens" << "java.base/sun.security.action=ALL-UNNAMED";
         args << "--add-opens" << "java.base/sun.security.provider=ALL-UNNAMED";
-        args << "--add-opens" << "java.base/jdk.internal.loader=ALL-UNNAMED";
-        args << "--add-opens" << "java.base/jdk.internal.ref=ALL-UNNAMED";
-        args << "--add-opens" << "java.base/jdk.internal.math=ALL-UNNAMED";
-        args << "--add-opens" << "java.base/jdk.internal.util=ALL-UNNAMED";
-        args << "--add-opens" << "java.base/jdk.internal.module=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/sun.security.util=ALL-UNNAMED";
+        args << "--add-opens" << "java.desktop/java.awt=ALL-UNNAMED";
+        args << "--add-opens" << "java.desktop/javax.imageio=ALL-UNNAMED";
+        args << "--add-opens" << "java.desktop/sun.awt=ALL-UNNAMED";
+        args << "--add-opens" << "java.desktop/sun.font=ALL-UNNAMED";
+        args << "--add-opens" << "java.desktop/sun.java2d=ALL-UNNAMED";
+        args << "--add-opens" << "java.management/sun.management=ALL-UNNAMED";
     }
 
     // JDK 22+ requer permissão explícita para acesso nativo (LWJGL, JOML, etc.)

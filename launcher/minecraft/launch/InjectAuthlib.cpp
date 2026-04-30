@@ -50,7 +50,7 @@ void InjectAuthlib::onVersionDownloadSucceeded()
     {
         qCritical() << "Translations Download Failed: index file not readable";
         jobPtr.reset();
-        emitFailed("Error while parsing JSON response from InjectorEndpoint");
+        emitFailed(tr("Erro ao analisar resposta JSON do InjectorEndpoint"));
         return;
     }
 
@@ -61,7 +61,7 @@ void InjectAuthlib::onVersionDownloadSucceeded()
         qCritical() << "Error while parsing JSON response from InjectorEndpoint at " << parse_error.offset << " reason: " << parse_error.errorString();
         qCritical() << data;
         jobPtr.reset();
-        emitFailed("Error while parsing JSON response from InjectorEndpoint");
+        emitFailed(tr("Erro ao analisar resposta JSON do InjectorEndpoint"));
         return;
     }
 
@@ -70,7 +70,7 @@ void InjectAuthlib::onVersionDownloadSucceeded()
         qCritical() << "Error while parsing JSON response from InjectorEndpoint root is not object";
         qCritical() << data;
         jobPtr.reset();
-        emitFailed("Error while parsing JSON response from InjectorEndpoint");
+        emitFailed(tr("Erro ao analisar resposta JSON do InjectorEndpoint"));
         return;
     }
 
@@ -85,7 +85,7 @@ void InjectAuthlib::onVersionDownloadSucceeded()
         qCritical() << e.cause();
         qCritical() << data;
         jobPtr.reset();
-        emitFailed("Error while parsing JSON response from InjectorEndpoint");
+        emitFailed(tr("Erro ao analisar resposta JSON do InjectorEndpoint"));
         return;
     }
 

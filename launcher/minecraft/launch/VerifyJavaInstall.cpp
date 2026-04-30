@@ -56,36 +56,48 @@ void VerifyJavaInstall::executeTask() {
     // Requisito Java 21 (24w14a+)
     else if (minecraftComponent->getReleaseDateTime() >= g_VersionFilterData.java21BeginsDate) {
         if (javaVersion.major() < 21) {
-            emit logLine("Minecraft 24w14a e superior requerem Java 21",
+            emit logLine(tr("Minecraft 24w14a e superior requerem Java 21 (detectado: Java %1)")
+                            .arg(javaVersion.toString()),
                          MessageLevel::Fatal);
-            emitFailed(tr("Minecraft 24w14a e superior requerem Java 21"));
+            emitFailed(tr("Minecraft 24w14a e superior requerem Java 21. "
+                          "Java %1 detectado — instale JDK 21 ou superior.")
+                            .arg(javaVersion.toString()));
             return;
         }
     }
     // Requisito Java 17 (1.18 Pre-Release 2+)
     else if (minecraftComponent->getReleaseDateTime() >= g_VersionFilterData.java17BeginsDate) {
         if (javaVersion.major() < 17) {
-            emit logLine("Minecraft 1.18 Pre-Release 2 e superior requerem Java 17",
+            emit logLine(tr("Minecraft 1.18 Pre-Release 2 e superior requerem Java 17 (detectado: Java %1)")
+                            .arg(javaVersion.toString()),
                          MessageLevel::Fatal);
-            emitFailed(tr("Minecraft 1.18 Pre-Release 2 e superior requerem Java 17"));
+            emitFailed(tr("Minecraft 1.18 Pre-Release 2 e superior requerem Java 17. "
+                          "Java %1 detectado — instale JDK 17 ou superior.")
+                            .arg(javaVersion.toString()));
             return;
         }
     }
     // Requisito Java 16 (21w19a+)
     else if (minecraftComponent->getReleaseDateTime() >= g_VersionFilterData.java16BeginsDate) {
         if (javaVersion.major() < 16) {
-            emit logLine("Minecraft 21w19a e superior requerem Java 16",
+            emit logLine(tr("Minecraft 21w19a e superior requerem Java 16 (detectado: Java %1)")
+                            .arg(javaVersion.toString()),
                          MessageLevel::Fatal);
-            emitFailed(tr("Minecraft 21w19a e superior requerem Java 16"));
+            emitFailed(tr("Minecraft 21w19a e superior requerem Java 16. "
+                          "Java %1 detectado — instale JDK 16 ou superior.")
+                            .arg(javaVersion.toString()));
             return;
         }
     }
     // Requisito Java 8 (17w13a+)
     else if (minecraftComponent->getReleaseDateTime() >= g_VersionFilterData.java8BeginsDate) {
         if (javaVersion.major() < 8) {
-            emit logLine("Minecraft 17w13a e superior requerem Java 8",
+            emit logLine(tr("Minecraft 17w13a e superior requerem Java 8 (detectado: Java %1)")
+                            .arg(javaVersion.toString()),
                          MessageLevel::Fatal);
-            emitFailed(tr("Minecraft 17w13a e superior requerem Java 8"));
+            emitFailed(tr("Minecraft 17w13a e superior requerem Java 8. "
+                          "Java %1 detectado — instale JDK 8 ou superior.")
+                            .arg(javaVersion.toString()));
             return;
         }
     }
