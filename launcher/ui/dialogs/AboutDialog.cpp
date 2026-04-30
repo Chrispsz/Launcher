@@ -16,6 +16,8 @@
 #include "AboutDialog.h"
 #include "ui_AboutDialog.h"
 #include <QIcon>
+#include <QFile>
+#include <QTextCodec>
 #include "Application.h"
 #include "BuildConfig.h"
 
