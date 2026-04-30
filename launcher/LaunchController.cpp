@@ -210,7 +210,7 @@ void LaunchController::login() {
                 return;
             }
             case AccountState::Gone: {
-                auto errorString = tr("Esta conta não existe mais nos servidores da Mojang.");
+                auto errorString = tr("Esta conta não existe mais nos servidores de autenticação.");
                 QMessageBox::warning(
                     m_parentWidget,
                     tr("Conta inexistente"),
@@ -222,7 +222,7 @@ void LaunchController::login() {
                 return;
             }
             case AccountState::MustMigrate: {
-                auto errorString = tr("Esta conta precisa ser migrada para uma conta Microsoft.");
+                auto errorString = tr("Esta conta não é mais suportada. Crie uma nova conta local.");
                 QMessageBox::warning(
                     m_parentWidget,
                     tr("Conta requer migração"),

@@ -79,7 +79,7 @@ AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent), ui(new Ui::AboutDia
 
     QString launcherName = BuildConfig.LAUNCHER_NAME;
 
-    setWindowTitle(tr("About %1").arg(launcherName));
+    setWindowTitle(tr("Sobre %1").arg(launcherName));
 
     QString chtml = getCreditsHtml(QStringList());
     ui->creditsText->setHtml(chtml);

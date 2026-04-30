@@ -145,8 +145,8 @@ void OtherLogsPage::on_btnReload_clicked()
         auto showTooBig = [&]()
         {
             setPlainText(
-                tr("The file (%1) is too big. You may want to open it in a viewer optimized "
-                   "for large files.").arg(file.fileName()));
+                tr("O arquivo (%1) é muito grande. Você pode querer abri-lo em um visualizador otimizado "
+                   "para arquivos grandes.").arg(file.fileName()));
         };
         if(file.size() > (1024ll * 1024ll * 12ll))
         {

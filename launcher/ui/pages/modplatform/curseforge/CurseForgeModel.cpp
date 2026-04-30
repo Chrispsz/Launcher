@@ -9,6 +9,7 @@
 #include "CurseForgeModel.h"
 #include "Application.h"
 #include "Json.h"
+#include "CurseForgeAPI.h"
 
 #include <QIcon>
 
@@ -544,8 +545,13 @@ bool parseVersionsInto(QByteArray &input, CurseForge::Modpack &output) {
                     }
                 }
 
-                // Check if the file is a valid modpack zip with a download URL
-                if (version.download.filename.endsWith(".zip") && !version.download.url.isEmpty() && version.download.url.startsWith("http")) {
+                // Check if the file is a valid modpack zip
+                if (version.download.filename.endsWith(".zip")) {
+                    // If downloadUrl is empty/null (CurseForge redistribution policy),
+                    // construct the CDN URL directly from file ID and filename.
+                    if (version.download.url.isEmpty() || !version.download.url.startsWith("http")) {
+                        version.download.url = CurseForge::buildCDNUrl(version.fileId, version.download.filename).toString();
+                    }
                     version.download.valid = true;
                 }
 

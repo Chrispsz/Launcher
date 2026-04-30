@@ -7,7 +7,7 @@ QString BrightTheme::id()
 
 QString BrightTheme::name()
 {
-    return QObject::tr("Bright");
+    return QObject::tr("Claro");
 }
 
 bool BrightTheme::hasColorScheme()

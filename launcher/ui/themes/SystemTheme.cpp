@@ -44,7 +44,7 @@ QString SystemTheme::id()
 
 QString SystemTheme::name()
 {
-    return QObject::tr("System");
+    return QObject::tr("Sistema");
 }
 
 QString SystemTheme::qtTheme()

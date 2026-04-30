@@ -23,7 +23,7 @@
 VersionListView::VersionListView(QWidget *parent)
     :QTreeView ( parent )
 {
-    m_emptyString = tr("No versions are currently available.");
+    m_emptyString = tr("Nenhuma versão disponível no momento.");
 }
 
 void VersionListView::rowsInserted(const QModelIndex &parent, int start, int end)

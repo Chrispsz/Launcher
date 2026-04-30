@@ -12,7 +12,7 @@ bool JavaCommon::checkJVMArgs(QString jvmargs, QWidget *parent)
             "Existem caixas dedicadas para isso nas configurações (aba Java, no grupo Memória no topo).\n"
             "Esta mensagem será exibida até que você as remova dos argumentos da JVM.");
         CustomMessageBox::selectable(
-            parent, QObject::tr("JVM arguments warning"),
+            parent, QObject::tr("Aviso sobre argumentos da JVM"),
             warnStr,
             QMessageBox::Warning)->exec();
         return false;
@@ -20,10 +20,10 @@ bool JavaCommon::checkJVMArgs(QString jvmargs, QWidget *parent)
     // block lunacy with passing required version to the JVM
     if (jvmargs.contains(QRegExp("-version:.*"))) {
         auto warnStr = QObject::tr(
-            "You tried to pass required java version argument to the JVM (using \"-version=xxx\"). This is not safe and will not be allowed.\n"
-            "This message will be displayed until you remove this from the JVM arguments.");
+            "Você tentou passar um argumento de versão obrigatória do Java para a JVM (usando \"-version=xxx\"). Isso não é seguro e não será permitido.\n"
+            "Esta mensagem será exibida até que você remova isso dos argumentos da JVM.");
         CustomMessageBox::selectable(
-            parent, QObject::tr("JVM arguments warning"),
+            parent, QObject::tr("Aviso sobre argumentos da JVM"),
             warnStr,
             QMessageBox::Warning)->exec();
         return false;
@@ -34,16 +34,16 @@ bool JavaCommon::checkJVMArgs(QString jvmargs, QWidget *parent)
 void JavaCommon::javaWasOk(QWidget *parent, JavaCheckResult result)
 {
     QString text;
-    text += QObject::tr("Java test succeeded!<br />Platform reported: %1<br />Java version "
-        "reported: %2<br />Java vendor "
-        "reported: %3<br />").arg(result.realPlatform, result.javaVersion.toString(), result.javaVendor);
+    text += QObject::tr("Teste de Java bem-sucedido!<br />Plataforma detectada: %1<br />Versão do "
+        "Java detectada: %2<br />Fabricante "
+        "do Java detectado: %3<br />").arg(result.realPlatform, result.javaVersion.toString(), result.javaVendor);
     if (result.errorLog.size())
     {
         auto htmlError = result.errorLog;
         htmlError.replace('\n', "<br />");
-        text += QObject::tr("<br />Warnings:<br /><font color=\"orange\">%1</font>").arg(htmlError);
+        text += QObject::tr("<br />Avisos:<br /><font color=\"orange\">%1</font>").arg(htmlError);
     }
-    CustomMessageBox::selectable(parent, QObject::tr("Java test success"), text, QMessageBox::Information)->show();
+    CustomMessageBox::selectable(parent, QObject::tr("Teste de Java bem-sucedido"), text, QMessageBox::Information)->show();
 }
 
 void JavaCommon::javaArgsWereBad(QWidget *parent, JavaCheckResult result)
@@ -51,18 +51,18 @@ void JavaCommon::javaArgsWereBad(QWidget *parent, JavaCheckResult result)
     auto htmlError = result.errorLog;
     QString text;
     htmlError.replace('\n', "<br />");
-    text += QObject::tr("The specified java binary didn't work with the arguments you provided:<br />");
+    text += QObject::tr("O binário Java especificado não funcionou com os argumentos fornecidos:<br />");
     text += QString("<font color=\"red\">%1</font>").arg(htmlError);
-    CustomMessageBox::selectable(parent, QObject::tr("Java test failure"), text, QMessageBox::Warning)->show();
+    CustomMessageBox::selectable(parent, QObject::tr("Falha no teste de Java"), text, QMessageBox::Warning)->show();
 }
 
 void JavaCommon::javaBinaryWasBad(QWidget *parent, JavaCheckResult result)
 {
     QString text;
     text += QObject::tr(
-        "The specified java binary didn't work.<br />You should use the auto-detect feature, "
-        "or set the path to the java executable.<br />");
-    CustomMessageBox::selectable(parent, QObject::tr("Java test failure"), text, QMessageBox::Warning)->show();
+        "O binário Java especificado não funcionou.<br />Você deve usar o recurso de auto-detecção, "
+        "ou definir o caminho para o executável do Java.<br />");
+    CustomMessageBox::selectable(parent, QObject::tr("Falha no teste de Java"), text, QMessageBox::Warning)->show();
 }
 
 void JavaCommon::TestCheck::run()

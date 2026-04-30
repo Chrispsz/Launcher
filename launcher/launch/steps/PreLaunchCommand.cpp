@@ -29,7 +29,7 @@ void PreLaunchCommand::executeTask()
 {
     //FIXME: where to put this?
     QString prelaunch_cmd = m_parent->substituteVariables(m_command);
-    emit logLine(tr("Running Pre-Launch command: %1").arg(prelaunch_cmd), MessageLevel::Launcher);
+    emit logLine(tr("Executando comando pré-início: %1").arg(prelaunch_cmd), MessageLevel::Launcher);
     m_process.start(prelaunch_cmd);
 }
 
@@ -37,7 +37,7 @@ void PreLaunchCommand::on_state(LoggedProcess::State state)
 {
     auto getError = [&]()
     {
-        return tr("Pre-Launch command failed with code %1.\n\n").arg(m_process.exitCode());
+        return tr("Comando pré-início falhou com código %1.\n\n").arg(m_process.exitCode());
     };
     switch(state)
     {
@@ -60,7 +60,7 @@ void PreLaunchCommand::on_state(LoggedProcess::State state)
             }
             else
             {
-                emit logLine(tr("Pre-Launch command ran successfully.\n\n"), MessageLevel::Launcher);
+                emit logLine(tr("Comando pré-início executado com sucesso.\n\n"), MessageLevel::Launcher);
                 emitSucceeded();
             }
         }

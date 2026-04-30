@@ -7,7 +7,7 @@ QString DarkTheme::id()
 
 QString DarkTheme::name()
 {
-    return QObject::tr("Dark");
+    return QObject::tr("Escuro");
 }
 
 bool DarkTheme::hasColorScheme()

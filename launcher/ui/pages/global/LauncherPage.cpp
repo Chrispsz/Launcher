@@ -343,7 +343,7 @@ void LauncherPage::refreshFontPreview()
         // append a paragraph/line
         auto workCursor = ui->fontPreview->textCursor();
         workCursor.movePosition(QTextCursor::End);
-        workCursor.insertText(tr("[Something/ERROR] A spooky error!"), format);
+        workCursor.insertText(tr("[Algo/ERRO] Um erro assustador!"), format);
         workCursor.insertBlock();
     }
     {
@@ -352,7 +352,7 @@ void LauncherPage::refreshFontPreview()
         // append a paragraph/line
         auto workCursor = ui->fontPreview->textCursor();
         workCursor.movePosition(QTextCursor::End);
-        workCursor.insertText(tr("[Test/INFO] A harmless message..."), format);
+        workCursor.insertText(tr("[Teste/INFO] Uma mensagem inofensiva..."), format);
         workCursor.insertBlock();
     }
     {
@@ -361,7 +361,7 @@ void LauncherPage::refreshFontPreview()
         // append a paragraph/line
         auto workCursor = ui->fontPreview->textCursor();
         workCursor.movePosition(QTextCursor::End);
-        workCursor.insertText(tr("[Something/WARN] A not so spooky warning."), format);
+        workCursor.insertText(tr("[Algo/AVISO] Um aviso menos assustador."), format);
         workCursor.insertBlock();
     }
 }

@@ -315,8 +315,8 @@ void ModFolderPage::on_actionAdd_triggered()
     }
     auto list = GuiUtil::BrowseForFiles(
         m_helpName,
-        tr("Select %1",
-           "Select whatever type of files the page contains. Example: 'Loader Mods'")
+        tr("Selecionar %1",
+           "Selecionar o tipo de arquivo que a página contém. Exemplo: 'Loader Mods'")
             .arg(m_displayName),
         m_fileSelectionFilter.arg(m_displayName), APPLICATION->settings()->get("CentralModsDir").toString(),
         this->parentWidget());

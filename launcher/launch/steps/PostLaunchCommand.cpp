@@ -28,7 +28,7 @@ PostLaunchCommand::PostLaunchCommand(LaunchTask *parent) : LaunchStep(parent)
 void PostLaunchCommand::executeTask()
 {
     QString postlaunch_cmd = m_parent->substituteVariables(m_command);
-    emit logLine(tr("Running Post-Launch command: %1").arg(postlaunch_cmd), MessageLevel::Launcher);
+    emit logLine(tr("Executando comando pós-saída: %1").arg(postlaunch_cmd), MessageLevel::Launcher);
     m_process.start(postlaunch_cmd);
 }
 
@@ -36,7 +36,7 @@ void PostLaunchCommand::on_state(LoggedProcess::State state)
 {
     auto getError = [&]()
     {
-        return tr("Post-Launch command failed with code %1.\n\n").arg(m_process.exitCode());
+        return tr("Comando pós-saída falhou com código %1.\n\n").arg(m_process.exitCode());
     };
     switch(state)
     {
@@ -59,7 +59,7 @@ void PostLaunchCommand::on_state(LoggedProcess::State state)
             }
             else
             {
-                emit logLine(tr("Post-Launch command ran successfully.\n\n"), MessageLevel::Launcher);
+                emit logLine(tr("Comando pós-saída executado com sucesso.\n\n"), MessageLevel::Launcher);
                 emitSucceeded();
             }
         }

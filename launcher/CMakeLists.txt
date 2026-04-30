@@ -175,8 +175,6 @@ set(MINECRAFT_SOURCES
     minecraft/auth/AuthStep.h
     minecraft/auth/MinecraftAccount.cpp
     minecraft/auth/MinecraftAccount.h
-    minecraft/auth/Parsers.cpp
-    minecraft/auth/Parsers.h
 
     minecraft/auth/providers/BaseAuthProvider.h
     minecraft/auth/providers/LocalAuthProvider.h
@@ -480,6 +478,8 @@ SET(LAUNCHER_SOURCES
     resources/backgrounds/backgrounds.qrc
     resources/multimc/multimc.qrc
     resources/pe_dark/pe_dark.qrc
+    resources/pe_light/pe_light.qrc
+    resources/pe_colored/pe_colored.qrc
     resources/flat/flat.qrc
     resources/documents/documents.qrc
     ../${Launcher_Branding_LogoQRC}
@@ -606,8 +606,6 @@ SET(LAUNCHER_SOURCES
     ui/dialogs/CopyInstanceDialog.h
     ui/dialogs/CustomMessageBox.cpp
     ui/dialogs/CustomMessageBox.h
-    ui/dialogs/EditAccountDialog.cpp
-    ui/dialogs/EditAccountDialog.h
     ui/dialogs/ExportInstanceDialog.cpp
     ui/dialogs/ExportInstanceDialog.h
     ui/dialogs/IconPickerDialog.cpp
@@ -709,7 +707,6 @@ qt5_wrap_ui(LAUNCHER_UI
     ui/dialogs/ExportInstanceDialog.ui
     ui/dialogs/IconPickerDialog.ui
     ui/dialogs/AboutDialog.ui
-    ui/dialogs/EditAccountDialog.ui
     ui/dialogs/CreateShortcutDialog.ui
 )
 
@@ -717,6 +714,8 @@ qt5_add_resources(LAUNCHER_RESOURCES
     resources/backgrounds/backgrounds.qrc
     resources/multimc/multimc.qrc
     resources/pe_dark/pe_dark.qrc
+    resources/pe_light/pe_light.qrc
+    resources/pe_colored/pe_colored.qrc
     resources/flat/flat.qrc
     resources/documents/documents.qrc
     ../${Launcher_Branding_LogoQRC}

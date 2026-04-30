@@ -74,7 +74,6 @@
 #include "ui/dialogs/CustomMessageBox.h"
 #include "ui/dialogs/IconPickerDialog.h"
 #include "ui/dialogs/CopyInstanceDialog.h"
-#include "ui/dialogs/EditAccountDialog.h"
 #include "ui/dialogs/CreateShortcutDialog.h"
 #include "ui/dialogs/ExportInstanceDialog.h"
 
@@ -567,10 +566,10 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        QString winTitle = tr("%1 - Version %2", "Launcher - Version X").arg(BuildConfig.LAUNCHER_DISPLAYNAME, BuildConfig.printableVersionString());
+        QString winTitle = tr("%1 - Versão %2", "Launcher - Versão X").arg(BuildConfig.LAUNCHER_DISPLAYNAME, BuildConfig.printableVersionString());
         if (!BuildConfig.BUILD_PLATFORM.isEmpty())
         {
-            winTitle += tr(" on %1", "on platform, as in operating system").arg(BuildConfig.BUILD_PLATFORM);
+            winTitle += tr(" em %1", "na plataforma, ou seja, sistema operacional").arg(BuildConfig.BUILD_PLATFORM);
         }
         MainWindow->setWindowTitle(winTitle);
         // all the actions
@@ -1190,8 +1189,8 @@ void MainWindow::finalizeInstance(InstancePtr inst)
         CustomMessageBox::selectable(
             this,
             tr("Erro"),
-            tr("The launcher cannot download Minecraft or update instances unless you have at least "
-                "one account added.\nPlease add your Mojang or Minecraft account."),
+            tr("O launcher não pode baixar Minecraft ou atualizar instâncias sem pelo menos "
+                "uma conta adicionada.\nPor favor, adicione uma conta local."),
             QMessageBox::Warning
         )->show();
     }
@@ -1675,17 +1674,17 @@ void MainWindow::checkInstancePathForProblems()
         warning.setText(tr("A pasta da instância contém '!' e isso é conhecido por causar problemas com o Java!"));
         warning.setInformativeText(
             tr(
-                "You have now two options: <br/>"
-                " - change the instance folder in the settings <br/>"
-                " - move this installation of %1 to a different folder"
+                "Você agora tem duas opções: <br/>"
+                " - mudar a pasta de instâncias nas configurações <br/>"
+                " - mover esta instalação do %1 para uma pasta diferente"
             ).arg(BuildConfig.LAUNCHER_NAME)
         );
         warning.setDefaultButton(QMessageBox::Ok);
         warning.exec();
     }
-    auto tempFolderText = tr("This is a problem: <br/>"
-                             " - The launcher will likely be deleted without warning by the operating system <br/>"
-                             " - close the launcher now and extract it to a real location, not a temporary folder");
+    auto tempFolderText = tr("Isso é um problema: <br/>"
+                             " - O launcher provavelmente será excluído sem aviso pelo sistema operacional <br/>"
+                             " - feche o launcher agora e extraia-o para um local real, não uma pasta temporária");
     QString pathfoldername = QDir(instanceFolder).absolutePath();
     if (pathfoldername.contains("Rar$", Qt::CaseInsensitive))
     {
