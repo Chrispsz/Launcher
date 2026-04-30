@@ -34,6 +34,11 @@ void VerifyJavaInstall::executeTask() {
     auto javaVersion = m_inst->getJavaVersion();
     auto minecraftComponent = m_inst->getPackProfile()->getComponent("net.minecraft");
 
+    if (!minecraftComponent) {
+        emitFailed(tr("Não foi possível encontrar o componente Minecraft."));
+        return;
+    }
+
     // Requisito Java 25 (26.1+)
     if (minecraftComponent->getReleaseDateTime() >= g_VersionFilterData.java25BeginsDate) {
         if (javaVersion.major() < 25) {

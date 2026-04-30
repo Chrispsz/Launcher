@@ -75,8 +75,8 @@ static const QLatin1String liveCheckFile("live.check");
 
 using namespace Commandline;
 
-#define MACOS_HINT "If you are on macOS Sierra, you might have to move the app to your /Applications or ~/Applications folder. "\
-    "This usually fixes the problem and you can move the application elsewhere afterwards.\n"\
+#define MACOS_HINT "Se você está no macOS Sierra, pode ser necessário mover o aplicativo para a pasta /Applications ou ~/Applications. " \
+    "Isso geralmente resolve o problema e você pode mover o aplicativo para outro local depois.\n" \
     "\n"
 
 namespace {
@@ -149,9 +149,8 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
                 contents.contains("Microsoft", Qt::CaseInsensitive)
             ) {
                 showFatalErrorMessage(
-                    "Unsupported system detected!",
-                    "Linux-on-Windows distributions are not supported.\n\n"
-                    "Please use the Windows binary when playing on Windows."
+                    tr("Sistema não suportado!"),
+                    tr("Distribuições Linux no Windows não são suportadas.\n\nPor favor, use o binário do Windows para jogar no Windows.")
                 );
                 return;
             }
@@ -282,36 +281,34 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     if (!FS::ensureFolderPathExists(dataPath))
     {
         showFatalErrorMessage(
-            "The launcher data folder could not be created.",
-            QString(
-                "The launcher data folder could not be created.\n"
-                "\n"
+            tr("A pasta de dados do launcher não pôde ser criada."),
+            (tr("A pasta de dados do launcher não pôde ser criada.\n")
+                + QStringLiteral("\n")
 #if defined(Q_OS_MAC)
-                MACOS_HINT
+                + QString(MACOS_HINT)
 #endif
-                "Make sure you have the right permissions to the launcher data folder and any folder needed to access it.\n"
-                "(%1)\n"
-                "\n"
-                "The launcher cannot continue until you fix this problem."
-            ).arg(dataPath)
+                + tr("Certifique-se de ter as permissões corretas para a pasta de dados do launcher e qualquer pasta necessária para acessá-la.\n")
+                + QString("(%1)\n").arg(dataPath)
+                + QStringLiteral("\n")
+                + tr("O launcher não pode continuar até que você resolva este problema.")
+            )
         );
         return;
     }
     if (!QDir::setCurrent(dataPath))
     {
         showFatalErrorMessage(
-            "The launcher data folder could not be opened.",
-            QString(
-                "The launcher data folder could not be opened.\n"
-                "\n"
+            tr("A pasta de dados do launcher não pôde ser aberta."),
+            (tr("A pasta de dados do launcher não pôde ser aberta.\n")
+                + QStringLiteral("\n")
 #if defined(Q_OS_MAC)
-                MACOS_HINT
+                + QString(MACOS_HINT)
 #endif
-                "Make sure you have the right permissions to the launcher data folder.\n"
-                "(%1)\n"
-                "\n"
-                "The launcher cannot continue until you fix this problem."
-            ).arg(dataPath)
+                + tr("Certifique-se de ter as permissões corretas para a pasta de dados do launcher.\n")
+                + QString("(%1)\n").arg(dataPath)
+                + QStringLiteral("\n")
+                + tr("O launcher não pode continuar até que você resolva este problema.")
+            )
         );
         return;
     }
@@ -384,7 +381,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
             askMoveDialogue = QMessageBox::question(
                 nullptr,
                 BuildConfig.LAUNCHER_DISPLAYNAME,
-                "Would you like to move application data to a new data location? It will improve the launcher's performance, but if you switch to older versions it will look like instances have disappeared. If you select no, you can migrate later in settings. You should select yes unless you're commonly switching between different versions (eg. develop and stable).",
+                tr("Deseja mover os dados do aplicativo para um novo local? Isso melhorará o desempenho do launcher, mas se você mudar para versões mais antigas, parecerá que as instâncias desapareceram. Se você selecionar não, poderá migrar depois nas configurações. Você deve selecionar sim, a menos que esteja alternando com frequência entre versões diferentes (ex: develop e stable)."),
                 QMessageBox::Yes | QMessageBox::No,
                 QMessageBox::Yes
             );
@@ -509,18 +506,17 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         if(!logFile->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
         {
             showFatalErrorMessage(
-                "The launcher data folder is not writable!",
-                QString(
-                    "The launcher couldn't create a log file - the data folder is not writable.\n"
-                    "\n"
+                tr("A pasta de dados do launcher não é gravável!"),
+                (tr("O launcher não pôde criar um arquivo de log - a pasta de dados não é gravável.\n")
+                    + QStringLiteral("\n")
     #if defined(Q_OS_MAC)
-                    MACOS_HINT
+                    + QString(MACOS_HINT)
     #endif
-                    "Make sure you have write permissions to the data folder.\n"
-                    "(%1)\n"
-                    "\n"
-                    "The launcher cannot continue until you fix this problem."
-                ).arg(dataPath)
+                    + tr("Certifique-se de ter permissões de escrita para a pasta de dados.\n")
+                    + QString("(%1)\n").arg(dataPath)
+                    + QStringLiteral("\n")
+                    + tr("O launcher não pode continuar até que você resolva este problema.")
+                )
             );
             return;
         }

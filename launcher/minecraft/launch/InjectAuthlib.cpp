@@ -48,7 +48,7 @@ void InjectAuthlib::onVersionDownloadSucceeded()
     }
     catch (const Exception &e)
     {
-        qCritical() << "Translations Download Failed: index file not readable";
+        qCritical() << "Falha no download: arquivo de índice do injetor não legível";
         jobPtr.reset();
         emitFailed(tr("Erro ao analisar resposta JSON do InjectorEndpoint"));
         return;

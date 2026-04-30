@@ -140,8 +140,8 @@ QDateTime Component::getReleaseDateTime()
     {
         return vfile->releaseTime;
     }
-    // FIXME: fake
-    return QDateTime::currentDateTime();
+    // Sem metadado disponível — retorna data inválida para não exigir Java incorretamente
+    return QDateTime();
 }
 
 bool Component::isEnabled()
