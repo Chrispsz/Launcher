@@ -238,6 +238,9 @@ void LaunchController::launchInstance()
         return;
     }
 
+    // Set the profile info on the AuthServer so it can respond to profile lookups
+    m_authserver->setProfileInfo(m_session->uuid, m_session->player_name);
+
     m_launcher = m_instance->createLaunchTask(m_session, m_quickPlayTarget, m_authserver->port());
     if (!m_launcher)
     {

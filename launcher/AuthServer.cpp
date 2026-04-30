@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QDateTime>
 
 struct Request
 {
@@ -50,8 +51,7 @@ AuthServer::AuthServer(QObject *parent) : QObject(parent)
 
     if (!m_tcpServer->listen(QHostAddress::LocalHost))
     {
-        // TODO: think about stop launching when server start fails
-        qCritical() << "Auth server start failed";
+        qCritical() << "Falha ao iniciar servidor de autenticação";
     }
 }
 
@@ -60,9 +60,19 @@ quint16 AuthServer::port()
     return m_tcpServer->serverPort();
 }
 
-void processRequest(Request *request, Response *response)
+void AuthServer::setProfileInfo(const QString &profileId, const QString &profileName)
 {
-    qDebug() << "Processing request";
+    QMutexLocker locker(&m_profileMutex);
+    m_profileId = profileId;
+    m_profileName = profileName;
+    qDebug() << "AuthServer: perfil definido — id:" << profileId << "nome:" << profileName;
+}
+
+void processRequest(AuthServer *authServer, Request *request, Response *response)
+{
+    qDebug() << "AuthServer: processando requisição:" << request->url;
+
+    // Root — health check / API info
     if (request->url == "/")
     {
         response->body = "{\"Status\":\"OK\",\"Runtime-Mode\":\"productionMode\",\"Application-Author\":\"Chrispsz Launcher\",\"Application-Description\":\"Chrispsz Launcher Auth API.\",\"Specification-Version\":\"1.0.0\",\"Application-Name\":\"chrispsz.launcher.auth\",\"Implementation-Version\":\"1.0.0\",\"Application-Owner\":\"Chrispsz\"}";
@@ -71,46 +81,78 @@ void processRequest(Request *request, Response *response)
         return;
     }
 
+    // Session join/hasJoined — accept without verification (offline mode)
     if (request->url == "/sessionserver/session/minecraft/join" || request->url == "/sessionserver/session/minecraft/hasJoined")
     {
         response->statusCode = 204;
         return;
     }
 
+    // Profile lookup — /sessionserver/session/minecraft/profile/<uuid>
+    // Minecraft calls this to get the player's name and skin.
+    // authlib-injector forwards this to our local AuthServer.
+    if (request->url.startsWith("/sessionserver/session/minecraft/profile/"))
+    {
+        // Extract UUID from URL (strip query params like ?unsigned=false)
+        QString path = request->url.split("?").at(0);
+        QString uuid = path.mid(QString("/sessionserver/session/minecraft/profile/").length());
+
+        // Remove dashes from UUID if present (Minecraft uses both formats)
+        uuid.remove('-');
+
+        // Use the profile info stored by LaunchController before launch
+        QString profileId = authServer->m_profileId.isEmpty() ? uuid : authServer->m_profileId;
+        QString profileName = authServer->m_profileName.isEmpty() ? "Player" : authServer->m_profileName;
+
+        // Build the profile response matching Mojang's session server format
+        // {"id":"<uuid>","name":"<name>","properties":[{"name":"textures","value":"<base64>"}]}
+        QString texturesJson = QString("{\"timestamp\":%1,\"profileId\":\"%2\",\"profileName\":\"%3\",\"textures\":{}}")
+            .arg(QString::number(QDateTime::currentMSecsSinceEpoch()), profileId, profileName);
+        QByteArray texturesBase64 = texturesJson.toUtf8().toBase64();
+
+        response->body = QString("{\"id\":\"%1\",\"name\":\"%2\",\"properties\":[{\"name\":\"textures\",\"value\":\"%3\"}]}")
+            .arg(profileId, profileName, QString::fromLatin1(texturesBase64));
+        response->statusCode = 200;
+        response->headers["Content-Type"] = "application/json; charset=utf-8";
+        return;
+    }
+
+    // Authenticate/refresh — for local accounts, echo back the data
     if (request->url == "/auth/authenticate" || request->url == "/auth/refresh")
     {
         auto json = request->json().object();
         QString clientToken = json.value("clientToken").toString();
         QString username = json.value(request->url == "/auth/authenticate" ? "username" : "accessToken").toString();
 
-        QString profile = ((QString) "{\"id\":\"%1\",\"name\":\"%2\"}").arg(clientToken, username);
+        QString profile = QString("{\"id\":\"%1\",\"name\":\"%2\"}").arg(clientToken, username);
 
         response->statusCode = 200;
-        response->body = ((QString) "{\"accessToken\":\"%1\",\"clientToken\":\"%2\",\"availableProfiles\":[%3], \"selectedProfile\": %3}").arg(username, clientToken, profile);
+        response->body = QString("{\"accessToken\":\"%1\",\"clientToken\":\"%2\",\"availableProfiles\":[%3],\"selectedProfile\":%3}")
+            .arg(username, clientToken, profile);
+        response->headers["Content-Type"] = "application/json; charset=utf-8";
         return;
     }
 
-    response->body = "Not found";
+    response->body = "{\"error\":\"Not Found\",\"errorMessage\":\"Endpoint not implemented\"}";
     response->statusCode = 404;
+    response->headers["Content-Type"] = "application/json; charset=utf-8";
 }
 
 void AuthServer::newConnection()
 {
-
     QTcpSocket *tcpSocket = m_tcpServer->nextPendingConnection();
     Connection *connection = new Connection();
 
-    connect(tcpSocket, &QTcpSocket::readyRead, this, [tcpSocket, connection]()
+    connect(tcpSocket, &QTcpSocket::readyRead, this, [this, tcpSocket, connection]()
             {
-                // Not the best way to process queries, but it just works
                 QByteArray curBuf = tcpSocket->readAll().data();
-                qDebug() << "Read " << curBuf.size() << " bytes";
+                qDebug() << "AuthServer: leu" << curBuf.size() << "bytes";
 
                 if (connection->state == CREATING)
                 {
                     connection->response = new Response();
                     connection->request = new Request();
-                    connection->buffer = ((QString)"").toUtf8();
+                    connection->buffer = QByteArray();
                     connection->state = READING_HEAD;
                 }
 
@@ -129,7 +171,9 @@ void AuthServer::newConnection()
                         for (int i = 1; i < headList.size(); i++)
                         {
                             QStringList header = headList.at(i).split(":");
-                            connection->request->headers.insert(header.at(0), header.at(1));
+                            if (header.size() >= 2) {
+                                connection->request->headers.insert(header.at(0).trimmed(), header.at(1).trimmed());
+                            }
                         }
 
                         if (connection->request->headers.contains("Content-Length"))
@@ -156,12 +200,12 @@ void AuthServer::newConnection()
                 }
 
                 if(connection->state == PROCESS_REQUEST){
-                    processRequest(connection->request, connection->response);
+                    processRequest(this, connection->request, connection->response);
 
                     if(connection->response->body.size() > 0){
-                        connection->response->headers["Content-Length"] = QString::number(connection->response->body.size());
+                        connection->response->headers["Content-Length"] = QString::number(connection->response->body.toUtf8().size());
                     }
-                    connection->response->headers["Connection"] = "Keep-Alive";
+                    connection->response->headers["Connection"] = "close";
 
                     QString responseStatusText = "Internal Server Error";
                     if (connection->response->statusCode == 200)
@@ -171,15 +215,15 @@ void AuthServer::newConnection()
                     else if (connection->response->statusCode == 404)
                         responseStatusText = "Not Found";
 
-                    
-                    QString responseHead = ((QString)"HTTP/1.1 %1 %2\r\n").arg(connection->response->statusCode).arg(responseStatusText);
+                    QString responseHead = QString("HTTP/1.1 %1 %2\r\n").arg(connection->response->statusCode).arg(responseStatusText);
                     for (auto h: connection->response->headers.keys())
                     {
-                        responseHead += ((QString)"%1: %2\r\n").arg(h, connection->response->headers[h]);
+                        responseHead += QString("%1: %2\r\n").arg(h, connection->response->headers[h]);
                     }
                     responseHead += "\r\n";
                     tcpSocket->write(responseHead.toUtf8());
                     tcpSocket->write(connection->response->body.toUtf8());
+                    tcpSocket->disconnectFromHost();
                     connection->state = CREATING;
                 }
             });
