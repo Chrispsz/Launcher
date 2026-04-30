@@ -240,10 +240,10 @@ bool entitlementFromJSONV3(const QJsonObject &parent, MinecraftEntitlement & out
 }
 
 bool AccountData::resumeStateFromV2(QJsonObject data) {
-    // The JSON object must at least have a username for it to be valid.
+    // V2 format: Mojang-only. Migrate to Local.
     if (!data.value("username").isString())
     {
-        qCritical() << "Can't load Mojang account info from JSON object. Username field is missing or of the wrong type.";
+        qCritical() << "Não foi possível carregar conta do formato antigo. Campo username ausente.";
         return false;
     }
 
@@ -254,7 +254,7 @@ bool AccountData::resumeStateFromV2(QJsonObject data) {
     QJsonArray profileArray = data.value("profiles").toArray();
     if (profileArray.size() < 1)
     {
-        qCritical() << "Can't load Mojang account with username \"" << userName << "\". No profiles found.";
+        qCritical() << "Não foi possível carregar conta com username \"" << userName << "\". Nenhum perfil encontrado.";
         return false;
     }
 
@@ -278,7 +278,7 @@ bool AccountData::resumeStateFromV2(QJsonObject data) {
         bool legacy = profileObject.value("legacy").toBool(false);
         if (id.isEmpty() || name.isEmpty())
         {
-            qWarning() << "Unable to load a profile" << name << "because it was missing an ID or a name.";
+            qWarning() << "Não foi possível carregar o perfil" << name << "porque estava sem ID ou nome.";
             continue;
         }
         if(id == currentProfile) {
@@ -288,8 +288,10 @@ bool AccountData::resumeStateFromV2(QJsonObject data) {
     }
     auto & profile = profiles[currentProfileIndex];
 
-    type = AccountType::Mojang;
+    // Migrate old Mojang accounts to Local
+    type = AccountType::Local;
     legacy = profile.legacy;
+    provider = AuthProviders::lookup("local");
 
     minecraftProfile.id = profile.id;
     minecraftProfile.name = profile.name;
@@ -307,47 +309,21 @@ bool AccountData::resumeStateFromV2(QJsonObject data) {
 bool AccountData::resumeStateFromV3(QJsonObject data) {
     auto typeV = data.value("type");
     if(!typeV.isString()) {
-        qWarning() << "Failed to parse account data: type is missing.";
+        qWarning() << "Falha ao analisar dados da conta: tipo ausente.";
         return false;
     }
     auto typeS = typeV.toString();
-    if(typeS == "MSA") {
-        type = AccountType::MSA;
-        provider = AuthProviders::lookup("MSA");
-    } else if (typeS == "Mojang"){
-        type = AccountType::Mojang;
-        provider = AuthProviders::lookup("mojang");
-    } else if (typeS == "Local") {
-        type = AccountType::Local;
-        provider = AuthProviders::lookup("local");
-    } else if (typeS == "Elyby") {
-        type = AccountType::Elyby;
-        provider = AuthProviders::lookup("elyby");
-    } else {
-        qWarning() << "Failed to parse account data: type is not recognized.";
+
+    // All account types are now Local — migrate from any old type
+    type = AccountType::Local;
+    provider = AuthProviders::lookup("local");
+
+    if (!provider) {
+        qWarning() << "Provedor local não encontrado!";
         return false;
     }
 
-    // If the provider lookup returned null (e.g. MSA/Mojang/Elyby are no longer registered),
-    // fall back to the local provider so the account can still be loaded without crashing.
-    if (!provider) {
-        qWarning() << "Provider not found for type" << typeS << "- falling back to local provider.";
-        provider = AuthProviders::lookup("local");
-    }
-
-    if(type == AccountType::Mojang) {
-        legacy = data.value("legacy").toBool(false);
-        canMigrateToMSA = data.value("canMigrateToMSA").toBool(false);
-        mustMigrateToMSA = data.value("mustMigrateToMSA").toBool(false);
-    }
-
-    if(type == AccountType::MSA) {
-        msaToken = tokenFromJSONV3(data, "msa");
-        userToken = tokenFromJSONV3(data, "utoken");
-        xboxApiToken = tokenFromJSONV3(data, "xrp-main");
-        mojangservicesToken = tokenFromJSONV3(data, "xrp-mc");
-    }
-
+    // Old MSA/Elyby/Mojang fields are ignored; only yggdrasil + profile data is loaded
     yggdrasilToken = tokenFromJSONV3(data, "ygg");
     minecraftProfile = profileFromJSONV3(data, "profile");
     if(!entitlementFromJSONV3(data, minecraftEntitlement)) {
@@ -364,30 +340,7 @@ bool AccountData::resumeStateFromV3(QJsonObject data) {
 
 QJsonObject AccountData::saveState() const {
     QJsonObject output;
-    if(type == AccountType::Mojang) {
-        output["type"] = "Mojang";
-        if(legacy) {
-            output["legacy"] = true;
-        }
-        if(canMigrateToMSA) {
-            output["canMigrateToMSA"] = true;
-        }
-        if(mustMigrateToMSA) {
-            output["mustMigrateToMSA"] = true;
-        }
-    }
-    else if (type == AccountType::MSA) {
-        output["type"] = "MSA";
-        tokenToJSONV3(output, msaToken, "msa");
-        tokenToJSONV3(output, userToken, "utoken");
-        tokenToJSONV3(output, xboxApiToken, "xrp-main");
-        tokenToJSONV3(output, mojangservicesToken, "xrp-mc");
-    } else if (type == AccountType::Local) {
-        output["type"] = "Local";
-    } else if (type == AccountType::Elyby) {
-        output["type"] = "Elyby";
-    }
-
+    output["type"] = "Local";
     tokenToJSONV3(output, yggdrasilToken, "ygg");
     profileToJSONV3(output, minecraftProfile, "profile");
     entitlementToJSONV3(output, minecraftEntitlement);
@@ -395,9 +348,6 @@ QJsonObject AccountData::saveState() const {
 }
 
 QString AccountData::userName() const {
-    if(type != AccountType::Mojang && type != AccountType::Elyby) {
-        return QString();
-    }
     return yggdrasilToken.extra["userName"].toString();
 }
 
@@ -406,16 +356,10 @@ QString AccountData::accessToken() const {
 }
 
 QString AccountData::clientToken() const {
-    if(type != AccountType::Mojang && type != AccountType::Elyby) {
-        return QString();
-    }
     return yggdrasilToken.extra["clientToken"].toString();
 }
 
 void AccountData::setClientToken(QString clientToken) {
-    if(type != AccountType::Mojang && type != AccountType::Elyby) {
-        return;
-    }
     yggdrasilToken.extra["clientToken"] = clientToken;
 }
 
@@ -427,9 +371,6 @@ void AccountData::generateClientTokenIfMissing() {
 }
 
 void AccountData::invalidateClientToken() {
-    if(type != AccountType::Mojang && type != AccountType::Elyby) {
-        return;
-    }
     yggdrasilToken.extra["clientToken"] = QUuid::createUuid().toString().remove(QRegExp("[{-}]"));
 }
 
@@ -447,24 +388,7 @@ QString AccountData::profileName() const {
 }
 
 QString AccountData::accountDisplayString() const {
-    switch(type) {
-        case AccountType::Mojang:
-        case AccountType::Elyby: {
-            return userName();
-        }
-        case AccountType::MSA: {
-            if(xboxApiToken.extra.contains("gtg")) {
-                return xboxApiToken.extra["gtg"].toString();
-            }
-            return QObject::tr("Perfil Xbox ausente");
-        }
-        case AccountType::Local: {
-            return QObject::tr("<Local>");
-        }
-        default: {
-            return QObject::tr("Conta inválida");
-        }
-    }
+    return QObject::tr("<Local>");
 }
 
 QString AccountData::lastError() const {

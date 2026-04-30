@@ -40,22 +40,7 @@ typedef shared_qobject_ptr<MinecraftAccount> MinecraftAccountPtr;
 Q_DECLARE_METATYPE(MinecraftAccountPtr)
 
 /**
- * A profile within someone's Mojang account.
- *
- * Currently, the profile system has not been implemented by Mojang yet,
- * but we might as well add some things for it in MultiMC right now so
- * we don't have to rip the code to pieces to add it later.
- */
-// Defined in providers/BaseAuthProvider.h
-//struct AccountProfile
-//{
-    //QString id;
-    //QString name;
-    //bool legacy;
-//};
-
-/**
- * Object that stores information about a certain Mojang account.
+ * Object that stores information about a Minecraft account.
  *
  * Said information may include things such as that account's username, client token, and access
  * token if the user chose to stay logged in.
@@ -133,30 +118,7 @@ public: /* queries */
     }
 
     QString typeString() const {
-        switch(data.type) {
-            case AccountType::Mojang: {
-                if(data.legacy) {
-                    return "legacy";
-                }
-                return data.provider->displayName();
-            }
-            break;
-            case AccountType::MSA: {
-                return "msa";
-            }
-            break;
-            case AccountType::Local: {
-                return "local";
-            }
-            break;
-            case AccountType::Elyby: {
-                return "elyby";
-            }
-            break;
-            default: {
-                return "unknown";
-            }
-        }
+        return "local";
     }
 
     QPixmap getFace() const;

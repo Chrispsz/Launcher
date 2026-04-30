@@ -79,9 +79,9 @@ QVariant GameOptions::headerData(int section, Qt::Orientation orientation, int r
     switch(section)
     {
         case 0:
-            return tr("Key");
+            return tr("Chave");
         case 1:
-            return tr("Value");
+            return tr("Valor");
         default:
             return QVariant();
     }

@@ -125,7 +125,7 @@ void NetJob::startMoreParts()
             }
             else
             {
-                emitFailed(tr("Job '%1' failed to process:\n%2").arg(objectName()).arg(getFailedFiles().join("\n")));
+                emitFailed(tr("Tarefa '%1' falhou ao processar:\n%2").arg(objectName()).arg(getFailedFiles().join("\n")));
             }
         }
         return;

@@ -154,7 +154,6 @@ void MinecraftAccount::authFailed(QString reason)
 {
     switch (m_currentTask->taskState()) {
         case AccountTaskState::STATE_OFFLINE:
-        case AccountTaskState::STATE_FAILED_MUST_MIGRATE:
         case AccountTaskState::STATE_FAILED_SOFT: {
             // NOTE: this doesn't do much. There was an error of some sort.
         }
@@ -233,8 +232,7 @@ void MinecraftAccount::fillSession(AuthSessionPtr session)
         }
     }
 
-    // the user name. you have to have an user name
-    // FIXME: not with MSA
+    // the user name
     session->username = data.userName();
     // volatile auth token
     session->access_token = data.accessToken();

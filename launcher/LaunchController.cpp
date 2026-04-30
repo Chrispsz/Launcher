@@ -221,18 +221,6 @@ void LaunchController::login() {
                 emitFailed(errorString);
                 return;
             }
-            case AccountState::MustMigrate: {
-                auto errorString = tr("Esta conta não é mais suportada. Crie uma nova conta local.");
-                QMessageBox::warning(
-                    m_parentWidget,
-                    tr("Conta requer migração"),
-                    errorString,
-                    QMessageBox::StandardButton::Ok,
-                    QMessageBox::StandardButton::Ok
-                );
-                emitFailed(errorString);
-                return;
-            }
         }
     }
     emitFailed(tr("Falha ao iniciar."));

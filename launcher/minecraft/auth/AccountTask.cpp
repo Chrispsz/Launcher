@@ -45,8 +45,6 @@ QString AccountTask::getStateMessage() const
         return tr("Falha ao contatar o servidor de autenticação.");
     case AccountTaskState::STATE_FAILED_SOFT:
         return tr("Erro encontrado durante a autenticação.");
-    case AccountTaskState::STATE_FAILED_MUST_MIGRATE:
-        return tr("Falha na autenticação. Este tipo de conta não é mais suportado. Crie uma conta local.");
     case AccountTaskState::STATE_FAILED_HARD:
         return tr("Falha na autenticação. A sessão expirou.");
     case AccountTaskState::STATE_FAILED_GONE:
@@ -83,12 +81,6 @@ bool AccountTask::changeState(AccountTaskState newState, QString reason)
         case AccountTaskState::STATE_FAILED_SOFT: {
             m_data->errorString = reason;
             m_data->accountState = AccountState::Errored;
-            emitFailed(reason);
-            return false;
-        }
-        case AccountTaskState::STATE_FAILED_MUST_MIGRATE: {
-            m_data->errorString = reason;
-            m_data->accountState = AccountState::MustMigrate;
             emitFailed(reason);
             return false;
         }

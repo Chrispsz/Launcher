@@ -77,7 +77,7 @@ QVariant VersionProxyModel::headerData(int section, Qt::Orientation orientation,
             case ParentVersion:
                 return tr("Minecraft"); //FIXME: this should come from metadata
             case Branch:
-                return tr("Branch");
+                return tr("Ramificação");
             case Type:
                 return tr("Tipo");
             case Architecture:
@@ -130,7 +130,7 @@ QVariant VersionProxyModel::data(const QModelIndex &index, int role) const
                     QString version = sourceModel()->data(parentIndex, BaseVersionList::VersionRole).toString();
                     if(version == m_currentVersion)
                     {
-                        return tr("%1 (installed)").arg(version);
+                        return tr("%1 (instalada)").arg(version);
                     }
                     return version;
                 }

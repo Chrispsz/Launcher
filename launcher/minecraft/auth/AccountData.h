@@ -39,10 +39,7 @@ struct MinecraftProfile {
 };
 
 enum class AccountType {
-    MSA,
-    Mojang,
-    Local,
-    Elyby
+    Local
 };
 
 enum class AccountState {
@@ -52,8 +49,7 @@ enum class AccountState {
     Online,
     Errored,
     Expired,
-    Gone,
-    MustMigrate
+    Gone
 };
 
 struct AccountData {
@@ -63,13 +59,10 @@ struct AccountData {
 
     AuthProviderPtr provider;
 
-    //! userName for Mojang accounts, gamertag for MSA
     QString accountDisplayString() const;
 
-    //! Only valid for Mojang accounts. MSA does not preserve this information
     QString userName() const;
 
-    //! Only valid for Mojang accounts.
     QString clientToken() const;
     void setClientToken(QString clientToken);
     void invalidateClientToken();
@@ -85,13 +78,6 @@ struct AccountData {
 
     AccountType type = AccountType::Local;
     bool legacy = false;
-    bool canMigrateToMSA = false;
-    bool mustMigrateToMSA = false;
-
-    Katabasis::Token msaToken;
-    Katabasis::Token userToken;
-    Katabasis::Token xboxApiToken;
-    Katabasis::Token mojangservicesToken;
 
     Katabasis::Token yggdrasilToken;
     MinecraftProfile minecraftProfile;

@@ -1004,7 +1004,6 @@ void MainWindow::defaultAccountChanged()
 
     MinecraftAccountPtr account = APPLICATION->accounts()->defaultAccount();
 
-    // FIXME: this needs adjustment for MSA
     if (account && account->profileName() != "")
     {
         auto profileLabel = profileInUseFilter(account->profileName(), account->isInUse());

@@ -36,7 +36,8 @@
 
 enum AccountListVersion {
     MojangOnly = 2,
-    MojangMSA = 3
+    MojangMSA = 3,
+    LocalOnly = 3  // same format number, but only Local type is valid now
 };
 
 AccountList::AccountList(QObject *parent) : QAbstractListModel(parent) {
@@ -299,9 +300,6 @@ QVariant AccountList::data(const QModelIndex &index, int role) const
                     }
                     case AccountState::Gone: {
                         return tr("Inexistente", "Account status");
-                    }
-                    case AccountState::MustMigrate: {
-                        return tr("Deve migrar", "Account status");
                     }
                 }
             }
