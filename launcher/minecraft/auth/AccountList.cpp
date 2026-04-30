@@ -35,9 +35,8 @@
 #include <chrono>
 
 enum AccountListVersion {
-    MojangOnly = 2,
-    MojangMSA = 3,
-    LocalOnly = 3  // same format number, but only Local type is valid now
+    LegacyV2 = 2,   // formato antigo (Mojang apenas) — só para migração
+    Current  = 3    // formato atual (contas locais)
 };
 
 AccountList::AccountList(QObject *parent) : QAbstractListModel(parent) {
@@ -414,7 +413,7 @@ bool AccountList::loadList()
 {
     if (m_listFilePath.isEmpty())
     {
-        qCritical() << "Can't load Mojang account list. No file path given and no default set.";
+        qCritical() << "Não foi possível carregar a lista de contas. Nenhum caminho de arquivo fornecido.";
         return false;
     }
 
@@ -457,11 +456,11 @@ bool AccountList::loadList()
     // Make sure the format version matches.
     auto listVersion = root.value("formatVersion").toVariant().toInt();
     switch(listVersion) {
-        case AccountListVersion::MojangOnly: {
+        case AccountListVersion::LegacyV2: {
             return loadV2(root);
         }
         break;
-        case AccountListVersion::MojangMSA: {
+        case AccountListVersion::Current: {
             return loadV3(root);
         }
         break;
@@ -544,7 +543,7 @@ bool AccountList::saveList()
 {
     if (m_listFilePath.isEmpty())
     {
-        qCritical() << "Can't save Mojang account list. No file path given and no default set.";
+        qCritical() << "Não foi possível salvar a lista de contas. Nenhum caminho de arquivo fornecido.";
         return false;
     }
 
@@ -566,7 +565,7 @@ bool AccountList::saveList()
     // Build the JSON document to write to the list file.
     QJsonObject root;
 
-    root.insert("formatVersion", AccountListVersion::MojangMSA);
+    root.insert("formatVersion", AccountListVersion::Current);
 
     // Build a list of accounts.
     qDebug() << "Building account array.";

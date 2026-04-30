@@ -102,9 +102,9 @@ void CheckJava::checkJavaFinished(JavaCheckResult result)
         case JavaCheckResult::Validity::Valid:
         {
             auto instance = m_parent->instance();
-            printJavaInfo(result.javaVersion.toString(), result.mojangPlatform, result.javaVendor);
+            printJavaInfo(result.javaVersion.toString(), result.platformArch, result.javaVendor);
             instance->settings()->set("JavaVersion", result.javaVersion.toString());
-            instance->settings()->set("JavaArchitecture", result.mojangPlatform);
+            instance->settings()->set("JavaArchitecture", result.platformArch);
             instance->settings()->set("JavaVendor", result.javaVendor);
             instance->settings()->set("JavaTimestamp", m_javaUnixTime);
             emitSucceeded();

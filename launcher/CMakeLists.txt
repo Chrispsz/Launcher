@@ -468,8 +468,6 @@ SET(LAUNCHER_SOURCES
     resources/backgrounds/backgrounds.qrc
     resources/multimc/multimc.qrc
     resources/pe_dark/pe_dark.qrc
-    resources/pe_light/pe_light.qrc
-    resources/pe_colored/pe_colored.qrc
     resources/flat/flat.qrc
     resources/documents/documents.qrc
     ../${Launcher_Branding_LogoQRC}
@@ -700,8 +698,6 @@ qt5_add_resources(LAUNCHER_RESOURCES
     resources/backgrounds/backgrounds.qrc
     resources/multimc/multimc.qrc
     resources/pe_dark/pe_dark.qrc
-    resources/pe_light/pe_light.qrc
-    resources/pe_colored/pe_colored.qrc
     resources/flat/flat.qrc
     resources/documents/documents.qrc
     ../${Launcher_Branding_LogoQRC}

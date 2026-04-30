@@ -167,7 +167,7 @@ void JavaChecker::finished(int exitcode, QProcess::ExitStatus status)
 
     result.validity = JavaCheckResult::Validity::Valid;
     result.is_64bit = is_64;
-    result.mojangPlatform = is_64 ? "64" : "32";
+    result.platformArch = is_64 ? "64" : "32";
     result.realPlatform = os_arch;
     result.javaVersion = java_version;
     result.javaVendor = java_vendor;

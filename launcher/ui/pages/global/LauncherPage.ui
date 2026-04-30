@@ -242,22 +242,17 @@
             </item>
             <item>
              <property name="text">
-              <string>Simples (Ícones escuros)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Simples (Ícones claros)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Simples (Ícones coloridos)</string>
+              <string>Simples (Escuros)</string>
              </property>
             </item>
             <item>
              <property name="text">
               <string notr="true">Flat</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Clássico</string>
              </property>
             </item>
            </widget>

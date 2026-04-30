@@ -608,7 +608,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     m_settings->registerSetting("Language", "pt_BR");
 
     // ── TEMA ──
-    m_settings->registerSetting("IconTheme", QString("multimc"));
+    m_settings->registerSetting("IconTheme", QString("pe_dark"));
     m_settings->registerSetting("ApplicationTheme", QString("dark"));
     m_settings->registerSetting("ShownNotifications", QString());
     m_settings->registerSetting("LastUsedGroupForNewInstance", QString());
@@ -650,13 +650,11 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     m_settings->registerSetting("JavaVendor", "");
     m_settings->registerSetting("LastHostname", "");
 
-    // ── JVM ARGS (FLAGS AIKAR) ──
+    // ── JVM ARGS (FLAGS AIKAR — atualizadas para JDK 21+) ──
     m_settings->registerSetting("JvmArgs",
         "-XX:+UseG1GC"
-        " -XX:+ParallelRefProcEnabled"
         " -XX:MaxGCPauseMillis=200"
         " -XX:+UnlockExperimentalVMOptions"
-        " -XX:+DisableExplicitGC"
         " -XX:+AlwaysPreTouch"
         " -XX:G1NewSizePercent=30"
         " -XX:G1MaxNewSizePercent=40"
@@ -670,8 +668,6 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         " -XX:SurvivorRatio=32"
         " -XX:+PerfDisableSharedMem"
         " -XX:MaxTenuringThreshold=1"
-        " -Dusing.aikars.flags=https://mcflags.emc.gs"
-        " -Daikars.new.flags=true"
     );
 
     // ── MINECRAFT PERFORMANCE ──

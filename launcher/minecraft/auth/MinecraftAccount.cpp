@@ -81,6 +81,7 @@ MinecraftAccountPtr MinecraftAccount::createLocal(const QString &username)
     account->data.type = AccountType::Local;
     account->data.yggdrasilToken.validity = Katabasis::Validity::Certain;
     account->data.yggdrasilToken.issueInstant = QDateTime::currentDateTimeUtc();
+    account->data.yggdrasilToken.token = QUuid::createUuid().toString().remove(QRegExp("[{}-]"));
     account->data.yggdrasilToken.extra["userName"] = username;
     account->data.yggdrasilToken.extra["clientToken"] = QUuid::createUuid().toString().remove(QRegExp("[{}-]"));
     account->data.minecraftProfile.id = uuidFromUsername(username).toString().remove(QRegExp("[{}-]"));

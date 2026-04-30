@@ -156,19 +156,13 @@ void LauncherPage::applySettings()
     auto original = s->get("IconTheme").toString();
     switch (ui->themeComboBox->currentIndex())
     {
-    case 1:
+    case 0:
         s->set("IconTheme", "pe_dark");
         break;
-    case 2:
-        s->set("IconTheme", "pe_light");
-        break;
-    case 3:
-        s->set("IconTheme", "pe_colored");
-        break;
-    case 4:
+    case 1:
         s->set("IconTheme", "flat");
         break;
-    case 0:
+    case 2:
     default:
         s->set("IconTheme", "multimc");
         break;
@@ -219,23 +213,15 @@ void LauncherPage::loadSettings()
     auto theme = s->get("IconTheme").toString();
     if (theme == "pe_dark")
     {
-        ui->themeComboBox->setCurrentIndex(1);
-    }
-    else if (theme == "pe_light")
-    {
-        ui->themeComboBox->setCurrentIndex(2);
-    }
-    else if (theme == "pe_colored")
-    {
-        ui->themeComboBox->setCurrentIndex(3);
+        ui->themeComboBox->setCurrentIndex(0);
     }
     else if (theme == "flat")
     {
-        ui->themeComboBox->setCurrentIndex(4);
+        ui->themeComboBox->setCurrentIndex(1);
     }
     else
     {
-        ui->themeComboBox->setCurrentIndex(0);
+        ui->themeComboBox->setCurrentIndex(2);
     }
 
     // Application theme is always dark — no UI selector needed

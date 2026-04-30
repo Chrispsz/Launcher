@@ -125,33 +125,6 @@ static LoadResult loadComponent(ComponentPtr component, Task::Ptr& loadTask, Net
     return result;
 }
 
-// FIXME: dead code. determine if this can still be useful?
-/*
-static LoadResult loadPackProfile(ComponentPtr component, Task::Ptr& loadTask, Net::Mode netmode)
-{
-    if(component->m_loaded)
-    {
-        qDebug() << component->getName() << "is already loaded";
-        return LoadResult::LoadedLocal;
-    }
-
-    LoadResult result = LoadResult::Failed;
-    auto metaList = APPLICATION->metadataIndex()->get(component->m_uid);
-    if(metaList->isLoaded())
-    {
-        component->m_loaded = true;
-        result = LoadResult::LoadedLocal;
-    }
-    else
-    {
-        metaList->load(netmode);
-        loadTask = metaList->getCurrentTask();
-        result = LoadResult::RequiresRemote;
-    }
-    return result;
-}
-*/
-
 static LoadResult loadIndex(Task::Ptr& loadTask, Net::Mode netmode)
 {
     // FIXME: DECIDE. do we want to run the update task anyway?
@@ -207,26 +180,8 @@ void ComponentUpdateTask::loadComponents()
         LoadResult singleResult;
         RemoteLoadStatus::Type loadType;
         // FIXME: to do this right, we need to load the lists and decide on which versions to use during dependency resolution. For now, ignore all that...
-#if 0
-        switch(d->mode)
-        {
-            case Mode::Launch:
-            {
-                singleResult = loadComponent(component, loadTask, d->netmode);
-                loadType = RemoteLoadStatus::Type::Version;
-                break;
-            }
-            case Mode::Resolution:
-            {
-                singleResult = loadPackProfile(component, loadTask, d->netmode);
-                loadType = RemoteLoadStatus::Type::List;
-                break;
-            }
-        }
-#else
         singleResult = loadComponent(component, loadTask, d->netmode);
         loadType = RemoteLoadStatus::Type::Version;
-#endif
         if(singleResult == LoadResult::LoadedLocal)
         {
             component->updateCachedData();

@@ -12,7 +12,7 @@ class JavaChecker;
 struct JavaCheckResult
 {
     QString path;
-    QString mojangPlatform;
+    QString platformArch;
     QString realPlatform;
     JavaVersion javaVersion;
     QString javaVendor;
