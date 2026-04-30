@@ -122,6 +122,7 @@ QProcessEnvironment CleanEnviroment()
     {
         env.insert("LD_LIBRARY_PATH", "");
     }
+
 #endif
 
     return env;

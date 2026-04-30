@@ -364,6 +364,25 @@ QStringList MinecraftInstance::javaArguments() const
 
     args << "-Duser.language=en";
 
+    // JDK 17+: --add-opens necessários para Minecraft (o launcher oficial passa via arguments.jvm)
+    if(javaVersion.major() >= 17)
+    {
+        args << "--add-opens" << "java.base/java.lang=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/java.lang.invoke=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/java.util=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/java.io=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/java.nio=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/sun.nio.ch=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/sun.nio.fs=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/sun.security.action=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/sun.security.provider=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/jdk.internal.loader=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/jdk.internal.ref=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/jdk.internal.math=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/jdk.internal.util=ALL-UNNAMED";
+        args << "--add-opens" << "java.base/jdk.internal.module=ALL-UNNAMED";
+    }
+
     // JDK 22+ requer permissão explícita para acesso nativo (LWJGL, JOML, etc.)
     if(javaVersion.major() >= 22)
     {

@@ -183,6 +183,15 @@ void InstanceWindow::closeEvent(QCloseEvent *event)
         return;
     }
 
+    // Desconectar sinais ANTES de aceitar o close event para evitar
+    // postEvent null receiver warnings entre closeEvent e DeferredDelete
+    if (m_instance)
+    {
+        disconnect(m_instance.get(), &BaseInstance::launchTaskChanged, this, &InstanceWindow::on_InstanceLaunchTask_changed);
+        disconnect(m_instance.get(), &BaseInstance::runningStatusChanged, this, &InstanceWindow::runningStateChanged);
+        disconnect(m_instance.get(), &BaseInstance::statusChanged, this, &InstanceWindow::on_instanceStatusChanged);
+    }
+
     APPLICATION->settings()->set("ConsoleWindowState", saveState().toBase64());
     APPLICATION->settings()->set("ConsoleWindowGeometry", saveGeometry().toBase64());
     emit isClosing();
@@ -223,13 +232,7 @@ void InstanceWindow::refreshContainer()
 
 InstanceWindow::~InstanceWindow()
 {
-    // LAUNCHERMC: Disconnect from instance signals to prevent postEvent null receiver warnings
-    if (m_instance)
-    {
-        disconnect(m_instance.get(), &BaseInstance::launchTaskChanged, this, &InstanceWindow::on_InstanceLaunchTask_changed);
-        disconnect(m_instance.get(), &BaseInstance::runningStatusChanged, this, &InstanceWindow::runningStateChanged);
-        disconnect(m_instance.get(), &BaseInstance::statusChanged, this, &InstanceWindow::on_instanceStatusChanged);
-    }
+    // Sinais já desconectados no closeEvent() para evitar postEvent null receiver
 }
 
 bool InstanceWindow::requestClose()
