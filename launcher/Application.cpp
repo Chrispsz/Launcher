@@ -14,9 +14,7 @@
 #include "ui/pages/global/CustomCommandsPage.h"
 
 #include "ui/themes/ITheme.h"
-#include "ui/themes/SystemTheme.h"
 #include "ui/themes/DarkTheme.h"
-#include "ui/themes/BrightTheme.h"
 
 #include "ui/setupwizard/SetupWizard.h"
 #include "ui/setupwizard/LanguageWizardPage.h"
@@ -797,17 +795,13 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         qDebug() << "<> Icon themes initialized.";
     }
 
-    // Initialize widget themes
+    // Initialize widget themes — only dark theme
     {
         auto insertTheme = [this](ITheme * theme)
         {
             m_themes.insert(std::make_pair(theme->id(), std::unique_ptr<ITheme>(theme)));
         };
-        // DarkTheme and BrightTheme are now usable (qtTheme() added to FusionTheme)
-        auto darkTheme = new DarkTheme();
-        insertTheme(new SystemTheme());
-        insertTheme(darkTheme);
-        insertTheme(new BrightTheme());
+        insertTheme(new DarkTheme());
         qDebug() << "<> Widget themes initialized.";
     }
 

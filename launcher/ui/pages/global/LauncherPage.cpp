@@ -154,7 +154,6 @@ void LauncherPage::applySettings()
     // Updates
     s->set("AutoUpdate", ui->autoUpdateCheckBox->isChecked());
     auto original = s->get("IconTheme").toString();
-    //FIXME: make generic
     switch (ui->themeComboBox->currentIndex())
     {
     case 1:
@@ -164,22 +163,10 @@ void LauncherPage::applySettings()
         s->set("IconTheme", "pe_light");
         break;
     case 3:
-        s->set("IconTheme", "pe_blue");
-        break;
-    case 4:
         s->set("IconTheme", "pe_colored");
         break;
-    case 5:
-        s->set("IconTheme", "OSX");
-        break;
-    case 6:
-        s->set("IconTheme", "iOS");
-        break;
-    case 7:
+    case 4:
         s->set("IconTheme", "flat");
-        break;
-    case 8:
-        s->set("IconTheme", "custom");
         break;
     case 0:
     default:
@@ -192,13 +179,7 @@ void LauncherPage::applySettings()
         APPLICATION->setIconTheme(s->get("IconTheme").toString());
     }
 
-    auto originalAppTheme = s->get("ApplicationTheme").toString();
-    auto newAppTheme = ui->themeComboBoxColors->currentData().toString();
-    if(originalAppTheme != newAppTheme)
-    {
-        s->set("ApplicationTheme", newAppTheme);
-        APPLICATION->setApplicationTheme(newAppTheme, false);
-    }
+    // Application theme is always dark — no UI selector needed
 
     // Console settings
     s->set("ShowConsole", ui->showConsoleCheck->isChecked());
@@ -235,7 +216,6 @@ void LauncherPage::loadSettings()
     auto s = APPLICATION->settings();
     // Updates
     ui->autoUpdateCheckBox->setChecked(s->get("AutoUpdate").toBool());
-    //FIXME: make generic
     auto theme = s->get("IconTheme").toString();
     if (theme == "pe_dark")
     {
@@ -245,49 +225,20 @@ void LauncherPage::loadSettings()
     {
         ui->themeComboBox->setCurrentIndex(2);
     }
-    else if (theme == "pe_blue")
+    else if (theme == "pe_colored")
     {
         ui->themeComboBox->setCurrentIndex(3);
     }
-    else if (theme == "pe_colored")
-    {
-        ui->themeComboBox->setCurrentIndex(4);
-    }
-    else if (theme == "OSX")
-    {
-        ui->themeComboBox->setCurrentIndex(5);
-    }
-    else if (theme == "iOS")
-    {
-        ui->themeComboBox->setCurrentIndex(6);
-    }
     else if (theme == "flat")
     {
-        ui->themeComboBox->setCurrentIndex(7);
-    }
-    else if (theme == "custom")
-    {
-        ui->themeComboBox->setCurrentIndex(8);
+        ui->themeComboBox->setCurrentIndex(4);
     }
     else
     {
         ui->themeComboBox->setCurrentIndex(0);
     }
 
-    {
-        auto currentTheme = s->get("ApplicationTheme").toString();
-        auto themes = APPLICATION->getValidApplicationThemes();
-        int idx = 0;
-        for(auto &theme: themes)
-        {
-            ui->themeComboBoxColors->addItem(theme->name(), theme->id());
-            if(currentTheme == theme->id())
-            {
-                ui->themeComboBoxColors->setCurrentIndex(idx);
-            }
-            idx++;
-        }
-    }
+    // Application theme is always dark — no UI selector needed
 
     // Console settings
     ui->showConsoleCheck->setChecked(s->get("ShowConsole").toBool());

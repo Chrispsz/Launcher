@@ -252,22 +252,7 @@
             </item>
             <item>
              <property name="text">
-              <string>Simples (Ícones azuis)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
               <string>Simples (Ícones coloridos)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">OSX</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">iOS</string>
              </property>
             </item>
             <item>
@@ -275,36 +260,9 @@
               <string notr="true">Flat</string>
              </property>
             </item>
-            <item>
-             <property name="text">
-              <string>Personalizado</string>
-             </property>
-            </item>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="themeComboBoxColors">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Cores</string>
-            </property>
-            <property name="buddy">
-             <cstring>themeComboBoxColors</cstring>
-            </property>
-           </widget>
-          </item>
+
          </layout>
         </widget>
        </item>
@@ -475,7 +433,6 @@
   <tabstop>sortLastLaunchedBtn</tabstop>
   <tabstop>sortByNameBtn</tabstop>
   <tabstop>themeComboBox</tabstop>
-  <tabstop>themeComboBoxColors</tabstop>
   <tabstop>showConsoleCheck</tabstop>
   <tabstop>autoCloseConsoleCheck</tabstop>
   <tabstop>showConsoleErrorCheck</tabstop>

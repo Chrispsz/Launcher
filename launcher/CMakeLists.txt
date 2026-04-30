@@ -502,14 +502,10 @@ SET(LAUNCHER_SOURCES
     ui/setupwizard/LanguageWizardPage.h
 
     # GUI - themes
-    ui/themes/BrightTheme.cpp
-    ui/themes/BrightTheme.h
     ui/themes/DarkTheme.cpp
     ui/themes/DarkTheme.h
     ui/themes/ITheme.cpp
     ui/themes/ITheme.h
-    ui/themes/SystemTheme.cpp
-    ui/themes/SystemTheme.h
 
     # Processes
     LaunchController.h
