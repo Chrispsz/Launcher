@@ -3,6 +3,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QStringList>
+#include <QCoreApplication>
 
 QString AuthSession::serializeUserProperties()
 {
@@ -32,6 +33,6 @@ bool AuthSession::MakeOffline(QString offline_playername)
 }
 
 void AuthSession::MakeDemo() {
-    player_name = tr("Jogador");
+    player_name = QCoreApplication::tr("Jogador");
     demo = true;
 }
