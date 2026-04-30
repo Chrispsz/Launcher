@@ -242,11 +242,6 @@
             </item>
             <item>
              <property name="text">
-              <string>Simples (Escuros)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
               <string notr="true">Flat</string>
              </property>
             </item>

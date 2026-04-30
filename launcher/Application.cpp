@@ -783,10 +783,10 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
 
     // Icon themes
     {
-        // TODO: icon themes and instance icons do not mesh well together. Rearrange and fix discrepancies!
-        // set icon theme search path!
         auto searchPaths = QIcon::themeSearchPaths();
         searchPaths.append("iconthemes");
+        // Adicionar caminho de recursos Qt para que pe_dark encontre o fallback multimc
+        searchPaths.append(":/icons");
         QIcon::setThemeSearchPaths(searchPaths);
         qDebug() << "<> Icon themes initialized.";
     }

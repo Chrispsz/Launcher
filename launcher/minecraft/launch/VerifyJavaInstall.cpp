@@ -42,6 +42,14 @@ void VerifyJavaInstall::executeTask() {
             emitFailed(tr("Minecraft 24w14a e superior requerem Java 21"));
             return;
         }
+        // Aviso: JDK acima de 21 pode causar crashes (SIGSEGV) — Minecraft é feito para JDK 21
+        if (javaVersion.major() > 21) {
+            emit logLine(tr("AVISO: Java %1 detectado, mas Minecraft é compatível com Java 21. "
+                            "JDKs mais novos podem causar crashes (SIGSEGV/exit code 11). "
+                            "Recomendamos usar Java 21 LTS.")
+                            .arg(javaVersion.toString()),
+                         MessageLevel::Warning);
+        }
     }
     // Requisito Java 17
     if (minecraftComponent->getReleaseDateTime() >= g_VersionFilterData.java17BeginsDate) {
@@ -50,6 +58,13 @@ void VerifyJavaInstall::executeTask() {
                          MessageLevel::Fatal);
             emitFailed(tr("Minecraft 1.18 Pre-Release 2 e superior requerem Java 17"));
             return;
+        }
+        // Aviso para versões que requerem Java 17 mas usam JDK mais novo
+        if (minecraftComponent->getReleaseDateTime() < g_VersionFilterData.java21BeginsDate && javaVersion.major() > 17) {
+            emit logLine(tr("AVISO: Java %1 detectado, mas esta versão do Minecraft é compatível com Java 17. "
+                            "Recomendamos usar Java 17 LTS.")
+                            .arg(javaVersion.toString()),
+                         MessageLevel::Warning);
         }
     }
     // Requisito Java 16

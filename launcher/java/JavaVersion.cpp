@@ -60,18 +60,12 @@ bool JavaVersion::operator<(const JavaVersion &rhs)
 {
     if(m_parseable && rhs.m_parseable)
     {
-        auto major = m_major;
-        auto rmajor = rhs.m_major;
-
-        // HACK: discourage using java 9
-        if(major > 8)
-            major = -major;
-        if(rmajor > 8)
-            rmajor = -rmajor;
-
-        if(major < rmajor)
+        // Ordenação natural: Java 8 < 11 < 17 < 21 < 22 < ...
+        // O hack antigo que negativava Java 9+ foi removido —
+        // Minecraft moderno requer JDK 21+, então Java 9+ não deve ser "desencorajado"
+        if(m_major < rhs.m_major)
             return true;
-        if(major > rmajor)
+        if(m_major > rhs.m_major)
             return false;
         if(m_minor < rhs.m_minor)
             return true;
